@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WildData", "WildData\WildDa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WildData.Test", "WildData.Test\WildData.Test.csproj", "{654C96A5-D419-48A0-8ED9-4BCE247C931E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WildData.Npgsql", "WildData.Npgsql\WildData.Npgsql.csproj", "{DC23BA53-D92B-42EC-B771-BB3D4D7AFBA2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{654C96A5-D419-48A0-8ED9-4BCE247C931E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{654C96A5-D419-48A0-8ED9-4BCE247C931E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{654C96A5-D419-48A0-8ED9-4BCE247C931E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC23BA53-D92B-42EC-B771-BB3D4D7AFBA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC23BA53-D92B-42EC-B771-BB3D4D7AFBA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC23BA53-D92B-42EC-B771-BB3D4D7AFBA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC23BA53-D92B-42EC-B771-BB3D4D7AFBA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

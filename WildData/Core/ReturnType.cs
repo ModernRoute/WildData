@@ -1,0 +1,31 @@
+﻿namespace ModernRoute.WildData.Core
+{
+    public enum ReturnType
+    {
+        DateTime,
+        DateTimeNullable,
+        DateTimeOffset,
+        DateTimeOffsetNullable,
+        Byte,
+        ByteNullable,
+        Int16,
+        Int16Nullable,
+        Int32,
+        Int32Nullable,
+        Int64,
+        Int64Nullable,
+        String,
+        Float,
+        FloatNullable,
+        Double,
+        DoubleNullable,
+        Guid,
+        GuidNullable,
+        Binary,        
+        Decimal,
+        DecimalNullable,
+        Boolean,
+        BooleanNullable,
+        Null
+    }
+}

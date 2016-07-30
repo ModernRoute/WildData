@@ -4,8 +4,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WildData.Test")]
-[assembly: AssemblyDescription(".NET Data Client Tests")]
+[assembly: AssemblyTitle("WildData.Npgsql")]
+[assembly: AssemblyDescription(".NET Data Client: Npgsql provider")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Modern Route")]
 [assembly: AssemblyProduct("WildData")]
@@ -13,14 +13,13 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("654c96a5-d419-48a0-8ed9-4bce247c931e")]
+[assembly: Guid("dc23ba53-d92b-42ec-b771-bb3d4d7afba2")]
 
 // Version information for an assembly consists of the following four values:
 //

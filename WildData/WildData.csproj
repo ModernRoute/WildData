@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -40,7 +41,81 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\ColumnAttribute.cs" />
+    <Compile Include="Attributes\IgnoreAttribute.cs" />
+    <Compile Include="Attributes\NotNullAttribute.cs" />
+    <Compile Include="Attributes\StorageAttribute.cs" />
+    <Compile Include="Configuration\ProviderDataImplCollection.cs" />
+    <Compile Include="Configuration\ProviderDataImplElement.cs" />
+    <Compile Include="Configuration\ProviderDataImplMapConfigSection.cs" />
+    <Compile Include="Core\BaseRepository.cs" />
+    <Compile Include="Core\IDbParameterCollectionWrapper.cs" />
+    <Compile Include="Core\IReadOnlyRepository.cs" />
+    <Compile Include="Core\IReadWriteRepository.cs" />
+    <Compile Include="Core\IBaseSession.cs" />
+    <Compile Include="Core\ITransaction.cs" />
+    <Compile Include="Core\WriteResult.cs" />
+    <Compile Include="Core\WriteResultType.cs" />
+    <Compile Include="Extensions\IDictionaryExtensions.cs" />
+    <Compile Include="Extensions\IEnumerableExtensions.cs" />
+    <Compile Include="Extensions\IEnumerableKeyValuePairStringColumnReferenceExtensions.cs" />
+    <Compile Include="Extensions\KeyValuePairEnumerableExtensions.cs" />
+    <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="Extensions\ReturnTypeExtensions.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="Helpers\EnumerateHelper.cs" />
+    <Compile Include="Helpers\ExpressionHelper.cs" />
+    <Compile Include="Linq\ColumnDescriptor.cs" />
+    <Compile Include="Linq\IAliasGenerator.cs" />
+    <Compile Include="Core\IReaderWrapper.cs" />
+    <Compile Include="Linq\MapHelper.cs" />
+    <Compile Include="Linq\Nominator.cs" />
+    <Compile Include="Linq\Query.cs" />
+    <Compile Include="Linq\QueryConverter.cs" />
+    <Compile Include="Linq\QueryExecutor.cs" />
+    <Compile Include="Linq\QueryProvider.cs" />
+    <Compile Include="Linq\SimpleAliasGenerator.cs" />
+    <Compile Include="Linq\SubtreeEvaluator.cs" />
+    <Compile Include="Linq\Tree\Column.cs" />
+    <Compile Include="Linq\Tree\Expression\BinaryOperationType.cs" />
+    <Compile Include="Linq\Tree\Expression\BinaryQueryExpression.cs" />
+    <Compile Include="Linq\Tree\Expression\ColumnReference.cs" />
+    <Compile Include="Linq\Tree\Expression\FunctionCall.cs" />
+    <Compile Include="Linq\Tree\Expression\FunctionType.cs" />
+    <Compile Include="Linq\Tree\Expression\QueryConstant.cs" />
+    <Compile Include="Linq\Tree\Expression\QueryExpression.cs" />
+    <Compile Include="Linq\Tree\Expression\QueryExpressionType.cs" />
+    <Compile Include="Core\ReturnType.cs" />
+    <Compile Include="Linq\Tree\Expression\SourceReference.cs" />
+    <Compile Include="Linq\Tree\Expression\UnaryOperationType.cs" />
+    <Compile Include="Linq\Tree\Expression\UnaryQueryExpression.cs" />
+    <Compile Include="Linq\Tree\FieldBase.cs" />
+    <Compile Include="Linq\Tree\Order.cs" />
+    <Compile Include="Linq\Tree\OrderType.cs" />
+    <Compile Include="Linq\Tree\Projection.cs" />
+    <Compile Include="Linq\Tree\ProjectionSelect.cs" />
+    <Compile Include="Linq\Tree\ProjectionType.cs" />
+    <Compile Include="Linq\Tree\RegularSelect.cs" />
+    <Compile Include="Linq\Tree\SelectBase.cs" />
+    <Compile Include="Linq\Tree\SelectType.cs" />
+    <Compile Include="Linq\Tree\SourceBase.cs" />
+    <Compile Include="Linq\Tree\SourceQuery.cs" />
+    <Compile Include="Linq\Tree\TreeElementBase.cs" />
+    <Compile Include="Linq\Tree\TreeElementType.cs" />
+    <Compile Include="Models\IReadOnlyModel.cs" />
+    <Compile Include="Models\IReadWriteModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

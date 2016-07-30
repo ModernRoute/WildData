@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("WildData")]
-[assembly: AssemblyDescription(".NET ")]
+[assembly: AssemblyDescription(".NET Data Client")]
 [assembly: AssemblyConfiguration(".NET Data Client")]
 [assembly: AssemblyCompany("Modern Route")]
 [assembly: AssemblyProduct("WildData")]
-[assembly: AssemblyCopyright("Copyright © Modern Route 2016")]
+[assembly: AssemblyCopyright("Copyright © Modern Route team 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
