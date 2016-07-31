@@ -142,6 +142,11 @@ namespace ModernRoute.WildData.Npgsql.Linq
 
         public string GetString(int columnIndex)
         {
+            return _Reader.GetString(columnIndex);
+        }
+
+        public string GetStringNullable(int columnIndex)
+        {
             if (_Reader.IsDBNull(columnIndex))
             {
                 return null;
@@ -167,11 +172,6 @@ namespace ModernRoute.WildData.Npgsql.Linq
 
         public byte[] GetBytes(int columnIndex)
         {
-            if (_Reader.IsDBNull(columnIndex))
-            {
-                return null;
-            }
-
             MemoryStream stream = null;
 
             using (stream = new MemoryStream())
@@ -183,6 +183,16 @@ namespace ModernRoute.WildData.Npgsql.Linq
             }
 
             return stream.ToArray();
+        }
+
+        public byte[] GetBytesNullable(int columnIndex)
+        {
+            if (_Reader.IsDBNull(columnIndex))
+            {
+                return null;
+            }
+
+            return GetBytes(columnIndex);
         }
 
         public bool GetBoolean(int columnIndex)

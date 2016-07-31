@@ -71,6 +71,76 @@ namespace ModernRoute.WildData.Linq
             _Map = map.AsReadOnly();
         }
 
+        public static bool IsSizeableType(ReturnType returnType)
+        {
+            switch (returnType)
+            {
+                case ReturnType.String:
+                case ReturnType.Binary:
+                    return true;
+                case ReturnType.Byte:
+                case ReturnType.DateTimeOffset:
+                case ReturnType.DateTime:
+                case ReturnType.Float:
+                case ReturnType.Double:
+                case ReturnType.Decimal:
+                case ReturnType.Int32:
+                case ReturnType.Int16:
+                case ReturnType.Int64:
+                case ReturnType.Guid:
+                case ReturnType.Boolean:
+                case ReturnType.ByteNullable:
+                case ReturnType.DateTimeOffsetNullable:
+                case ReturnType.DateTimeNullable:
+                case ReturnType.FloatNullable:
+                case ReturnType.DoubleNullable:
+                case ReturnType.DecimalNullable:
+                case ReturnType.Int32Nullable:
+                case ReturnType.Int16Nullable:
+                case ReturnType.Int64Nullable:
+                case ReturnType.GuidNullable:
+                case ReturnType.BooleanNullable:
+                    return false;
+                default:
+                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Resources.Strings.ReturnTypeIsNotSupported, returnType));
+            }
+        }
+
+        public static bool IsNotNullType(ReturnType returnType)
+        {
+            switch (returnType)
+            {
+                case ReturnType.Byte:
+                case ReturnType.DateTimeOffset:
+                case ReturnType.DateTime:
+                case ReturnType.Float:
+                case ReturnType.Double:
+                case ReturnType.Decimal:
+                case ReturnType.Int32:
+                case ReturnType.Int16:
+                case ReturnType.Int64:
+                case ReturnType.Guid:
+                case ReturnType.Boolean:
+                    return true;
+                case ReturnType.String:
+                case ReturnType.Binary:
+                case ReturnType.ByteNullable:
+                case ReturnType.DateTimeOffsetNullable:
+                case ReturnType.DateTimeNullable:
+                case ReturnType.FloatNullable:
+                case ReturnType.DoubleNullable:
+                case ReturnType.DecimalNullable:
+                case ReturnType.Int32Nullable:
+                case ReturnType.Int16Nullable:
+                case ReturnType.Int64Nullable:
+                case ReturnType.GuidNullable:
+                case ReturnType.BooleanNullable:
+                    return false;
+                default:
+                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Resources.Strings.ReturnTypeIsNotSupported, returnType));
+            }
+        }
+
         public static MethodInfo GetMethodByReturnType(ReturnType returnType)
         {
             Type readerWrapperType = typeof(IReaderWrapper);

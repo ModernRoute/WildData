@@ -21,9 +21,11 @@ namespace ModernRoute.WildData.Core
         long GetLong(int columnIndex);
         long? GetLongNullable(int columnIndex);
         string GetString(int columnIndex);
+        string GetStringNullable(int columnIndex);
         Guid GetGuid(int columnIndex);
         Guid? GetGuidNullable(int columnIndex);
         byte[] GetBytes(int columnIndex);
+        byte[] GetBytesNullable(int columnIndex);
         bool GetBoolean(int columnIndex);
         bool? GetBooleanNullable(int columnIndex);
         decimal GetDecimal(int columnIndex);

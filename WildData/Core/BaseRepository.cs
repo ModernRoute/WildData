@@ -1,4 +1,5 @@
 ﻿using ModernRoute.WildData.Attributes;
+using ModernRoute.WildData.Extensions;
 using ModernRoute.WildData.Linq;
 using ModernRoute.WildData.Linq.Tree.Expression;
 using ModernRoute.WildData.Models;
@@ -12,37 +13,57 @@ namespace ModernRoute.WildData.Core
     public abstract class BaseRepository<T,TKey> where T : IReadOnlyModel<TKey>
     {
         private const string _IReaderWrapperParameterName = "reader";
+        private const string _IDbParameterCollectionWrapperParameterName = "parameters";
+        private const string _EntityParameterName = "entity";
 
-        private readonly IReadOnlyDictionary<string, ColumnDescriptor> _MemberColumnMap;
+        private const string _DbParameterCollectionWrapperAddParamMethodName = "AddParam";
+        private const string _DbParameterCollectionWrapperAddParamNotNullMethodName = "AddParamNotNull";
+
+        protected readonly IReadOnlyDictionary<string, ColumnDescriptor> MemberColumnMap;
+
         private readonly Func<IReaderWrapper, T> _ReadSingleObject;
         private readonly Action<IDbParameterCollectionWrapper, T> _SetParametersFromObject;
-        protected readonly string _StorageName;
+        protected readonly string StorageName;
  
         public BaseRepository()
         {
             Type itemType = typeof(T);
 
-            _StorageName = GetStorageName(itemType);
+            StorageName = GetStorageName(itemType);
+
+            IAliasGenerator aliasGenerator = new RandomAliasGenerator();
 
             IDictionary<string, ColumnInfo> columnInfoMap = new SortedDictionary<string, ColumnInfo>();
-            CollectPropetiesInfo(itemType, columnInfoMap);
-            CollectFieldInfo(itemType, columnInfoMap);
+            CollectPropetiesInfo(itemType, columnInfoMap, aliasGenerator);
+            CollectFieldInfo(itemType, columnInfoMap, aliasGenerator);
 
             IDictionary<string, ColumnDescriptor> memberColumnMap = new SortedDictionary<string, ColumnDescriptor>();
             IList<MemberBinding> memberAssignments = new List<MemberBinding>();
+            IList<MethodCallExpression> methodCalls = new List<MethodCallExpression>();
 
             int columnIndex = 0;
-            ParameterExpression parameterExpression = Expression.Parameter(typeof(IReaderWrapper), _IReaderWrapperParameterName);
+            ParameterExpression readerWrapperParameter = Expression.Parameter(typeof(IReaderWrapper), _IReaderWrapperParameterName);
+
+            ParameterExpression parametersParameter = Expression.Parameter(typeof(IDbParameterCollectionWrapper), _IDbParameterCollectionWrapperParameterName);
+            ParameterExpression entityParameter = Expression.Parameter(typeof(T), _EntityParameterName);
 
             foreach (KeyValuePair<string, ColumnInfo> pair in columnInfoMap)
             {
                 memberColumnMap.Add(pair.Key, pair.Value.GetColumnDescriptor(columnIndex));
-                memberAssignments.Add(pair.Value.GetMemberAssignment(parameterExpression, columnIndex));
+                memberAssignments.Add(pair.Value.GetMemberAssignment(readerWrapperParameter, columnIndex));
+                methodCalls.Add(pair.Value.GetMethodCall(parametersParameter, entityParameter));
 
                 columnIndex++;
             }
 
-            _ReadSingleObject = CompileReadSingleObject(memberAssignments, parameterExpression);
+            MemberColumnMap = memberColumnMap.AsReadOnly();
+            _ReadSingleObject = CompileReadSingleObject(memberAssignments, readerWrapperParameter);
+            _SetParametersFromObject = CompileSetParametersFromObject(methodCalls, parametersParameter, entityParameter);
+        }
+
+        private Action<IDbParameterCollectionWrapper, T> CompileSetParametersFromObject(IList<MethodCallExpression> methodCalls, ParameterExpression parametersParameter, ParameterExpression entityParameter)
+        {
+            return Expression.Lambda<Action<IDbParameterCollectionWrapper, T>>(Expression.Block(methodCalls), new ParameterExpression[] { parametersParameter, entityParameter }).Compile();
         }
 
         private static Func<IReaderWrapper, T> CompileReadSingleObject(IList<MemberBinding> memberAssignments, ParameterExpression parameterExpression)
@@ -50,7 +71,7 @@ namespace ModernRoute.WildData.Core
             return Expression.Lambda<Func<IReaderWrapper, T>>(Expression.MemberInit(Expression.New(typeof(T)), memberAssignments), new ParameterExpression[] { parameterExpression }).Compile();
         }
 
-        private void CollectFieldInfo(Type itemType, IDictionary<string, ColumnInfo> columnInfoMap)
+        private void CollectFieldInfo(Type itemType, IDictionary<string, ColumnInfo> columnInfoMap, IAliasGenerator aliasGenerator)
         {
             foreach (FieldInfo field in itemType.GetFields(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -74,11 +95,11 @@ namespace ModernRoute.WildData.Core
 
                 GetColumnNameAndSize(field, out columnName, out columnSize);
 
-                columnInfoMap.Add(field.Name, new FieldColumnInfo(columnName, columnSize, notNull, returnType, fieldType, field));
+                columnInfoMap.Add(field.Name, new FieldColumnInfo(columnName, columnSize, notNull, returnType, fieldType, GenerateAlias(field.Name, aliasGenerator), field));
             }
         }
 
-        private static void CollectPropetiesInfo(Type itemType, IDictionary<string, ColumnInfo> columnInfoMap)
+        private static void CollectPropetiesInfo(Type itemType, IDictionary<string, ColumnInfo> columnInfoMap, IAliasGenerator aliasGenerator)
         {
             foreach (PropertyInfo property in itemType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -110,8 +131,13 @@ namespace ModernRoute.WildData.Core
 
                 GetColumnNameAndSize(property, out columnName, out columnSize);
 
-                columnInfoMap.Add(property.Name, new PropertyColumnInfo(columnName, columnSize, notNull, returnType, propertyType, getMethod, setMethod));
+                columnInfoMap.Add(property.Name, new PropertyColumnInfo(columnName, columnSize, notNull, returnType, propertyType, GenerateAlias(property.Name, aliasGenerator), getMethod, setMethod));
             }
+        }
+
+        private static string GenerateAlias(string name, IAliasGenerator aliasGenerator)
+        {
+            return string.Concat("@_", name, "_", aliasGenerator.GenerateAlias());
         }
 
         private static bool TryGetReturnType(Type type, out ReturnType returnType)
@@ -174,11 +200,6 @@ namespace ModernRoute.WildData.Core
             _SetParametersFromObject(parameters, entity);
         }
 
-        private string GetParamName(string fieldName)
-        {
-            return string.Concat("@", fieldName);
-        }
-
         #region ColumnInfo
 
         abstract class ColumnInfo
@@ -213,20 +234,56 @@ namespace ModernRoute.WildData.Core
                 private set;
             }
 
+            public string ParamName
+            {
+                get;
+                private set;
+            }
+
             public ColumnDescriptor GetColumnDescriptor(int columnIndex)
             {
                 return new ColumnDescriptor(columnIndex, new ColumnReference(ColumnName, ReturnType));
             }
 
-            public abstract MemberAssignment GetMemberAssignment(ParameterExpression parameter, int columnIndex);
+            public abstract MemberAssignment GetMemberAssignment(ParameterExpression readerWrapperParameter, int columnIndex);
 
-            public ColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType)
+            protected abstract MemberExpression GetMemberExpression(ParameterExpression entityParameter);
+
+            public MethodCallExpression GetMethodCall(ParameterExpression parametersParameter, ParameterExpression entityParameter)
+            {
+                string methodName = NotNull || MapHelper.IsNotNullType(ReturnType) ? _DbParameterCollectionWrapperAddParamNotNullMethodName : _DbParameterCollectionWrapperAddParamMethodName;
+                
+                if (MapHelper.IsSizeableType(ReturnType))
+                {
+                    MethodInfo methodInfo = typeof(IDbParameterCollectionWrapper).GetMethod(methodName, new Type[] { typeof(string), MemberType, typeof(int) });
+
+                    return Expression.Call(parametersParameter, methodInfo, new Expression[]
+                    {
+                        Expression.Constant(ParamName, typeof(string)),
+                        GetMemberExpression(entityParameter),
+                        Expression.Constant(ColumnSize, typeof(int))
+                    });
+                }
+                else
+                {
+                    MethodInfo methodInfo = typeof(IDbParameterCollectionWrapper).GetMethod(methodName, new Type[] { typeof(string), MemberType });
+
+                    return Expression.Call(parametersParameter, methodInfo, new Expression[]
+                    {
+                        Expression.Constant(ParamName, typeof(string)),
+                        GetMemberExpression(entityParameter)
+                    });
+                }
+            }
+
+            public ColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, string paramName)
             {
                 ColumnName = columnName;
                 ColumnSize = columnSize;
                 NotNull = notNull;
                 ReturnType = returnType;
                 MemberType = memberType;
+                ParamName = paramName;
             } 
         }
 
@@ -244,23 +301,28 @@ namespace ModernRoute.WildData.Core
                 private set;
             }
 
-            public PropertyColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, MethodInfo getMethod, MethodInfo setMethod)
-                : base(columnName, columnSize, notNull, returnType, memberType)
+            public PropertyColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, string paramName,  MethodInfo getMethod, MethodInfo setMethod)
+                : base(columnName, columnSize, notNull, returnType, memberType, paramName)
             {
                 GetMethod = getMethod;
                 SetMethod = setMethod;
             }
 
-            public override MemberAssignment GetMemberAssignment(ParameterExpression parameter, int columnIndex)
+            public override MemberAssignment GetMemberAssignment(ParameterExpression readerWrapperParameter, int columnIndex)
             {
                 return Expression.Bind(
                     SetMethod, 
                     Expression.Call(
-                        parameter, 
+                        readerWrapperParameter, 
                         MapHelper.GetMethodByReturnType(ReturnType), 
                         new Expression[] { Expression.Constant(columnIndex, typeof(int)) }
                     )
                 );
+            }
+
+            protected override MemberExpression GetMemberExpression(ParameterExpression entityParameter)
+            {
+                return Expression.Property(entityParameter, GetMethod);
             }
         }
 
@@ -272,22 +334,27 @@ namespace ModernRoute.WildData.Core
                 private set;
             }
 
-            public FieldColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, FieldInfo field)
-                : base(columnName, columnSize, notNull, returnType, memberType)
+            public FieldColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, string paramName, FieldInfo field)
+                : base(columnName, columnSize, notNull, returnType, memberType, paramName)
             {
                 Field = field;
             }
 
-            public override MemberAssignment GetMemberAssignment(ParameterExpression parameter, int columnIndex)
+            public override MemberAssignment GetMemberAssignment(ParameterExpression readerWrapperParameter, int columnIndex)
             {
                 return Expression.Bind(
                     Field, 
                     Expression.Call(
-                        parameter, 
+                        readerWrapperParameter, 
                         MapHelper.GetMethodByReturnType(ReturnType), 
                         new Expression[] { Expression.Constant(columnIndex, typeof(int)) }
                     )
                 );
+            }
+
+            protected override MemberExpression GetMemberExpression(ParameterExpression entityParameter)
+            {
+                return Expression.Field(entityParameter, Field);
             }
         }
         #endregion
