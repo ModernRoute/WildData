@@ -52,7 +52,7 @@
     <Compile Include="Helpers\ReadWriteRepositoryHelper.cs" />
     <Compile Include="Helpers\ColumnInfo.cs" />
     <Compile Include="Helpers\ColumnMemberInfo.cs" />
-    <Compile Include="Helpers\FieldInfo.cs" />
+    <Compile Include="Helpers\FieldColumnInfo.cs" />
     <Compile Include="Core\IDbParameterCollectionWrapper.cs" />
     <Compile Include="Core\IReadOnlyRepository.cs" />
     <Compile Include="Core\IReadWriteRepository.cs" />
