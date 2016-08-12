@@ -1,11 +1,12 @@
-﻿using ModernRoute.WildData.Extensions;
+﻿using ModernRoute.WildData.Core;
+using ModernRoute.WildData.Extensions;
 using ModernRoute.WildData.Linq;
 using ModernRoute.WildData.Linq.Tree.Expression;
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace ModernRoute.WildData.Core
+namespace ModernRoute.WildData.Helpers
 {
     abstract class ColumnInfo
     {
@@ -42,12 +43,6 @@ namespace ModernRoute.WildData.Core
             private set;
         }
 
-        public string ParamName
-        {
-            get;
-            private set;
-        }
-
         public ColumnDescriptor GetColumnDescriptor(int columnIndex)
         {
             return new ColumnDescriptor(columnIndex, new ColumnReference(ColumnName, ReturnType));
@@ -57,7 +52,7 @@ namespace ModernRoute.WildData.Core
 
         protected abstract MemberExpression GetMemberExpression(ParameterExpression entityParameter);
 
-        public MethodCallExpression GetMethodCall(ParameterExpression parametersParameter, ParameterExpression entityParameter)
+        public MethodCallExpression GetMethodCall(ParameterExpression parametersParameter, ParameterExpression entityParameter, string paramName)
         {
             string methodName = NotNull || ReturnType.IsNotNullType() ? _DbParameterCollectionWrapperAddParamNotNullMethodName : _DbParameterCollectionWrapperAddParamMethodName;
 
@@ -67,7 +62,7 @@ namespace ModernRoute.WildData.Core
 
                 return Expression.Call(parametersParameter, methodInfo, new Expression[]
                 {
-                        Expression.Constant(ParamName, typeof(string)),
+                        Expression.Constant(paramName, typeof(string)),
                         GetMemberExpression(entityParameter),
                         Expression.Constant(ColumnSize, typeof(int))
                 });
@@ -78,20 +73,19 @@ namespace ModernRoute.WildData.Core
 
                 return Expression.Call(parametersParameter, methodInfo, new Expression[]
                 {
-                        Expression.Constant(ParamName, typeof(string)),
+                        Expression.Constant(paramName, typeof(string)),
                         GetMemberExpression(entityParameter)
                 });
             }
         }
 
-        public ColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, string paramName)
+        public ColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType)
         {
             ColumnName = columnName;
             ColumnSize = columnSize;
             NotNull = notNull;
             ReturnType = returnType;
             MemberType = memberType;
-            ParamName = paramName;
         }
     }
 }

@@ -1,9 +1,10 @@
-﻿using ModernRoute.WildData.Extensions;
+﻿using ModernRoute.WildData.Core;
+using ModernRoute.WildData.Extensions;
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace ModernRoute.WildData.Core
+namespace ModernRoute.WildData.Helpers
 {
     class FieldColumnInfo : ColumnInfo
     {
@@ -13,8 +14,8 @@ namespace ModernRoute.WildData.Core
             private set;
         }
 
-        public FieldColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, string paramName, FieldInfo field)
-            : base(columnName, columnSize, notNull, returnType, memberType, paramName)
+        public FieldColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, FieldInfo field)
+            : base(columnName, columnSize, notNull, returnType, memberType)
         {
             Field = field;
         }

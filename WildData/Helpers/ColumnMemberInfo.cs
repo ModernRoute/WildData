@@ -1,4 +1,4 @@
-﻿namespace ModernRoute.WildData.Core
+﻿namespace ModernRoute.WildData.Helpers
 {
     class ColumnMemberInfo
     {

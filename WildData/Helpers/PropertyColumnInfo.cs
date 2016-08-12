@@ -1,9 +1,10 @@
-﻿using ModernRoute.WildData.Extensions;
+﻿using ModernRoute.WildData.Core;
+using ModernRoute.WildData.Extensions;
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace ModernRoute.WildData.Core
+namespace ModernRoute.WildData.Helpers
 {
     class PropertyColumnInfo : ColumnInfo
     {
@@ -19,8 +20,8 @@ namespace ModernRoute.WildData.Core
             private set;
         }
 
-        public PropertyColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, string paramName, MethodInfo getMethod, MethodInfo setMethod)
-            : base(columnName, columnSize, notNull, returnType, memberType, paramName)
+        public PropertyColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, MethodInfo getMethod, MethodInfo setMethod)
+            : base(columnName, columnSize, notNull, returnType, memberType)
         {
             GetMethod = getMethod;
             SetMethod = setMethod;

@@ -1,4 +1,5 @@
 ﻿using ModernRoute.WildData.Attributes;
+using ModernRoute.WildData.Core;
 using ModernRoute.WildData.Extensions;
 using ModernRoute.WildData.Linq;
 using ModernRoute.WildData.Models;
@@ -8,19 +9,24 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace ModernRoute.WildData.Core
+namespace ModernRoute.WildData.Helpers
 {
-    public abstract class BaseReadOnlyRepository<T,TKey> where T : IReadOnlyModel<TKey>, new()
+    public class ReadOnlyRepositoryHelper<T,TKey> where T : IReadOnlyModel<TKey>, new()
     {
         private const string _IReaderWrapperParameterName = "reader";
-
-        protected readonly IReadOnlyDictionary<string, ColumnDescriptor> MemberColumnMap;
+        
         private readonly Lazy<IEnumerable<ColumnMemberInfo>> _ColumnMemberInfos = new Lazy<IEnumerable<ColumnMemberInfo>>(PopulateColumnMemberInfos);
+
+        public IReadOnlyDictionary<string, ColumnDescriptor> MemberColumnMap
+        {
+            get;
+            private set;
+        }
 
         public Func<IReaderWrapper, T> ReadSingleObject
         {
             get;
-            protected set;
+            private set;
         }
 
         public string StorageName
@@ -33,12 +39,10 @@ namespace ModernRoute.WildData.Core
         {
             Type itemType = typeof(T);
 
-            IAliasGenerator aliasGenerator = new RandomAliasGenerator();
-
             IDictionary<string, ColumnInfo> columnInfoMap = new SortedDictionary<string, ColumnInfo>();
 
-            CollectPropetiesInfo(itemType, columnInfoMap, aliasGenerator);
-            CollectFieldInfo(itemType, columnInfoMap, aliasGenerator);
+            CollectPropetiesInfo(itemType, columnInfoMap);
+            CollectFieldInfo(itemType, columnInfoMap);
 
             return columnInfoMap.Select((c, i) => new ColumnMemberInfo(c.Key, i, c.Value)).ToList();
         }
@@ -51,7 +55,7 @@ namespace ModernRoute.WildData.Core
             }
         }
  
-        public BaseReadOnlyRepository()
+        public ReadOnlyRepositoryHelper()
         {
             Type itemType = typeof(T);
 
@@ -77,7 +81,7 @@ namespace ModernRoute.WildData.Core
             return Expression.Lambda<Func<IReaderWrapper, T>>(Expression.MemberInit(Expression.New(typeof(T)), memberAssignments), new ParameterExpression[] { parameterExpression }).Compile();
         }
 
-        private static void CollectFieldInfo(Type itemType, IDictionary<string, ColumnInfo> columnInfoMap, IAliasGenerator aliasGenerator)
+        private static void CollectFieldInfo(Type itemType, IDictionary<string, ColumnInfo> columnInfoMap)
         {
             foreach (FieldInfo field in itemType.GetFields(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -101,11 +105,11 @@ namespace ModernRoute.WildData.Core
 
                 GetColumnNameAndSize(field, out columnName, out columnSize);
 
-                columnInfoMap.Add(field.Name, new FieldColumnInfo(columnName, columnSize, notNull, returnType, fieldType, GenerateAlias(field.Name, aliasGenerator), field));
+                columnInfoMap.Add(field.Name, new FieldColumnInfo(columnName, columnSize, notNull, returnType, fieldType, field));
             }
         }
 
-        private static void CollectPropetiesInfo(Type itemType, IDictionary<string, ColumnInfo> columnInfoMap, IAliasGenerator aliasGenerator)
+        private static void CollectPropetiesInfo(Type itemType, IDictionary<string, ColumnInfo> columnInfoMap)
         {
             foreach (PropertyInfo property in itemType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -137,13 +141,8 @@ namespace ModernRoute.WildData.Core
 
                 GetColumnNameAndSize(property, out columnName, out columnSize);
 
-                columnInfoMap.Add(property.Name, new PropertyColumnInfo(columnName, columnSize, notNull, returnType, propertyType, GenerateAlias(property.Name, aliasGenerator), getMethod, setMethod));
+                columnInfoMap.Add(property.Name, new PropertyColumnInfo(columnName, columnSize, notNull, returnType, propertyType, getMethod, setMethod));
             }
-        }
-
-        private static string GenerateAlias(string name, IAliasGenerator aliasGenerator)
-        {
-            return string.Concat("@_", name, "_", aliasGenerator.GenerateAlias());
         }
 
         private static bool TryGetReturnType(Type type, out ReturnType returnType)

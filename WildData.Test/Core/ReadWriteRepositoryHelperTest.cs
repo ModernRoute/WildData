@@ -1,5 +1,6 @@
 ﻿using ModernRoute.WildData.Attributes;
 using ModernRoute.WildData.Core;
+using ModernRoute.WildData.Helpers;
 using ModernRoute.WildData.Linq;
 using ModernRoute.WildData.Models;
 using NUnit.Framework;
@@ -11,7 +12,7 @@ using System.Text.RegularExpressions;
 namespace ModernRoute.WildData.Test.Core
 {
     [TestFixture]
-    class BaseRepositoryTest
+    class ReadWriteRepositoryHelperTest
     {
         [Test]
         public void Ctor()
@@ -41,10 +42,9 @@ namespace ModernRoute.WildData.Test.Core
         }
     }
 
-    class TestRepository : BaseReadWriteRepository<Model,int>
+    class TestRepository : ReadWriteRepositoryHelper<Model,int>
     {
-        private Wrapper _Wrapper;
-        
+        private Wrapper _Wrapper;        
 
         public TestRepository()
         {
