@@ -2,7 +2,7 @@
 
 namespace ModernRoute.WildData.Core
 {
-    public interface IReadWriteRepository<T,TKey> : IReadOnlyRepository<T,TKey> where T : IReadWriteModel<TKey>
+    public interface IReadWriteRepository<T,TKey> : IReadOnlyRepository<T,TKey> where T : IReadWriteModel<TKey>, new()
     {
         WriteResult Update(T entity);
 

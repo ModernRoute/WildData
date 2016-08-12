@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace ModernRoute.WildData.Core
 {
-    public interface IReadOnlyRepository<T,TKey> where T : IReadOnlyModel<TKey>
+    public interface IReadOnlyRepository<T,TKey> where T : IReadOnlyModel<TKey>, new()
     {
         IQueryable<T> Fetch();
 

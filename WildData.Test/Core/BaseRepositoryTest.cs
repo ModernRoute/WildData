@@ -1,11 +1,11 @@
-﻿using System;
-using NUnit.Framework;
-using ModernRoute.WildData.Attributes;
-using ModernRoute.WildData.Models;
+﻿using ModernRoute.WildData.Attributes;
 using ModernRoute.WildData.Core;
+using ModernRoute.WildData.Linq;
+using ModernRoute.WildData.Models;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using ModernRoute.WildData.Linq;
 using System.Text.RegularExpressions;
 
 namespace ModernRoute.WildData.Test.Core
@@ -20,6 +20,7 @@ namespace ModernRoute.WildData.Test.Core
 
             Model expectedModel = new Model
             {
+                Id = 5,
                 Property1 = 54,
                 Property2 = "value1",
                 Property3 = "value2",
@@ -40,7 +41,7 @@ namespace ModernRoute.WildData.Test.Core
         }
     }
 
-    class TestRepository : BaseRepository<Model,int>
+    class TestRepository : BaseReadWriteRepository<Model,int>
     {
         private Wrapper _Wrapper;
         
@@ -369,8 +370,22 @@ namespace ModernRoute.WildData.Test.Core
 
 
     [Storage("ModelTable")]
-    class Model : IReadOnlyModel<int>, IEquatable<Model>
+    class Model : IReadWriteModel<int>, IEquatable<Model>
     {
+        public int Id
+        {
+            get;
+            set;
+        }
+
+        public bool IsNew
+        {
+            get
+            {
+                return Id <= 0;
+            }
+        }
+
         public int Property1
         {
             get;
@@ -474,6 +489,7 @@ namespace ModernRoute.WildData.Test.Core
         public override int GetHashCode()
         {
             return
+                Id.GetHashCode() ^ 
                 Property1.GetHashCode() ^
                 (Property2?.GetHashCode() ?? 0) ^
                 (Property3?.GetHashCode() ?? 0) ^
@@ -484,6 +500,7 @@ namespace ModernRoute.WildData.Test.Core
         public bool Equals(Model other)
         {
             return
+                Id == other.Id &&
                 Property1 == other.Property1 &&
                 Property2 == other.Property2 &&
                 Property3 == other.Property3 &&

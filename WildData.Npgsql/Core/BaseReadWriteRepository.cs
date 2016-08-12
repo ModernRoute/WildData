@@ -5,7 +5,7 @@ using System;
 
 namespace ModernRoute.WildData.Npgsql.Core
 {
-    abstract class BaseReadWriteRepository<T,TKey> : BaseReadOnlyRepository<T,TKey>, IReadWriteRepository<T,TKey> where T : IReadWriteModel<TKey>
+    abstract class BaseReadWriteRepository<T,TKey> : BaseReadOnlyRepository<T,TKey>, IReadWriteRepository<T,TKey> where T : IReadWriteModel<TKey>, new()
     {
         public BaseReadWriteRepository(BaseSession session) 
             : base(session)

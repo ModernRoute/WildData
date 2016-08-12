@@ -257,7 +257,7 @@ namespace ModernRoute.WildData.Linq
                     throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture,Resources.Strings.BinaryOperationIsNotSupported, node.NodeType));
             }
 
-            ReturnType binaryExpressionReturnType = MapHelper.GetReturnType(node.Type);
+            ReturnType binaryExpressionReturnType = ReturnTypeExtensions.GetReturnType(node.Type);
 
             QueryExpression queryExpression;
 
@@ -449,7 +449,7 @@ namespace ModernRoute.WildData.Linq
                         _ElementsStack.Push(binaryExpression);
                         return;
                     case _NullableValue:
-                        ReturnType typeToConvertTo = MapHelper.GetReturnType(node.Expression.Type.GetGenericArguments()[0]);
+                        ReturnType typeToConvertTo = ReturnTypeExtensions.GetReturnType(node.Expression.Type.GetGenericArguments()[0]);
                         FunctionCall functionCall = new FunctionCall(FunctionType.Convert, typeToConvertTo, source);
                         _ElementsStack.Push(functionCall);
                         return;
@@ -642,7 +642,7 @@ namespace ModernRoute.WildData.Linq
             QueryExpression value = PopQueryExpression();
             CheckQueryExpressionReturnType(value, ReturnType.String);
 
-            ReturnType functionReturnType = MapHelper.GetReturnType(returnType);
+            ReturnType functionReturnType = ReturnTypeExtensions.GetReturnType(returnType);
 
             CheckReturnType(functionReturnType, ReturnType.Boolean);
 
@@ -682,7 +682,7 @@ namespace ModernRoute.WildData.Linq
                 arguments.Add(arg);
             }
 
-            ReturnType functionReturnType = MapHelper.GetReturnType(returnType);
+            ReturnType functionReturnType = ReturnTypeExtensions.GetReturnType(returnType);
 
             FunctionCall functionCall = new FunctionCall(functionType, functionReturnType, GetConcatArguments(arguments.ToArray()));
 
@@ -705,7 +705,7 @@ namespace ModernRoute.WildData.Linq
             QueryExpression arg0 = PopQueryExpression();
             CheckQueryExpressionReturnType(arg0, ReturnType.String);
 
-            ReturnType functionReturnType = MapHelper.GetReturnType(returnType);
+            ReturnType functionReturnType = ReturnTypeExtensions.GetReturnType(returnType);
 
             QueryExpression arg1 = null;
 
@@ -755,7 +755,7 @@ namespace ModernRoute.WildData.Linq
             QueryExpression arg1 = PopQueryExpression();
             CheckQueryExpressionReturnType(arg1, ReturnType.String);
 
-            ReturnType functionReturnType = MapHelper.GetReturnType(returnType);
+            ReturnType functionReturnType = ReturnTypeExtensions.GetReturnType(returnType);
 
             FunctionCall functionCall = new FunctionCall(functionType, functionReturnType, value, arg0, arg1);
 
@@ -769,7 +769,7 @@ namespace ModernRoute.WildData.Linq
             QueryExpression valueToTrim = PopQueryExpression();
             CheckQueryExpressionReturnType(valueToTrim, ReturnType.String);
 
-            ReturnType functionReturnType = MapHelper.GetReturnType(returnType);
+            ReturnType functionReturnType = ReturnTypeExtensions.GetReturnType(returnType);
 
             CheckReturnType(functionReturnType, ReturnType.String);
 
@@ -788,7 +788,7 @@ namespace ModernRoute.WildData.Linq
             QueryExpression stringToSearch = PopQueryExpression();
             CheckQueryExpressionReturnType(stringToSearch, ReturnType.String);
 
-            ReturnType functionReturnType = MapHelper.GetReturnType(returnType);
+            ReturnType functionReturnType = ReturnTypeExtensions.GetReturnType(returnType);
 
             CheckReturnType(functionReturnType, ReturnType.Boolean);
 
@@ -839,7 +839,7 @@ namespace ModernRoute.WildData.Linq
 
                 ParameterExpression parameter = Expression.Parameter(typeof(IReaderWrapper));
 
-                MethodCallExpression methodCallExpression = Expression.Call(parameter, MapHelper.GetMethodByReturnType(queryExpression.Type), Expression.Constant(0));
+                MethodCallExpression methodCallExpression = Expression.Call(parameter, ReturnTypeExtensions.GetMethodByReturnType(queryExpression.Type), Expression.Constant(0));
 
                 LambdaExpression lambdaExpression = Expression.Lambda(methodCallExpression, parameter);
 
@@ -886,7 +886,7 @@ namespace ModernRoute.WildData.Linq
 
                 QueryExpression queryExpression = PopQueryExpression();
 
-                MethodCallExpression methodCallExpression = Expression.Call(parameter, MapHelper.GetMethodByReturnType(queryExpression.Type), Expression.Constant(i));
+                MethodCallExpression methodCallExpression = Expression.Call(parameter, ReturnTypeExtensions.GetMethodByReturnType(queryExpression.Type), Expression.Constant(i));
                 columnRetrievers.Add(methodCallExpression);
 
                 memberBindings.Add(assignment.Update(methodCallExpression));
@@ -953,7 +953,7 @@ namespace ModernRoute.WildData.Linq
                         Visit(expression);
                         QueryExpression queryExpression = PopQueryExpression();
 
-                        MethodCallExpression methodCallExpression = Expression.Call(parameter, MapHelper.GetMethodByReturnType(queryExpression.Type), Expression.Constant(i));
+                        MethodCallExpression methodCallExpression = Expression.Call(parameter, ReturnTypeExtensions.GetMethodByReturnType(queryExpression.Type), Expression.Constant(i));
                         columnRetrievers.Add(methodCallExpression);
 
                         Column column = new Column(_AliasGenerator.GenerateAlias(), queryExpression);
@@ -997,14 +997,14 @@ namespace ModernRoute.WildData.Linq
                 SourceBase sourceQuery = PopSourceBase();
 
                 string columnAlias = _AliasGenerator.GenerateAlias();
-                ReturnType columnType = MapHelper.GetReturnType(returnType);
+                ReturnType columnType = ReturnTypeExtensions.GetReturnType(returnType);
 
                 IDictionary<string, ColumnReference> map = new Dictionary<string, ColumnReference>();
                 map.Add(string.Empty, new ColumnReference(columnAlias, columnType));
 
                 ParameterExpression parameter = Expression.Parameter(typeof(IReaderWrapper));
 
-                MethodCallExpression methodCallExpression = Expression.Call(parameter, MapHelper.GetMethodByReturnType(columnType), Expression.Constant(0));
+                MethodCallExpression methodCallExpression = Expression.Call(parameter, ReturnTypeExtensions.GetMethodByReturnType(columnType), Expression.Constant(0));
 
                 LambdaExpression lambdaExpression = Expression.Lambda(methodCallExpression, parameter);
 
@@ -1043,14 +1043,14 @@ namespace ModernRoute.WildData.Linq
                 ColumnReference singleColumnReference = sourceQuery.Fields.Single().GetColumnReference();
 
                 string columnAlias = _AliasGenerator.GenerateAlias();
-                ReturnType columnType = MapHelper.GetReturnType(returnType);
+                ReturnType columnType = ReturnTypeExtensions.GetReturnType(returnType);
 
                 IDictionary<string, ColumnReference> map = new Dictionary<string, ColumnReference>();
                 map.Add(string.Empty, new ColumnReference(columnAlias, columnType));
 
                 ParameterExpression parameter = Expression.Parameter(typeof(IReaderWrapper));
 
-                MethodCallExpression methodCallExpression = Expression.Call(parameter, MapHelper.GetMethodByReturnType(columnType), Expression.Constant(0));
+                MethodCallExpression methodCallExpression = Expression.Call(parameter, ReturnTypeExtensions.GetMethodByReturnType(columnType), Expression.Constant(0));
 
                 LambdaExpression lambdaExpression = Expression.Lambda(methodCallExpression, parameter);
 
@@ -1234,7 +1234,7 @@ namespace ModernRoute.WildData.Linq
 
             QueryExpression queryExpression = PopQueryExpression();
 
-            ReturnType unaryExpressionReturnType = MapHelper.GetReturnType(node.Type);
+            ReturnType unaryExpressionReturnType = ReturnTypeExtensions.GetReturnType(node.Type);
 
             switch (node.NodeType)
             {

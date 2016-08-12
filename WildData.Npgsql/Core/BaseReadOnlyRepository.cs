@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace ModernRoute.WildData.Npgsql.Core
 {
-    abstract class BaseReadOnlyRepository<T,TKey> : IReadOnlyRepository<T,TKey> where T : IReadOnlyModel<TKey>
+    abstract class BaseReadOnlyRepository<T,TKey> : IReadOnlyRepository<T,TKey> where T : IReadOnlyModel<TKey>, new()
     {
         public BaseReadOnlyRepository(BaseSession session)
         {

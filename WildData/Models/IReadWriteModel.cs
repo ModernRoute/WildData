@@ -4,6 +4,6 @@
     {
         TKey Id { get; set; }
 
-        bool IsNew { get; set; }
+        bool IsNew { get; }
     }
 }

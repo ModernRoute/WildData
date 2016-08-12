@@ -1,6 +1,4 @@
-﻿using ModernRoute.WildData.Attributes;
-
-namespace ModernRoute.WildData.Core
+﻿namespace ModernRoute.WildData.Core
 {
     public class WriteResult
     {

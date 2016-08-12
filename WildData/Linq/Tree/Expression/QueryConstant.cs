@@ -483,7 +483,7 @@ namespace ModernRoute.WildData.Linq.Tree.Expression
                 return CreateNull();
             }
 
-            ReturnType returnType = MapHelper.GetReturnType(value.GetType());
+            ReturnType returnType = ReturnTypeExtensions.GetReturnType(value.GetType());
 
             switch (returnType)
             {

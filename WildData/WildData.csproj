@@ -48,12 +48,17 @@
     <Compile Include="Configuration\ProviderDataImplCollection.cs" />
     <Compile Include="Configuration\ProviderDataImplElement.cs" />
     <Compile Include="Configuration\ProviderDataImplMapConfigSection.cs" />
-    <Compile Include="Core\BaseRepository.cs" />
+    <Compile Include="Core\BaseReadOnlyRepository.cs" />
+    <Compile Include="Core\BaseReadWriteRepository.cs" />
+    <Compile Include="Core\ColumnInfo.cs" />
+    <Compile Include="Core\ColumnMemberInfo.cs" />
+    <Compile Include="Core\FieldInfo.cs" />
     <Compile Include="Core\IDbParameterCollectionWrapper.cs" />
     <Compile Include="Core\IReadOnlyRepository.cs" />
     <Compile Include="Core\IReadWriteRepository.cs" />
     <Compile Include="Core\IBaseSession.cs" />
     <Compile Include="Core\ITransaction.cs" />
+    <Compile Include="Core\PropertyColumnInfo.cs" />
     <Compile Include="Core\WriteResult.cs" />
     <Compile Include="Core\WriteResultType.cs" />
     <Compile Include="Extensions\IDictionaryExtensions.cs" />
@@ -68,7 +73,6 @@
     <Compile Include="Linq\ColumnDescriptor.cs" />
     <Compile Include="Linq\IAliasGenerator.cs" />
     <Compile Include="Core\IReaderWrapper.cs" />
-    <Compile Include="Linq\MapHelper.cs" />
     <Compile Include="Linq\Nominator.cs" />
     <Compile Include="Linq\Query.cs" />
     <Compile Include="Linq\QueryConverter.cs" />
