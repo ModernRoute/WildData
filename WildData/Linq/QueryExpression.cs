@@ -1,6 +1,6 @@
 ﻿using ModernRoute.WildData.Core;
 
-namespace ModernRoute.WildData.Linq.Tree.Expression
+namespace ModernRoute.WildData.Linq
 {
     public abstract class QueryExpression : QueryElementBase
     {

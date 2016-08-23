@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace ModernRoute.WildData.Linq
+namespace ModernRoute.WildData.Core
 {
     public class RandomAliasGenerator : IAliasGenerator
     {

@@ -11,7 +11,7 @@ using System.Reflection;
 
 namespace ModernRoute.WildData.Helpers
 {
-    public class ReadOnlyRepositoryHelper<T,TKey> where T : IReadOnlyModel<TKey>, new()
+    public class ReadOnlyRepositoryHelper<T> where T : IReadOnlyModel, new()
     {
         private const string _IReaderWrapperParameterName = "reader";
         

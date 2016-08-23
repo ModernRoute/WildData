@@ -4,7 +4,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 
-namespace ModernRoute.WildData.Linq.Tree.Expression
+namespace ModernRoute.WildData.Linq
 {
     public class QueryConstant : QueryExpression
     {

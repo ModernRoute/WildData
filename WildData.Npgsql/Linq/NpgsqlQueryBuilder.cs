@@ -1,8 +1,6 @@
 ﻿using ModernRoute.WildData.Core;
 using ModernRoute.WildData.Extensions;
 using ModernRoute.WildData.Linq;
-using ModernRoute.WildData.Linq.Tree;
-using ModernRoute.WildData.Linq.Tree.Expression;
 using ModernRoute.WildData.Npgsql.Helpers;
 using Npgsql;
 using NpgsqlTypes;

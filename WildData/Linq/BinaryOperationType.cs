@@ -1,4 +1,4 @@
-﻿namespace ModernRoute.WildData.Linq.Tree.Expression
+﻿namespace ModernRoute.WildData.Linq
 {
     public enum BinaryOperationType
     {

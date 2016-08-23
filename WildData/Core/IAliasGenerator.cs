@@ -1,4 +1,4 @@
-﻿namespace ModernRoute.WildData.Linq
+﻿namespace ModernRoute.WildData.Core
 {
     public interface IAliasGenerator
     {

@@ -1,5 +1,4 @@
 ﻿using ModernRoute.WildData.Core;
-using ModernRoute.WildData.Linq;
 using ModernRoute.WildData.Models;
 using System;
 using System.Collections.Generic;
@@ -7,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace ModernRoute.WildData.Helpers
 {
-    public class ReadWriteRepositoryHelper<T, TKey> : ReadOnlyRepositoryHelper<T, TKey> where T : IReadWriteModel<TKey>, new()
+    public class ReadWriteRepositoryHelper<T, TKey> : ReadOnlyRepositoryHelper<T> where T : IReadWriteModel<TKey>, new()
     {
         private const string _IDbParameterCollectionWrapperParameterName = "parameters";
         private const string _EntityParameterName = "entity";

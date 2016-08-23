@@ -1,9 +1,9 @@
-﻿using ModernRoute.WildData.Linq.Tree.Expression;
+﻿using ModernRoute.WildData.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ModernRoute.WildData.Linq.Tree
+namespace ModernRoute.WildData.Linq
 {
     public abstract class SourceBase : QueryElementBase
     {

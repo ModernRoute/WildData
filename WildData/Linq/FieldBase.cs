@@ -1,8 +1,7 @@
 ﻿using ModernRoute.WildData.Core;
-using ModernRoute.WildData.Linq.Tree.Expression;
 using System;
 
-namespace ModernRoute.WildData.Linq.Tree
+namespace ModernRoute.WildData.Linq
 {
     public abstract class FieldBase : QueryElementBase
     {

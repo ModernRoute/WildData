@@ -1,10 +1,9 @@
 ﻿using ModernRoute.WildData.Core;
-using ModernRoute.WildData.Linq.Tree.Expression;
 using ModernRoute.WildData.Resources;
 using System;
 using System.Globalization;
 
-namespace ModernRoute.WildData.Linq.Tree
+namespace ModernRoute.WildData.Linq
 {
     public class Projection : FieldBase
     {

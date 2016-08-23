@@ -1,4 +1,4 @@
-﻿namespace ModernRoute.WildData.Linq.Tree
+﻿namespace ModernRoute.WildData.Linq
 {
     public enum ProjectionType
     {

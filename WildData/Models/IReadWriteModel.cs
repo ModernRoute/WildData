@@ -2,8 +2,6 @@
 {
     public interface IReadWriteModel<TKey> : IReadOnlyModel<TKey>
     {
-        TKey Id { get; set; }
-
         bool IsNew { get; }
     }
 }

@@ -3,7 +3,7 @@ using ModernRoute.WildData.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ModernRoute.WildData.Linq.Tree.Expression
+namespace ModernRoute.WildData.Linq
 {
     public class FunctionCall : QueryExpression
     {

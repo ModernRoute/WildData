@@ -1,7 +1,7 @@
 ﻿using ModernRoute.WildData.Core;
 using System;
 
-namespace ModernRoute.WildData.Linq.Tree.Expression
+namespace ModernRoute.WildData.Linq
 {
     public class UnaryQueryExpression : QueryExpression
     {

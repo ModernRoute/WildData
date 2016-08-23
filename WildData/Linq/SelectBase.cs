@@ -1,10 +1,9 @@
 ﻿using ModernRoute.WildData.Core;
-using ModernRoute.WildData.Linq.Tree.Expression;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace ModernRoute.WildData.Linq.Tree
+namespace ModernRoute.WildData.Linq
 {
     public abstract class SelectBase : SourceBase
     {

@@ -1,7 +1,6 @@
 ﻿using ModernRoute.WildData.Core;
-using ModernRoute.WildData.Linq.Tree.Expression;
 
-namespace ModernRoute.WildData.Linq.Tree
+namespace ModernRoute.WildData.Linq
 {
     public class Column : FieldBase
     {
