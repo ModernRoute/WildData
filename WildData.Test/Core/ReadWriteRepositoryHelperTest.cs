@@ -7,7 +7,6 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 
 namespace ModernRoute.WildData.Test.Core
@@ -71,7 +70,7 @@ namespace ModernRoute.WildData.Test.Core
 
         public Wrapper(IReadOnlyDictionary<string, ColumnDescriptor> memberColumnMap)
         {
-            _MemberNameColumnIndexMap = memberColumnMap.Select((kv, i) => new KeyValuePair<string, int>(kv.Key, i)).ToDictionary(kv => kv.Key, kv => kv.Value);
+            _MemberNameColumnIndexMap = memberColumnMap.ToDictionary(i => i.Key, i => i.Value.ColumnIndex);
             _Values = new Dictionary<int, object>();
         }
 

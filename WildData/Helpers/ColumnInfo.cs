@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace ModernRoute.WildData.Helpers
 {
-    abstract class ColumnInfo
+    public abstract class ColumnInfo
     {
         private const string _DbParameterCollectionWrapperAddParamMethodName = "AddParam";
         private const string _DbParameterCollectionWrapperAddParamNotNullMethodName = "AddParamNotNull";
@@ -54,9 +54,11 @@ namespace ModernRoute.WildData.Helpers
             private set;
         }
 
-        public ColumnDescriptor GetColumnDescriptor(int columnIndex)
+
+        internal ColumnReference ColumnReference
         {
-            return new ColumnDescriptor(columnIndex, new ColumnReference(ColumnName, ReturnType));
+            get;
+            private set;
         }
 
         public Expression GetAssignment(ParameterExpression readerWrapperParameter, ParameterExpression entityParameter, int columnIndex)
@@ -104,7 +106,7 @@ namespace ModernRoute.WildData.Helpers
             }
         }
 
-        public ColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, bool volatileOnStore, bool volatileOnUpdate)
+        internal ColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, bool volatileOnStore, bool volatileOnUpdate)
         {
             ColumnName = columnName;
             ColumnSize = columnSize;
@@ -113,6 +115,7 @@ namespace ModernRoute.WildData.Helpers
             MemberType = memberType;
             VolatileOnStore = volatileOnStore;
             VolatileOnUpdate = volatileOnUpdate;
+            ColumnReference = new ColumnReference(ColumnName, ReturnType);
         }
     }
 }

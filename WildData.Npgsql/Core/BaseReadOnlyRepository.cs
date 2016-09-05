@@ -1,5 +1,4 @@
 ﻿using ModernRoute.WildData.Core;
-using ModernRoute.WildData.Linq;
 using ModernRoute.WildData.Models;
 using ModernRoute.WildData.Npgsql.Linq;
 using Npgsql;

@@ -48,18 +48,18 @@ namespace ModernRoute.WildData.Helpers
             int volatileOnUpdateColumnIndex = 0;
             int volatileOnStoreColumnIndex = 0;
 
-            foreach (ColumnMemberInfo columnMemberInfo in ColumnMemberInfos)
+            foreach (KeyValuePair<string, ColumnDescriptor> columnMemberInfo in MemberColumnMap)
             {
-                methodCalls.Add(columnMemberInfo.ColumnInfo.GetMethodCall(parametersParameter, entityParameter, GenerateAlias(columnMemberInfo.MemberName, aliasGenerator)));
+                methodCalls.Add(columnMemberInfo.Value.ColumnInfo.GetMethodCall(parametersParameter, entityParameter, GenerateAlias(columnMemberInfo.Key, aliasGenerator)));
 
-                if (columnMemberInfo.ColumnInfo.VolatileOnStore)
+                if (columnMemberInfo.Value.ColumnInfo.VolatileOnStore)
                 {
-                    volatileOnStoreExpression.Add(columnMemberInfo.ColumnInfo.GetAssignment(readerWrapperParameter, entityParameter, volatileOnStoreColumnIndex++));
+                    volatileOnStoreExpression.Add(columnMemberInfo.Value.ColumnInfo.GetAssignment(readerWrapperParameter, entityParameter, volatileOnStoreColumnIndex++));
                 }
 
-                if (columnMemberInfo.ColumnInfo.VolatileOnUpdate)
+                if (columnMemberInfo.Value.ColumnInfo.VolatileOnUpdate)
                 {
-                    volatileOnUpdateExpression.Add(columnMemberInfo.ColumnInfo.GetAssignment(readerWrapperParameter, entityParameter, volatileOnUpdateColumnIndex++));
+                    volatileOnUpdateExpression.Add(columnMemberInfo.Value.ColumnInfo.GetAssignment(readerWrapperParameter, entityParameter, volatileOnUpdateColumnIndex++));
                 }
             }
 

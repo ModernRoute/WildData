@@ -1,4 +1,5 @@
 ﻿using ModernRoute.WildData.Extensions;
+using ModernRoute.WildData.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +14,9 @@ namespace ModernRoute.WildData.Linq
         private static SourceQuery CreateSourceQuery(IReadOnlyDictionary<string, ColumnDescriptor> memberColumnMap, Delegate projector)
         {
             IReadOnlyDictionary<string, ColumnReference> newMemberColumnMap = 
-                memberColumnMap.ToDictionary(item => item.Key, item => item.Value.Reference).AsReadOnly();
+                memberColumnMap.ToDictionary(item => item.Key, item => item.Value.ColumnInfo.ColumnReference).AsReadOnly();
 
-            IEnumerable<Column> columns =
-                memberColumnMap.Values.OrderBy(columnDescriptor => columnDescriptor.Index).
-                Select(columnDescriptor => new Column(columnDescriptor.Reference.ColumnName, columnDescriptor.Reference));
+            IEnumerable<Column> columns = newMemberColumnMap.Select(i => new Column(i.Value.ColumnName, i.Value));
 
             return new SourceQuery(newMemberColumnMap, columns, projector);
         }

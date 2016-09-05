@@ -1,11 +1,9 @@
 ﻿using ModernRoute.WildData.Attributes;
 using ModernRoute.WildData.Core;
 using ModernRoute.WildData.Extensions;
-using ModernRoute.WildData.Linq;
 using ModernRoute.WildData.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -15,12 +13,14 @@ namespace ModernRoute.WildData.Helpers
     {
         private const string _IReaderWrapperParameterName = "reader";
         
-        private readonly Lazy<IEnumerable<ColumnMemberInfo>> _ColumnMemberInfos = new Lazy<IEnumerable<ColumnMemberInfo>>(PopulateColumnMemberInfos);
+        private readonly Lazy<IReadOnlyDictionary<string,ColumnDescriptor>> _MemberColumnMap = new Lazy<IReadOnlyDictionary<string,ColumnDescriptor>>(GetMemberColumnMap);
 
         public IReadOnlyDictionary<string, ColumnDescriptor> MemberColumnMap
         {
-            get;
-            private set;
+            get
+            {
+                return _MemberColumnMap.Value;
+            }
         }
 
         public Func<IReaderWrapper, T> ReadSingleObject
@@ -41,7 +41,7 @@ namespace ModernRoute.WildData.Helpers
             private set;
         }
 
-        private static IEnumerable<ColumnMemberInfo> PopulateColumnMemberInfos()
+        private static IReadOnlyDictionary<string,ColumnDescriptor> GetMemberColumnMap()
         {
             Type itemType = typeof(T);
 
@@ -50,17 +50,18 @@ namespace ModernRoute.WildData.Helpers
             CollectPropetiesInfo(itemType, columnInfoMap);
             CollectFieldInfo(itemType, columnInfoMap);
 
-            return columnInfoMap.Select((c, i) => new ColumnMemberInfo(c.Key, i, c.Value)).ToList();
+            IDictionary<string, ColumnDescriptor> result = new SortedDictionary<string, ColumnDescriptor>();
+
+            int index = 0;
+
+            foreach (KeyValuePair<string, ColumnInfo> item in columnInfoMap)
+            {
+                result.Add(item.Key, new ColumnDescriptor(index++, item.Value));
+            }
+
+            return result.AsReadOnly();
         }
 
-        internal IEnumerable<ColumnMemberInfo> ColumnMemberInfos
-        {
-            get
-            {
-                return _ColumnMemberInfos.Value;
-            }
-        }
- 
         public ReadOnlyRepositoryHelper()
         {
             Type itemType = typeof(T);
@@ -77,18 +78,15 @@ namespace ModernRoute.WildData.Helpers
                 StorageName = itemType.Name;
             }
             
-            IDictionary<string, ColumnDescriptor> memberColumnMap = new SortedDictionary<string, ColumnDescriptor>();
             IList<MemberBinding> memberAssignments = new List<MemberBinding>();
 
             ParameterExpression readerWrapperParameter = Expression.Parameter(typeof(IReaderWrapper), _IReaderWrapperParameterName);
 
-            foreach (ColumnMemberInfo columnMemberInfo in ColumnMemberInfos)
+            foreach (KeyValuePair<string,ColumnDescriptor> columnMemberInfo in MemberColumnMap)
             {
-                memberColumnMap.Add(columnMemberInfo.MemberName, columnMemberInfo.ColumnInfo.GetColumnDescriptor(columnMemberInfo.ColumnIndex));
-                memberAssignments.Add(columnMemberInfo.ColumnInfo.GetMemberAssignment(readerWrapperParameter, columnMemberInfo.ColumnIndex));
+                memberAssignments.Add(columnMemberInfo.Value.ColumnInfo.GetMemberAssignment(readerWrapperParameter, columnMemberInfo.Value.ColumnIndex));
             }
 
-            MemberColumnMap = memberColumnMap.AsReadOnly();
             ReadSingleObject = CompileReadSingleObject(memberAssignments, readerWrapperParameter);
         }
 

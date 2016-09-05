@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ModernRoute.WildData.Npgsql.Resources {
-    using System;
-    
-    
+namespace ModernRoute.WildData.Npgsql.Resources
+{
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
