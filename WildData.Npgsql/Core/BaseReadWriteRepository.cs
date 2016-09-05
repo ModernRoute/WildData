@@ -17,13 +17,13 @@ namespace ModernRoute.WildData.Npgsql.Core
 
         public abstract WriteResult Update(T entity);
 
-        public abstract WriteResult Save(T entity);
+        public abstract WriteResult Store(T entity);
         
-        public WriteResult SaveOrUpdate(T entity)
+        public WriteResult StoreOrUpdate(T entity)
         {
             if (entity.IsNew)
             {
-                return Save(entity);
+                return Store(entity);
             }
 
             return Update(entity);

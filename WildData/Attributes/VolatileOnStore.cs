@@ -3,7 +3,7 @@
 namespace ModernRoute.WildData.Attributes
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    public class NotNullAttribute : Attribute
+    public class VolatileOnStore : Attribute
     {
 
     }

@@ -13,8 +13,7 @@ namespace ModernRoute.WildData.Linq
         private static SourceQuery CreateSourceQuery(IReadOnlyDictionary<string, ColumnDescriptor> memberColumnMap, Delegate projector)
         {
             IReadOnlyDictionary<string, ColumnReference> newMemberColumnMap = 
-                memberColumnMap.Select(item => new KeyValuePair<string, ColumnReference>(item.Key, item.Value.Reference))
-                .ToDictionary().AsReadOnly();
+                memberColumnMap.ToDictionary(item => item.Key, item => item.Value.Reference).AsReadOnly();
 
             IEnumerable<Column> columns =
                 memberColumnMap.Values.OrderBy(columnDescriptor => columnDescriptor.Index).

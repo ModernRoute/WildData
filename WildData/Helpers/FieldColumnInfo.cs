@@ -14,8 +14,8 @@ namespace ModernRoute.WildData.Helpers
             private set;
         }
 
-        public FieldColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, FieldInfo field)
-            : base(columnName, columnSize, notNull, returnType, memberType)
+        public FieldColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, bool volatileOnStore, bool volatileOnUpdate, FieldInfo field)
+            : base(columnName, columnSize, notNull, returnType, memberType, volatileOnStore, volatileOnUpdate)
         {
             Field = field;
         }
@@ -32,9 +32,19 @@ namespace ModernRoute.WildData.Helpers
             );
         }
 
-        protected override MemberExpression GetMemberExpression(ParameterExpression entityParameter)
+        protected override MemberExpression GetGetMemberExpression(ParameterExpression entityParameter)
+        {
+            return GetMemberExpression(entityParameter);
+        }
+
+        private MemberExpression GetMemberExpression(ParameterExpression entityParameter)
         {
             return Expression.Field(entityParameter, Field);
+        }
+
+        protected override MemberExpression GetSetMemberExpression(ParameterExpression entityParameter)
+        {
+            return GetMemberExpression(entityParameter);
         }
     }
 }

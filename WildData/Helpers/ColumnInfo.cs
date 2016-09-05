@@ -42,14 +42,40 @@ namespace ModernRoute.WildData.Helpers
             private set;
         }
 
+        public bool VolatileOnStore
+        {
+            get;
+            private set;
+        }
+
+        public bool VolatileOnUpdate
+        {
+            get;
+            private set;
+        }
+
         public ColumnDescriptor GetColumnDescriptor(int columnIndex)
         {
             return new ColumnDescriptor(columnIndex, new ColumnReference(ColumnName, ReturnType));
         }
 
+        public Expression GetAssignment(ParameterExpression readerWrapperParameter, ParameterExpression entityParameter, int columnIndex)
+        {
+            return Expression.MakeBinary(
+                ExpressionType.Assign,
+                GetSetMemberExpression(entityParameter),
+                Expression.Call(
+                    readerWrapperParameter,
+                    ReturnType.GetMethodByReturnType(),
+                    new Expression[] { Expression.Constant(columnIndex, typeof(int)) }
+                ));
+        }
+
         public abstract MemberAssignment GetMemberAssignment(ParameterExpression readerWrapperParameter, int columnIndex);
 
-        protected abstract MemberExpression GetMemberExpression(ParameterExpression entityParameter);
+        protected abstract MemberExpression GetGetMemberExpression(ParameterExpression entityParameter);
+
+        protected abstract MemberExpression GetSetMemberExpression(ParameterExpression entityParameter);
 
         public MethodCallExpression GetMethodCall(ParameterExpression parametersParameter, ParameterExpression entityParameter, string paramName)
         {
@@ -62,7 +88,7 @@ namespace ModernRoute.WildData.Helpers
                 return Expression.Call(parametersParameter, methodInfo, new Expression[]
                 {
                         Expression.Constant(paramName, typeof(string)),
-                        GetMemberExpression(entityParameter),
+                        GetGetMemberExpression(entityParameter),
                         Expression.Constant(ColumnSize, typeof(int))
                 });
             }
@@ -73,18 +99,20 @@ namespace ModernRoute.WildData.Helpers
                 return Expression.Call(parametersParameter, methodInfo, new Expression[]
                 {
                         Expression.Constant(paramName, typeof(string)),
-                        GetMemberExpression(entityParameter)
+                        GetGetMemberExpression(entityParameter)
                 });
             }
         }
 
-        public ColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType)
+        public ColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, bool volatileOnStore, bool volatileOnUpdate)
         {
             ColumnName = columnName;
             ColumnSize = columnSize;
             NotNull = notNull;
             ReturnType = returnType;
             MemberType = memberType;
+            VolatileOnStore = volatileOnStore;
+            VolatileOnUpdate = volatileOnUpdate;
         }
     }
 }

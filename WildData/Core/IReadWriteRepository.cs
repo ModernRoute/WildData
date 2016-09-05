@@ -6,9 +6,9 @@ namespace ModernRoute.WildData.Core
     {
         WriteResult Update(T entity);
 
-        WriteResult Save(T entity);
+        WriteResult Store(T entity);
 
-        WriteResult SaveOrUpdate(T entity);
+        WriteResult StoreOrUpdate(T entity);
 
         WriteResult Delete(T entity);
 

@@ -20,8 +20,8 @@ namespace ModernRoute.WildData.Helpers
             private set;
         }
 
-        public PropertyColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, MethodInfo getMethod, MethodInfo setMethod)
-            : base(columnName, columnSize, notNull, returnType, memberType)
+        public PropertyColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, bool volatileOnStore, bool volatileOnUpdate, MethodInfo getMethod, MethodInfo setMethod)
+            : base(columnName, columnSize, notNull, returnType, memberType, volatileOnStore, volatileOnUpdate)
         {
             GetMethod = getMethod;
             SetMethod = setMethod;
@@ -39,9 +39,15 @@ namespace ModernRoute.WildData.Helpers
             );
         }
 
-        protected override MemberExpression GetMemberExpression(ParameterExpression entityParameter)
+        protected override MemberExpression GetGetMemberExpression(ParameterExpression entityParameter)
         {
             return Expression.Property(entityParameter, GetMethod);
         }
+
+        protected override MemberExpression GetSetMemberExpression(ParameterExpression entityParameter)
+        {
+            return Expression.Property(entityParameter, SetMethod);
+        }
+
     }
 }

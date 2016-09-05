@@ -35,6 +35,12 @@ namespace ModernRoute.WildData.Helpers
             private set;           
         }
 
+        public string StorageSchema
+        {
+            get;
+            private set;
+        }
+
         private static IEnumerable<ColumnMemberInfo> PopulateColumnMemberInfos()
         {
             Type itemType = typeof(T);
@@ -59,7 +65,17 @@ namespace ModernRoute.WildData.Helpers
         {
             Type itemType = typeof(T);
 
-            StorageName = GetStorageName(itemType);
+            StorageAttribute storageAttribute = Attribute.GetCustomAttribute(itemType, typeof(StorageAttribute)) as StorageAttribute;
+
+            if (storageAttribute != null)
+            {
+                StorageName = storageAttribute.Name;
+                StorageSchema = storageAttribute.Schema;
+            }
+            else
+            {
+                StorageName = itemType.Name;
+            }
             
             IDictionary<string, ColumnDescriptor> memberColumnMap = new SortedDictionary<string, ColumnDescriptor>();
             IList<MemberBinding> memberAssignments = new List<MemberBinding>();
@@ -99,13 +115,15 @@ namespace ModernRoute.WildData.Helpers
                 }
 
                 bool notNull = IsNotNull(field);
+                bool volatileOnStore = IsVolatileOnStore(field);
+                bool volatileOnUpdate = IsVolatileOnUpdate(field);
 
                 string columnName;
                 int columnSize;
 
                 GetColumnNameAndSize(field, out columnName, out columnSize);
 
-                columnInfoMap.Add(field.Name, new FieldColumnInfo(columnName, columnSize, notNull, returnType, fieldType, field));
+                columnInfoMap.Add(field.Name, new FieldColumnInfo(columnName, columnSize, notNull, returnType, fieldType, volatileOnStore, volatileOnUpdate, field));
             }
         }
 
@@ -135,13 +153,15 @@ namespace ModernRoute.WildData.Helpers
                 }
                 
                 bool notNull = IsNotNull(property);
+                bool volatileOnStore = IsVolatileOnStore(property);
+                bool volatileOnUpdate = IsVolatileOnUpdate(property);
 
                 string columnName;
                 int columnSize;
 
                 GetColumnNameAndSize(property, out columnName, out columnSize);
 
-                columnInfoMap.Add(property.Name, new PropertyColumnInfo(columnName, columnSize, notNull, returnType, propertyType, getMethod, setMethod));
+                columnInfoMap.Add(property.Name, new PropertyColumnInfo(columnName, columnSize, notNull, returnType, propertyType, volatileOnStore, volatileOnUpdate, getMethod, setMethod));
             }
         }
 
@@ -149,7 +169,7 @@ namespace ModernRoute.WildData.Helpers
         {
             try
             {
-                returnType = ReturnTypeExtensions.GetReturnType(type);
+                returnType = type.GetReturnType();
                 return true;
             }
             catch (NotSupportedException)
@@ -175,24 +195,27 @@ namespace ModernRoute.WildData.Helpers
 
         private static bool IsNotNull(MemberInfo memberInfo)
         {
-            return Attribute.GetCustomAttribute(memberInfo, typeof(NotNullAttribute)) as NotNullAttribute != null;
-        }
+            return IsCustomAttribute<NotNullAttribute>(memberInfo);
+           }
 
         private static bool IsIgnored(MemberInfo memberInfo)
         {
-            return Attribute.GetCustomAttribute(memberInfo, typeof(IgnoreAttribute)) as IgnoreAttribute != null;
+            return IsCustomAttribute<IgnoreAttribute>(memberInfo);
         }
 
-        private static string GetStorageName(Type itemType)
+        private static bool IsVolatileOnUpdate(MemberInfo memberInfo)
         {
-            StorageAttribute storageAtribute = Attribute.GetCustomAttribute(itemType, typeof(StorageAttribute)) as StorageAttribute;
+            return IsCustomAttribute<VolatileOnUpdate>(memberInfo);
+        }
 
-            if (storageAtribute != null)
-            {
-                return storageAtribute.Name;
-            }
+        private static bool IsVolatileOnStore(MemberInfo memberInfo)
+        {
+            return IsCustomAttribute<VolatileOnStore>(memberInfo);
+        }
 
-            return itemType.Name;
+        private static bool IsCustomAttribute<A>(MemberInfo memberInfo) where A : Attribute
+        {
+            return Attribute.GetCustomAttribute(memberInfo, typeof(A)) as A != null;
         }
     }
 }

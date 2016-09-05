@@ -483,7 +483,7 @@ namespace ModernRoute.WildData.Linq
                 return CreateNull();
             }
 
-            ReturnType returnType = ReturnTypeExtensions.GetReturnType(value.GetType());
+            ReturnType returnType = value.GetType().GetReturnType();
 
             switch (returnType)
             {

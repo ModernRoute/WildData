@@ -2,7 +2,7 @@
 
 namespace ModernRoute.WildData.Attributes
 {
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public class ColumnAttribute : Attribute
     {
         public ColumnAttribute(string name, int size = 0)

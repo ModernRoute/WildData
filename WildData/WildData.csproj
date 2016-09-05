@@ -45,6 +45,8 @@
     <Compile Include="Attributes\IgnoreAttribute.cs" />
     <Compile Include="Attributes\NotNullAttribute.cs" />
     <Compile Include="Attributes\StorageAttribute.cs" />
+    <Compile Include="Attributes\VolatileOnStore.cs" />
+    <Compile Include="Attributes\VolatileOnUpdate.cs" />
     <Compile Include="Configuration\ProviderDataImplCollection.cs" />
     <Compile Include="Configuration\ProviderDataImplElement.cs" />
     <Compile Include="Configuration\ProviderDataImplMapConfigSection.cs" />
@@ -63,11 +65,8 @@
     <Compile Include="Core\WriteResultType.cs" />
     <Compile Include="Extensions\IDictionaryExtensions.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
-    <Compile Include="Extensions\IEnumerableKeyValuePairStringColumnReferenceExtensions.cs" />
-    <Compile Include="Extensions\KeyValuePairEnumerableExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
-    <Compile Include="Extensions\ReturnTypeExtensions.cs" />
-    <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="Extensions\TypeAndReturnTypeExtensions.cs" />
     <Compile Include="Helpers\EnumerateHelper.cs" />
     <Compile Include="Linq\ColumnDescriptor.cs" />
     <Compile Include="Core\IAliasGenerator.cs" />
