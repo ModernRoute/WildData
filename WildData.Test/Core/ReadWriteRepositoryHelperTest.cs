@@ -19,7 +19,7 @@ namespace ModernRoute.WildData.Test.Core
         {
             TestRepository testRepository = new TestRepository();
 
-            Model expectedModel = new Model
+            Model model = new Model
             {
                 Id = 5,
                 Property1 = 54,
@@ -34,31 +34,62 @@ namespace ModernRoute.WildData.Test.Core
                 Field18 = "value10"
             };
 
-            testRepository.UpdateModel(expectedModel);
+            Model expectedStoredModel = model.Clone();
+            expectedStoredModel.Id = TestRepository.RandomId;
+            expectedStoredModel.Field18 = TestRepository.RandomStringValue;
 
+            Model expectedUpdatedModel = model.Clone();
+            expectedUpdatedModel.Field18 = TestRepository.RandomStringValue;
+
+            Model modelToStore = model.Clone();
+            testRepository.StoreModel(modelToStore);
+            Assert.AreEqual(expectedStoredModel, modelToStore);
             Model actualModel = testRepository.GetModel();
+            Assert.AreEqual(expectedStoredModel, actualModel);
 
-            Assert.AreEqual(expectedModel, actualModel);
+            Model modelToUpdate = model.Clone();
+            testRepository.UpdateModel(modelToUpdate);
+            Assert.AreEqual(expectedUpdatedModel, modelToUpdate);
+            actualModel = testRepository.GetModel();
+            Assert.AreEqual(expectedUpdatedModel, actualModel);
         }
     }
 
-    class TestRepository : ReadWriteRepositoryHelper<Model,int>
+    class TestRepository 
     {
+        public const int RandomId = 109683325;
+        public const string RandomStringValue = "QLqsxzXzPu4FaxLmwLlc";
+
+        private ReadWriteRepositoryHelper<Model, int> _Repository;
+
         private Wrapper _Wrapper;        
 
         public TestRepository()
         {
-            _Wrapper = new Wrapper(MemberColumnMap);
+            _Repository = new ReadWriteRepositoryHelper<Model, int>();
+            _Wrapper = new Wrapper(_Repository.MemberColumnMap);
+        }
+
+        public void StoreModel(Model model)
+        {
+            _Repository.SetParametersFromObject(_Wrapper, model);
+            _Wrapper.AddParamNotNull(nameof(model.Id), RandomId);
+            string value = RandomStringValue;
+            _Wrapper.AddParam(nameof(model.Field18), value, value.Length);
+            _Repository.UpdateVolatileColumnsOnStore(_Wrapper, model);
         }
 
         public void UpdateModel(Model model)
         {
-            SetParametersFromObject(_Wrapper, model);
+            _Repository.SetParametersFromObject(_Wrapper, model);
+            string value = RandomStringValue;
+            _Wrapper.AddParam(nameof(model.Field18), value, value.Length);
+            _Repository.UpdateVolatileColumnsOnUpdate(_Wrapper, model);
         }
 
         public Model GetModel()
         {
-            return ReadSingleObject(_Wrapper);
+            return _Repository.ReadSingleObject(_Wrapper);
         }
     }
 
@@ -372,6 +403,7 @@ namespace ModernRoute.WildData.Test.Core
     [Storage("ModelTable")]
     class Model : IReadWriteModel<int>, IEquatable<Model>
     {
+        [VolatileOnStore]
         public int Id
         {
             get;
@@ -436,6 +468,7 @@ namespace ModernRoute.WildData.Test.Core
         {
             get;
         }
+
         public string Property9
         {
             set { }
@@ -472,6 +505,8 @@ namespace ModernRoute.WildData.Test.Core
 
         public static string Field17 = string.Empty;
 
+        [VolatileOnUpdate]
+        [VolatileOnStore]
         public string Field18 = string.Empty;
 
         public override bool Equals(object obj)
@@ -506,6 +541,28 @@ namespace ModernRoute.WildData.Test.Core
                 Property3 == other.Property3 &&
                 Property5 == other.Property5 &&
                 Field18 == other.Field18;
+        }
+
+        public Model Clone()
+        {
+            return new Model
+            {
+                Id = Id,
+                Property1 = Property1,
+                Property2 = Property2,
+                Property3 = Property3,
+                Property4 = Property4,
+                Property5 = Property5,
+                Property6 = Property6,
+                Property7 = Property7,
+                Property10 = Property10,
+                Property11 = Property11,
+                Property12 = Property12,
+                Field14 = Field14,
+                Field15 = Field15,
+                Field16 = Field16,
+                Field18 = Field18
+            };
         }
     }
 }

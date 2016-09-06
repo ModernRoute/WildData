@@ -43,7 +43,7 @@ namespace ModernRoute.WildData.Helpers
 
             ParameterExpression parametersParameter = Expression.Parameter(typeof(IDbParameterCollectionWrapper), _IDbParameterCollectionWrapperParameterName);
             ParameterExpression entityParameter = Expression.Parameter(typeof(T), _EntityParameterName);
-            ParameterExpression readerWrapperParameter = Expression.Parameter(typeof(T), _ReaderWrapperParameterName);
+            ParameterExpression readerWrapperParameter = Expression.Parameter(typeof(IReaderWrapper), _ReaderWrapperParameterName);
 
             int volatileOnUpdateColumnIndex = 0;
             int volatileOnStoreColumnIndex = 0;
