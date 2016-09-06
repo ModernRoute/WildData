@@ -135,9 +135,6 @@
   <data name="ConditionalBlockIsNotSupported" xml:space="preserve">
     <value>Conditional is not supported.</value>
   </data>
-  <data name="ConnStringIsAbsentInAppConfig" xml:space="preserve">
-    <value>Connection string with name {0} is absent in {1} section.</value>
-  </data>
   <data name="ConstantTypeIsNotExpected" xml:space="preserve">
     <value>Constant's type is not expected: {0}. Expected: {1}.</value>
   </data>
@@ -156,12 +153,6 @@
   <data name="ElementInitIsNotSupportedInThisContext" xml:space="preserve">
     <value>ElementInit is not supported in this context.</value>
   </data>
-  <data name="Email" xml:space="preserve">
-    <value>Email</value>
-  </data>
-  <data name="EmailConfirmed" xml:space="preserve">
-    <value>Email confirmed?</value>
-  </data>
   <data name="ExtensionIsNotSupported" xml:space="preserve">
     <value>Extension is not supported.</value>
   </data>
@@ -171,20 +162,11 @@
   <data name="GotoIsNotSupported" xml:space="preserve">
     <value>Goto is not supported.</value>
   </data>
-  <data name="Id" xml:space="preserve">
-    <value>Id</value>
-  </data>
   <data name="IndexIsNotSupported" xml:space="preserve">
     <value>Index is not supported.</value>
   </data>
   <data name="InvocationIsNotSupported" xml:space="preserve">
     <value>Invocation is not supported.</value>
-  </data>
-  <data name="IsNew" xml:space="preserve">
-    <value>New?</value>
-  </data>
-  <data name="KeyIsAbsentInAppConfig" xml:space="preserve">
-    <value>Key {0} is absent in {1} section.</value>
   </data>
   <data name="LabelIsNotSupported" xml:space="preserve">
     <value>Label is not supported.</value>
@@ -249,29 +231,11 @@
   <data name="ParameterIsLessThanZero" xml:space="preserve">
     <value>Parameter {0} is less than zero.</value>
   </data>
-  <data name="PasswordHash" xml:space="preserve">
-    <value>Password hash</value>
-  </data>
-  <data name="PhoneNumber" xml:space="preserve">
-    <value>Phone number</value>
-  </data>
   <data name="PredicateDoesntReturnBoolValue" xml:space="preserve">
     <value>Predicate {0} does not return boolean value.</value>
   </data>
-  <data name="ProviderDataImplMapSectionIsAbsent" xml:space="preserve">
-    <value>Section providerDataImplsMap is absent.</value>
-  </data>
-  <data name="ProviderNameIsAbsent" xml:space="preserve">
-    <value>Attribute providerName is absent.</value>
-  </data>
-  <data name="ProviderNameIsNotMapped" xml:space="preserve">
-    <value>Provider {0} is not mapped to Data implementation.</value>
-  </data>
   <data name="ReturnTypeIsNotSupported" xml:space="preserve">
     <value>Return type {0} is not supported.</value>
-  </data>
-  <data name="RowVersion" xml:space="preserve">
-    <value>Row version</value>
   </data>
   <data name="RuntimeVariablesAreNotSupported" xml:space="preserve">
     <value>RuntimeVariables are not supported.</value>
@@ -308,9 +272,6 @@
   </data>
   <data name="UnexpectedTreeElementTypeWith3Expected" xml:space="preserve">
     <value>Unexpected tree element type: {0}. Expected: {1}, {2} or {3}.</value>
-  </data>
-  <data name="UserName" xml:space="preserve">
-    <value>User name</value>
   </data>
   <data name="AtLeastOneItemInCollectionIsNull" xml:space="preserve">
     <value>At least one item in collection is null.</value>

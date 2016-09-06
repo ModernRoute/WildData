@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ModernRoute.WildData.Resources
-{
-
-
+namespace ModernRoute.WildData.Resources {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -124,15 +124,6 @@ namespace ModernRoute.WildData.Resources
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connection string with name {0} is absent in {1} section..
-        /// </summary>
-        internal static string ConnStringIsAbsentInAppConfig {
-            get {
-                return ResourceManager.GetString("ConnStringIsAbsentInAppConfig", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Constant&apos;s type is not expected: {0}. Expected: {1}..
         /// </summary>
         internal static string ConstantTypeIsNotExpected {
@@ -187,24 +178,6 @@ namespace ModernRoute.WildData.Resources
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Email.
-        /// </summary>
-        internal static string Email {
-            get {
-                return ResourceManager.GetString("Email", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Email confirmed?.
-        /// </summary>
-        internal static string EmailConfirmed {
-            get {
-                return ResourceManager.GetString("EmailConfirmed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Extension is not supported..
         /// </summary>
         internal static string ExtensionIsNotSupported {
@@ -232,15 +205,6 @@ namespace ModernRoute.WildData.Resources
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Id.
-        /// </summary>
-        internal static string Id {
-            get {
-                return ResourceManager.GetString("Id", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Index is not supported..
         /// </summary>
         internal static string IndexIsNotSupported {
@@ -255,24 +219,6 @@ namespace ModernRoute.WildData.Resources
         internal static string InvocationIsNotSupported {
             get {
                 return ResourceManager.GetString("InvocationIsNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to New?.
-        /// </summary>
-        internal static string IsNew {
-            get {
-                return ResourceManager.GetString("IsNew", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Key {0} is absent in {1} section..
-        /// </summary>
-        internal static string KeyIsAbsentInAppConfig {
-            get {
-                return ResourceManager.GetString("KeyIsAbsentInAppConfig", resourceCulture);
             }
         }
         
@@ -466,24 +412,6 @@ namespace ModernRoute.WildData.Resources
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Password hash.
-        /// </summary>
-        internal static string PasswordHash {
-            get {
-                return ResourceManager.GetString("PasswordHash", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Phone number.
-        /// </summary>
-        internal static string PhoneNumber {
-            get {
-                return ResourceManager.GetString("PhoneNumber", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Predicate {0} does not return boolean value..
         /// </summary>
         internal static string PredicateDoesntReturnBoolValue {
@@ -493,47 +421,11 @@ namespace ModernRoute.WildData.Resources
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Section providerDataImplsMap is absent..
-        /// </summary>
-        internal static string ProviderDataImplMapSectionIsAbsent {
-            get {
-                return ResourceManager.GetString("ProviderDataImplMapSectionIsAbsent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Attribute providerName is absent..
-        /// </summary>
-        internal static string ProviderNameIsAbsent {
-            get {
-                return ResourceManager.GetString("ProviderNameIsAbsent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Provider {0} is not mapped to Data implementation..
-        /// </summary>
-        internal static string ProviderNameIsNotMapped {
-            get {
-                return ResourceManager.GetString("ProviderNameIsNotMapped", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Return type {0} is not supported..
         /// </summary>
         internal static string ReturnTypeIsNotSupported {
             get {
                 return ResourceManager.GetString("ReturnTypeIsNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Row version.
-        /// </summary>
-        internal static string RowVersion {
-            get {
-                return ResourceManager.GetString("RowVersion", resourceCulture);
             }
         }
         
@@ -642,15 +534,6 @@ namespace ModernRoute.WildData.Resources
         internal static string UnexpectedTreeElementTypeWith3Expected {
             get {
                 return ResourceManager.GetString("UnexpectedTreeElementTypeWith3Expected", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User name.
-        /// </summary>
-        internal static string UserName {
-            get {
-                return ResourceManager.GetString("UserName", resourceCulture);
             }
         }
     }
