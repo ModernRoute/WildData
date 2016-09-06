@@ -76,7 +76,7 @@ namespace ModernRoute.WildData.Test.Core
             _Wrapper.AddParamNotNull(nameof(model.Id), RandomId);
             string value = RandomStringValue;
             _Wrapper.AddParam(nameof(model.Field18), value, value.Length);
-            _Repository.UpdateVolatileColumnsOnStore(_Wrapper, model);
+            _Repository.UpdateVolatileColumnsOnStore?.Invoke(_Wrapper, model);
         }
 
         public void UpdateModel(Model model)
@@ -84,7 +84,7 @@ namespace ModernRoute.WildData.Test.Core
             _Repository.SetParametersFromObject(_Wrapper, model);
             string value = RandomStringValue;
             _Wrapper.AddParam(nameof(model.Field18), value, value.Length);
-            _Repository.UpdateVolatileColumnsOnUpdate(_Wrapper, model);
+            _Repository.UpdateVolatileColumnsOnUpdate?.Invoke(_Wrapper, model);
         }
 
         public Model GetModel()

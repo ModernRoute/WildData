@@ -2,8 +2,10 @@
 using ModernRoute.WildData.Core;
 using ModernRoute.WildData.Extensions;
 using ModernRoute.WildData.Models;
+using ModernRoute.WildData.Resources;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -13,14 +15,10 @@ namespace ModernRoute.WildData.Helpers
     {
         private const string _IReaderWrapperParameterName = "reader";
         
-        private readonly Lazy<IReadOnlyDictionary<string,ColumnDescriptor>> _MemberColumnMap = new Lazy<IReadOnlyDictionary<string,ColumnDescriptor>>(GetMemberColumnMap);
-
         public IReadOnlyDictionary<string, ColumnDescriptor> MemberColumnMap
         {
-            get
-            {
-                return _MemberColumnMap.Value;
-            }
+            get;
+            private set;
         }
 
         public Func<IReaderWrapper, T> ReadSingleObject
@@ -50,6 +48,11 @@ namespace ModernRoute.WildData.Helpers
             CollectPropetiesInfo(itemType, columnInfoMap);
             CollectFieldInfo(itemType, columnInfoMap);
 
+            if (columnInfoMap.Count <= 0)
+            {
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.NoColumnsFoundForType, itemType));
+            }
+
             IDictionary<string, ColumnDescriptor> result = new SortedDictionary<string, ColumnDescriptor>();
 
             int index = 0;
@@ -77,6 +80,8 @@ namespace ModernRoute.WildData.Helpers
             {
                 StorageName = itemType.Name;
             }
+
+            MemberColumnMap = GetMemberColumnMap();
             
             IList<MemberBinding> memberAssignments = new List<MemberBinding>();
 

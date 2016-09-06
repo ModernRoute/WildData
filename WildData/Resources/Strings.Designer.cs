@@ -385,6 +385,15 @@ namespace ModernRoute.WildData.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No columns found for type {0}..
+        /// </summary>
+        internal static string NoColumnsFoundForType {
+            get {
+                return ResourceManager.GetString("NoColumnsFoundForType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only Lambda with 1 parameter is supported in select clause..
         /// </summary>
         internal static string OnlyLambdaWithOneParameterIsSupportedInSelectClause {

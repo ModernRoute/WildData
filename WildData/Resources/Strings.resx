@@ -276,4 +276,7 @@
   <data name="AtLeastOneItemInCollectionIsNull" xml:space="preserve">
     <value>At least one item in collection is null.</value>
   </data>
+  <data name="NoColumnsFoundForType" xml:space="preserve">
+    <value>No columns found for type {0}.</value>
+  </data>
 </root>
