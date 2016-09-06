@@ -10,6 +10,7 @@ namespace ModernRoute.WildData.Linq
     {
         private const string _LongFormatForDateTime = "X16";
         private const string _GuidFormat = "N";
+        private const string _Separator = ", ";
 
         public string InvariantRepresentation
         {
@@ -472,7 +473,7 @@ namespace ModernRoute.WildData.Linq
                 throw new InvalidOperationException(
                     string.Format(
                     Resources.Strings.ConstantTypeIsNotExpected, 
-                    Type, string.Join(", ", returnTypes.Select(rt => rt.ToString()).ToArray())));
+                    Type, string.Join(_Separator, returnTypes.Select(rt => rt.ToString()).ToArray())));
             }
         }
 
