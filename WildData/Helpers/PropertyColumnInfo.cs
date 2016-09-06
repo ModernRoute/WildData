@@ -27,7 +27,7 @@ namespace ModernRoute.WildData.Helpers
             SetMethod = setMethod;
         }
 
-        public override MemberAssignment GetMemberAssignment(ParameterExpression readerWrapperParameter, int columnIndex)
+        internal override MemberAssignment GetMemberAssignment(ParameterExpression readerWrapperParameter, int columnIndex)
         {
             return Expression.Bind(
                 SetMethod,
@@ -39,12 +39,12 @@ namespace ModernRoute.WildData.Helpers
             );
         }
 
-        protected override MemberExpression GetGetMemberExpression(ParameterExpression entityParameter)
+        internal override MemberExpression GetGetMemberExpression(ParameterExpression entityParameter)
         {
             return Expression.Property(entityParameter, GetMethod);
         }
 
-        protected override MemberExpression GetSetMemberExpression(ParameterExpression entityParameter)
+        internal override MemberExpression GetSetMemberExpression(ParameterExpression entityParameter)
         {
             return Expression.Property(entityParameter, SetMethod);
         }

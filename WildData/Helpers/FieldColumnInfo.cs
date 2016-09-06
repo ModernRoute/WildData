@@ -20,7 +20,7 @@ namespace ModernRoute.WildData.Helpers
             Field = field;
         }
 
-        public override MemberAssignment GetMemberAssignment(ParameterExpression readerWrapperParameter, int columnIndex)
+        internal override MemberAssignment GetMemberAssignment(ParameterExpression readerWrapperParameter, int columnIndex)
         {
             return Expression.Bind(
                 Field,
@@ -32,7 +32,7 @@ namespace ModernRoute.WildData.Helpers
             );
         }
 
-        protected override MemberExpression GetGetMemberExpression(ParameterExpression entityParameter)
+        internal override MemberExpression GetGetMemberExpression(ParameterExpression entityParameter)
         {
             return GetMemberExpression(entityParameter);
         }
@@ -42,7 +42,7 @@ namespace ModernRoute.WildData.Helpers
             return Expression.Field(entityParameter, Field);
         }
 
-        protected override MemberExpression GetSetMemberExpression(ParameterExpression entityParameter)
+        internal override MemberExpression GetSetMemberExpression(ParameterExpression entityParameter)
         {
             return GetMemberExpression(entityParameter);
         }

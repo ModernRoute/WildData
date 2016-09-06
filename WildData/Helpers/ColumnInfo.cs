@@ -54,14 +54,13 @@ namespace ModernRoute.WildData.Helpers
             private set;
         }
 
-
         internal ColumnReference ColumnReference
         {
             get;
             private set;
         }
 
-        public Expression GetAssignment(ParameterExpression readerWrapperParameter, ParameterExpression entityParameter, int columnIndex)
+        internal Expression GetAssignment(ParameterExpression readerWrapperParameter, ParameterExpression entityParameter, int columnIndex)
         {
             return Expression.MakeBinary(
                 ExpressionType.Assign,
@@ -73,13 +72,13 @@ namespace ModernRoute.WildData.Helpers
                 ));
         }
 
-        public abstract MemberAssignment GetMemberAssignment(ParameterExpression readerWrapperParameter, int columnIndex);
+        internal abstract MemberAssignment GetMemberAssignment(ParameterExpression readerWrapperParameter, int columnIndex);
 
-        protected abstract MemberExpression GetGetMemberExpression(ParameterExpression entityParameter);
+        internal abstract MemberExpression GetGetMemberExpression(ParameterExpression entityParameter);
 
-        protected abstract MemberExpression GetSetMemberExpression(ParameterExpression entityParameter);
+        internal abstract MemberExpression GetSetMemberExpression(ParameterExpression entityParameter);
 
-        public MethodCallExpression GetMethodCall(ParameterExpression parametersParameter, ParameterExpression entityParameter, string paramName)
+        internal MethodCallExpression GetMethodCall(ParameterExpression parametersParameter, ParameterExpression entityParameter, string paramName)
         {
             string methodName = NotNull || ReturnType.IsNotNullType() ? _DbParameterCollectionWrapperAddParamNotNullMethodName : _DbParameterCollectionWrapperAddParamMethodName;
 
