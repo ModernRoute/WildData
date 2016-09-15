@@ -11,8 +11,6 @@ namespace ModernRoute.WildData.Helpers
         private const string _IDbParameterCollectionWrapperParameterName = "parameters";
         private const string _EntityParameterName = "entity";
         private const string _ReaderWrapperParameterName = "reader";
-        private const string _NameSeparator = "_";
-        private const string _ParameterNamePrefix = "@";
 
         public Action<IReaderWrapper, T> UpdateVolatileColumnsOnStore
         {
@@ -35,8 +33,6 @@ namespace ModernRoute.WildData.Helpers
         public ReadWriteRepositoryHelper()
             : base()
         {
-            IAliasGenerator aliasGenerator = new RandomAliasGenerator();
-
             IList<MethodCallExpression> methodCalls = new List<MethodCallExpression>();
             IList<Expression> volatileOnUpdateExpression = new List<Expression>();
             IList<Expression> volatileOnStoreExpression = new List<Expression>();
@@ -48,18 +44,18 @@ namespace ModernRoute.WildData.Helpers
             int volatileOnUpdateColumnIndex = 0;
             int volatileOnStoreColumnIndex = 0;
 
-            foreach (KeyValuePair<string, ColumnDescriptor> columnMemberInfo in MemberColumnMap)
+            foreach (KeyValuePair<string, ColumnInfo> memberColumnInfo in MemberColumnMap)
             {
-                methodCalls.Add(columnMemberInfo.Value.ColumnInfo.GetMethodCall(parametersParameter, entityParameter, GenerateAlias(columnMemberInfo.Key, aliasGenerator)));
+                methodCalls.Add(memberColumnInfo.Value.GetMethodCall(parametersParameter, entityParameter));
 
-                if (columnMemberInfo.Value.ColumnInfo.VolatileOnStore)
+                if (memberColumnInfo.Value.VolatileOnStore)
                 {
-                    volatileOnStoreExpression.Add(columnMemberInfo.Value.ColumnInfo.GetAssignment(readerWrapperParameter, entityParameter, volatileOnStoreColumnIndex++));
+                    volatileOnStoreExpression.Add(memberColumnInfo.Value.GetAssignment(readerWrapperParameter, entityParameter, volatileOnStoreColumnIndex++));
                 }
 
-                if (columnMemberInfo.Value.ColumnInfo.VolatileOnUpdate)
+                if (memberColumnInfo.Value.VolatileOnUpdate)
                 {
-                    volatileOnUpdateExpression.Add(columnMemberInfo.Value.ColumnInfo.GetAssignment(readerWrapperParameter, entityParameter, volatileOnUpdateColumnIndex++));
+                    volatileOnUpdateExpression.Add(memberColumnInfo.Value.GetAssignment(readerWrapperParameter, entityParameter, volatileOnUpdateColumnIndex++));
                 }
             }
 
@@ -81,11 +77,6 @@ namespace ModernRoute.WildData.Helpers
         private static Action<IDbParameterCollectionWrapper, T> CompileSetParametersFromObject(IList<MethodCallExpression> methodCalls, ParameterExpression parametersParameter, ParameterExpression entityParameter)
         {
             return Expression.Lambda<Action<IDbParameterCollectionWrapper, T>>(Expression.Block(methodCalls), new ParameterExpression[] { parametersParameter, entityParameter }).Compile();
-        }
-
-        private static string GenerateAlias(string name, IAliasGenerator aliasGenerator)
-        {
-            return string.Concat(_ParameterNamePrefix, _NameSeparator, name, _NameSeparator, aliasGenerator.GenerateAlias());
         }
     }
 }

@@ -11,17 +11,17 @@ namespace ModernRoute.WildData.Linq
     {
         private QueryConverter _QueryConverter;
 
-        private static SourceQuery CreateSourceQuery(IReadOnlyDictionary<string, ColumnDescriptor> memberColumnMap, Delegate projector)
+        private static SourceQuery CreateSourceQuery(IReadOnlyDictionary<string, ColumnInfo> memberColumnMap, Delegate projector)
         {
             IReadOnlyDictionary<string, ColumnReference> newMemberColumnMap = 
-                memberColumnMap.ToDictionary(item => item.Key, item => item.Value.ColumnInfo.ColumnReference).AsReadOnly();
+                memberColumnMap.ToDictionary(item => item.Key, item => item.Value.ColumnReference).AsReadOnly();
 
             IEnumerable<Column> columns = newMemberColumnMap.Select(i => new Column(i.Value.ColumnName, i.Value));
 
             return new SourceQuery(newMemberColumnMap, columns, projector);
         }
 
-        public QueryExecutor(IReadOnlyDictionary<string, ColumnDescriptor> memberColumnMap, Delegate reader)
+        public QueryExecutor(IReadOnlyDictionary<string, ColumnInfo> memberColumnMap, Delegate reader)
         {
             if (memberColumnMap == null)
             {

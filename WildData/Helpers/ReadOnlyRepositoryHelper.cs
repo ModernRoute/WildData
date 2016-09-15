@@ -14,8 +14,9 @@ namespace ModernRoute.WildData.Helpers
     public class ReadOnlyRepositoryHelper<T> where T : IReadOnlyModel, new()
     {
         private const string _IReaderWrapperParameterName = "reader";
-        
-        public IReadOnlyDictionary<string, ColumnDescriptor> MemberColumnMap
+        private const string _ParameterNamePrefix = "__p_internal_";
+
+        public IReadOnlyDictionary<string, ColumnInfo> MemberColumnMap
         {
             get;
             private set;
@@ -39,8 +40,10 @@ namespace ModernRoute.WildData.Helpers
             private set;
         }
 
-        private static IReadOnlyDictionary<string,ColumnDescriptor> GetMemberColumnMap()
+        private static IReadOnlyDictionary<string, ColumnInfo> GetMemberColumnMap()
         {
+            IAliasGenerator aliasGenerator = new SimpleAliasGenerator(_ParameterNamePrefix);
+
             Type itemType = typeof(T);
 
             IDictionary<string, ColumnInfo> columnInfoMap = new SortedDictionary<string, ColumnInfo>();
@@ -53,16 +56,12 @@ namespace ModernRoute.WildData.Helpers
                 throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.NoColumnsFoundForType, itemType));
             }
 
-            IDictionary<string, ColumnDescriptor> result = new SortedDictionary<string, ColumnDescriptor>();
-
-            int index = 0;
-
-            foreach (KeyValuePair<string, ColumnInfo> item in columnInfoMap)
+            foreach (KeyValuePair<string, ColumnInfo> memberColumnInfo in columnInfoMap)
             {
-                result.Add(item.Key, new ColumnDescriptor(index++, item.Value));
+                memberColumnInfo.Value.ParamNameBase = aliasGenerator.GenerateAlias();
             }
 
-            return result.AsReadOnly();
+            return columnInfoMap.AsReadOnly();
         }
 
         public ReadOnlyRepositoryHelper()
@@ -87,9 +86,11 @@ namespace ModernRoute.WildData.Helpers
 
             ParameterExpression readerWrapperParameter = Expression.Parameter(typeof(IReaderWrapper), _IReaderWrapperParameterName);
 
-            foreach (KeyValuePair<string,ColumnDescriptor> columnMemberInfo in MemberColumnMap)
+            int columnIndex = 0;
+
+            foreach (KeyValuePair<string,ColumnInfo> columnMemberInfo in MemberColumnMap)
             {
-                memberAssignments.Add(columnMemberInfo.Value.ColumnInfo.GetMemberAssignment(readerWrapperParameter, columnMemberInfo.Value.ColumnIndex));
+                memberAssignments.Add(columnMemberInfo.Value.GetMemberAssignment(readerWrapperParameter, columnIndex++));
             }
 
             ReadSingleObject = CompileReadSingleObject(memberAssignments, readerWrapperParameter);

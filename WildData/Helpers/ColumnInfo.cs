@@ -54,6 +54,12 @@ namespace ModernRoute.WildData.Helpers
             private set;
         }
 
+        public string ParamNameBase
+        {
+            get;
+            internal set;
+        }
+
         internal ColumnReference ColumnReference
         {
             get;
@@ -78,7 +84,7 @@ namespace ModernRoute.WildData.Helpers
 
         internal abstract MemberExpression GetSetMemberExpression(ParameterExpression entityParameter);
 
-        internal MethodCallExpression GetMethodCall(ParameterExpression parametersParameter, ParameterExpression entityParameter, string paramName)
+        internal MethodCallExpression GetMethodCall(ParameterExpression parametersParameter, ParameterExpression entityParameter)
         {
             string methodName = NotNull || ReturnType.IsNotNullType() ? _DbParameterCollectionWrapperAddParamNotNullMethodName : _DbParameterCollectionWrapperAddParamMethodName;
 
@@ -88,7 +94,7 @@ namespace ModernRoute.WildData.Helpers
 
                 return Expression.Call(parametersParameter, methodInfo, new Expression[]
                 {
-                        Expression.Constant(paramName, typeof(string)),
+                        Expression.Constant(ParamNameBase, typeof(string)),
                         GetGetMemberExpression(entityParameter),
                         Expression.Constant(ColumnSize, typeof(int))
                 });
@@ -99,7 +105,7 @@ namespace ModernRoute.WildData.Helpers
 
                 return Expression.Call(parametersParameter, methodInfo, new Expression[]
                 {
-                        Expression.Constant(paramName, typeof(string)),
+                        Expression.Constant(ParamNameBase, typeof(string)),
                         GetGetMemberExpression(entityParameter)
                 });
             }

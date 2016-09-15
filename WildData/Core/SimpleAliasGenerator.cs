@@ -13,11 +13,7 @@
 
         public string GenerateAlias()
         {
-            string value = string.Concat(_Prefix, _Next.ToString());
-
-            _Next++;
-
-            return value;
+            return string.Concat(_Prefix, _Next++.ToString());
         }
     }
 }

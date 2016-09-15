@@ -21,7 +21,7 @@ namespace ModernRoute.WildData.Npgsql.Linq
         private int _ParameterPrefixLength;
 
         public NpgsqlQueryExecutor(BaseSession session, string sourceQuery, 
-            IReadOnlyDictionary<string, ColumnDescriptor> memberColumnMap, Delegate reader, NpgsqlParameterCollection parameters = null)
+            IReadOnlyDictionary<string, ColumnInfo> memberColumnMap, Delegate reader, NpgsqlParameterCollection parameters = null)
             : base(memberColumnMap, reader)
         {
             if (session == null)

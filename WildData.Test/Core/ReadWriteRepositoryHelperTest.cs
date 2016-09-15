@@ -60,197 +60,189 @@ namespace ModernRoute.WildData.Test.Core
         public const int RandomId = 109683325;
         public const string RandomStringValue = "QLqsxzXzPu4FaxLmwLlc";
 
-        private ReadWriteRepositoryHelper<Model, int> _Repository;
+        private ReadWriteRepositoryHelper<Model, int> _RepositoryHelper;
 
         private Wrapper _Wrapper;        
 
         public TestRepository()
         {
-            _Repository = new ReadWriteRepositoryHelper<Model, int>();
-            _Wrapper = new Wrapper(_Repository.MemberColumnMap);
+            _RepositoryHelper = new ReadWriteRepositoryHelper<Model, int>();
+            _Wrapper = new Wrapper();
         }
 
         public void StoreModel(Model model)
         {
-            _Repository.SetParametersFromObject(_Wrapper, model);
-            _Wrapper.AddParamNotNull(nameof(model.Id), RandomId);
+            _RepositoryHelper.SetParametersFromObject(_Wrapper, model);
+            _Wrapper.AddParamNotNull(_RepositoryHelper.MemberColumnMap[nameof(model.Id)].ParamNameBase, RandomId);
             string value = RandomStringValue;
-            _Wrapper.AddParam(nameof(model.Field18), value, value.Length);
-            _Repository.UpdateVolatileColumnsOnStore?.Invoke(_Wrapper, model);
+            _Wrapper.AddParam(_RepositoryHelper.MemberColumnMap[nameof(model.Field18)].ParamNameBase, value, value.Length);
+            _RepositoryHelper.UpdateVolatileColumnsOnStore?.Invoke(_Wrapper, model);
         }
 
         public void UpdateModel(Model model)
         {
-            _Repository.SetParametersFromObject(_Wrapper, model);
+            _RepositoryHelper.SetParametersFromObject(_Wrapper, model);
             string value = RandomStringValue;
-            _Wrapper.AddParam(nameof(model.Field18), value, value.Length);
-            _Repository.UpdateVolatileColumnsOnUpdate?.Invoke(_Wrapper, model);
+            _Wrapper.AddParam(_RepositoryHelper.MemberColumnMap[nameof(model.Field18)].ParamNameBase, value, value.Length);
+            _RepositoryHelper.UpdateVolatileColumnsOnUpdate?.Invoke(_Wrapper, model);
         }
 
         public Model GetModel()
         {
-            return _Repository.ReadSingleObject(_Wrapper);
+            return _RepositoryHelper.ReadSingleObject(_Wrapper);
         }
     }
 
     class Wrapper : IReaderWrapper, IDbParameterCollectionWrapper
     {
-        private Regex regex = new Regex("@_(.*)_[0-9a-f]+", RegexOptions.Compiled);
-        private IDictionary<string, int> _MemberNameColumnIndexMap;
+        private Regex regex = new Regex("__p_internal_([0-9]+)", RegexOptions.Compiled);
         private IDictionary<int, object> _Values;
 
-        public Wrapper(IReadOnlyDictionary<string, ColumnDescriptor> memberColumnMap)
+        public Wrapper()
         {
-            _MemberNameColumnIndexMap = memberColumnMap.ToDictionary(i => i.Key, i => i.Value.ColumnIndex);
             _Values = new Dictionary<int, object>();
         }
 
-        private string CutTheParamName(string name)
+        private int GetParamIndex(string name)
         {
             Match match = regex.Match(name);
 
             if (match.Success)
             {
-                return match.Groups[1].Value;
+                return int.Parse(match.Groups[1].Value);
             }
 
-            return name;
+            return -1;
         }
 
-        private int GetParamIndex(string name)
+        public void AddParam(string nameBase, DateTimeOffset? value)
         {
-            name = CutTheParamName(name);
-            return _MemberNameColumnIndexMap[name]; ;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParam(string name, DateTimeOffset? value)
+        public void AddParam(string nameBase, float? value)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParam(string name, float? value)
+        public void AddParam(string nameBase, DateTime? value)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParam(string name, DateTime? value)
+        public void AddParam(string nameBase, short? value)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParam(string name, short? value)
+        public void AddParam(string nameBase, long? value)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParam(string name, long? value)
+        public void AddParam(string nameBase, decimal? value)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParam(string name, decimal? value)
+        public void AddParam(string nameBase, bool? value)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParam(string name, bool? value)
+        public void AddParam(string nameBase, int? value)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParam(string name, int? value)
+        public void AddParam(string nameBase, double? value)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParam(string name, double? value)
+        public void AddParam(string nameBase, byte? value)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParam(string name, byte? value)
+        public void AddParam(string nameBase, byte[] value, int size)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParam(string name, byte[] value, int size)
+        public void AddParam(string nameBase, Guid? value, int size)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParam(string name, Guid? value, int size)
+        public void AddParam(string nameBase, string value, int size)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParam(string name, string value, int size)
+        public void AddParamNotNull(string nameBase, bool value)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParamNotNull(string name, bool value)
+        public void AddParamNotNull(string nameBase, float value)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParamNotNull(string name, float value)
+        public void AddParamNotNull(string nameBase, Guid value)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParamNotNull(string name, Guid value)
+        public void AddParamNotNull(string nameBase, DateTime value)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParamNotNull(string name, DateTime value)
+        public void AddParamNotNull(string nameBase, long value)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParamNotNull(string name, long value)
+        public void AddParamNotNull(string nameBase, decimal value)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParamNotNull(string name, decimal value)
+        public void AddParamNotNull(string nameBase, int value)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParamNotNull(string name, int value)
+        public void AddParamNotNull(string nameBase, DateTimeOffset value)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParamNotNull(string name, DateTimeOffset value)
+        public void AddParamNotNull(string nameBase, short value)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParamNotNull(string name, short value)
+        public void AddParamNotNull(string nameBase, double value)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParamNotNull(string name, double value)
+        public void AddParamNotNull(string nameBase, byte value)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParamNotNull(string name, byte value)
+        public void AddParamNotNull(string nameBase, byte[] value, int size)
         {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
-        public void AddParamNotNull(string name, byte[] value, int size)
+        public void AddParamNotNull(string nameBase, string value, int size)
         {
-            _Values[GetParamIndex(name)] = value;
-        }
-
-        public void AddParamNotNull(string name, string value, int size)
-        {
-            _Values[GetParamIndex(name)] = value;
+            _Values[GetParamIndex(nameBase)] = value;
         }
 
         private T GetValue<T>(int columnIndex)
