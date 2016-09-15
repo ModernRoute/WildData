@@ -2,7 +2,7 @@
 
 namespace ModernRoute.WildData.Helpers
 {
-    public static class EnumerateHelper
+    static class Enumerate
     {
         public static IEnumerable<T> Sequence<T>(params T[] items)
         {

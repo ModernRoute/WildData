@@ -20,7 +20,7 @@ namespace ModernRoute.WildData.Linq
         }
 
         public FunctionCall(FunctionType functionType, ReturnType returnType, params QueryExpression[] args)
-            : this(functionType, returnType, args.Of<IEnumerable<QueryExpression>>()) 
+            : this(functionType, returnType, (IEnumerable<QueryExpression>)args) 
         {
 
         }

@@ -489,49 +489,49 @@ namespace ModernRoute.WildData.Linq
             switch (returnType)
             {
                 case ReturnType.Binary:
-                    return CreateBinary(value.Of<byte[]>());
+                    return CreateBinary((byte[])value);
                 case ReturnType.Boolean:
-                    return CreateBoolean(value.Of<bool>());
+                    return CreateBoolean((bool)value);
                 case ReturnType.BooleanNullable:
-                    return CreateBooleanNullable(value.Of<bool?>());
+                    return CreateBooleanNullable((bool?)value);
                 case ReturnType.Float:
-                    return CreateFloat(value.Of<float>());
+                    return CreateFloat((float)value);
                 case ReturnType.FloatNullable:
-                    return CreateFloatNullable(value.Of<float?>());
+                    return CreateFloatNullable((float?)value);
                 case ReturnType.Double:
-                    return CreateDouble(value.Of<double>());
+                    return CreateDouble((double)value);
                 case ReturnType.DoubleNullable:
-                    return CreateDoubleNullable(value.Of<double?>());
+                    return CreateDoubleNullable((double?)value);
                 case ReturnType.Decimal:
-                    return CreateDecimal(value.Of<decimal>());
+                    return CreateDecimal((decimal)value);
                 case ReturnType.DecimalNullable:
-                    return CreateDecimalNullable(value.Of<decimal?>());
+                    return CreateDecimalNullable((decimal?)value);
                 case ReturnType.Int16:
-                    return CreateShort(value.Of<short>());
+                    return CreateShort((short)value);
                 case ReturnType.Int16Nullable:
-                    return CreateShortNullable(value.Of<short?>());
+                    return CreateShortNullable((short?)value);
                 case ReturnType.Int32:
-                    return CreateInt(value.Of<int>());
+                    return CreateInt((int)value);
                 case ReturnType.Int32Nullable:
-                    return CreateIntNullable(value.Of<int?>());
+                    return CreateIntNullable((int?)value);
                 case ReturnType.Int64:
-                    return CreateLong(value.Of<long>());
+                    return CreateLong((long)value);
                 case ReturnType.Int64Nullable:
-                    return CreateLongNullable(value.Of<long?>());
+                    return CreateLongNullable((long?)value);
                 case ReturnType.Byte:
-                    return CreateByte(value.Of<byte>());
+                    return CreateByte((byte)value);
                 case ReturnType.ByteNullable:
-                    return CreateByteNullable(value.Of<byte?>());
+                    return CreateByteNullable((byte?)value);
                 case ReturnType.String:
-                    return CreateString(value.Of<string>());
+                    return CreateString((string)value);
                 case ReturnType.DateTime:
-                    return CreateDateTime(value.Of<DateTime>());
+                    return CreateDateTime((DateTime)value);
                 case ReturnType.DateTimeNullable:
-                    return CreateDateTimeNullable(value.Of<DateTime?>());
+                    return CreateDateTimeNullable((DateTime?)value);
                 case ReturnType.DateTimeOffset:
-                    return CreateDateTimeOffset(value.Of<DateTimeOffset>());
+                    return CreateDateTimeOffset((DateTimeOffset)value);
                 case ReturnType.DateTimeOffsetNullable:
-                    return CreateDateTimeOffsetNullable(value.Of<DateTimeOffset?>());
+                    return CreateDateTimeOffsetNullable((DateTimeOffset?)value);
                 default:
                     throw new NotSupportedException(string.Format(Resources.Strings.TypeIsNotSupported, returnType));
             }

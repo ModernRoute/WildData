@@ -1,4 +1,6 @@
 ﻿using ModernRoute.WildData.Core;
+using ModernRoute.WildData.Helpers;
+using ModernRoute.WildData.Linq;
 using ModernRoute.WildData.Models;
 using ModernRoute.WildData.Npgsql.Linq;
 using Npgsql;
@@ -8,21 +10,40 @@ using System.Linq;
 
 namespace ModernRoute.WildData.Npgsql.Core
 {
-    abstract class BaseReadOnlyRepository<T,TKey> : IReadOnlyRepository<T,TKey> where T : IReadOnlyModel<TKey>, new()
+    abstract class BaseReadOnlyRepository<T> : IReadOnlyRepository<T> where T : IReadOnlyModel, new()
     {
-        public BaseReadOnlyRepository(BaseSession session)
+        protected ReadOnlyRepositoryHelper<T> ReadOnlyRepositoryHelper
+        {
+            get;
+            private set;
+        }
+
+        public BaseReadOnlyRepository(BaseSession session) : this(session, new ReadOnlyRepositoryHelper<T>())
+        {
+
+        }
+
+        protected BaseReadOnlyRepository(BaseSession session, ReadOnlyRepositoryHelper<T> helper)
         {
             if (session == null)
             {
                 throw new ArgumentNullException(nameof(session));
             }
 
-            _Session = session;
-        }
-        
-        internal readonly BaseSession _Session;
+            if (helper == null)
+            {
+                throw new ArgumentNullException(nameof(helper));
+            }
 
-        internal abstract T ReadSingleObject(IReaderWrapper reader);
+            Session = session;
+            ReadOnlyRepositoryHelper = helper;
+        }
+
+        protected BaseSession Session
+        {
+            get;
+            private set;
+        }
 
         protected IEnumerable<T> ExecuteReader(NpgsqlCommand command)
         {
@@ -32,13 +53,49 @@ namespace ModernRoute.WildData.Npgsql.Core
 
                 while (reader.Read())
                 {
-                    yield return ReadSingleObject(wrapper);
+                    yield return ReadOnlyRepositoryHelper.ReadSingleObject(wrapper);
                 }
             }
         }
 
-        public abstract IQueryable<T> Fetch();
+        protected IQueryable<T> GetQuery(string query, NpgsqlParameterCollection parameters = null)
+        {
+            return new Query<T>(
+                new QueryProvider(
+                    new NpgsqlQueryExecutor(
+                        Session,
+                        query,
+                        ReadOnlyRepositoryHelper.MemberColumnMap,
+                        ReadOnlyRepositoryHelper.ReadSingleObject,
+                        parameters
+                    )
+                )
+            );
+        }
 
-        public abstract T Fetch(TKey id);
+        public IQueryable<T> Fetch()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    abstract class BaseReadOnlyRepository<T,TKey> : BaseReadOnlyRepository<T>, IReadOnlyRepository<T,TKey> where T : IReadOnlyModel<TKey>, new()
+    {
+        public BaseReadOnlyRepository(BaseSession session)
+            : base(session)
+        {
+
+        }
+
+        protected BaseReadOnlyRepository(BaseSession session, ReadOnlyRepositoryHelper<T> helper)
+            : base(session, helper)
+        {
+
+        }
+
+        public T Fetch(TKey id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

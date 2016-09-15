@@ -65,7 +65,7 @@ namespace ModernRoute.WildData.Linq
         {
             while (e.NodeType == ExpressionType.Quote)
             {
-                e = e.Of<UnaryExpression>().Operand;
+                e = ((UnaryExpression)e).Operand;
             }
 
             return e;
@@ -130,7 +130,7 @@ namespace ModernRoute.WildData.Linq
 
             CheckElementSelect(element);
 
-            return element.Of<SourceBase>();
+            return (SourceBase)element;
         }
 
         private SourceBase PopSourceBase()
@@ -141,7 +141,7 @@ namespace ModernRoute.WildData.Linq
 
             CheckElementSelect(element);
 
-            return element.Of<SourceBase>();
+            return (SourceBase)element;
         }
 
         private QueryExpression PopQueryExpression()
@@ -152,7 +152,7 @@ namespace ModernRoute.WildData.Linq
 
             CheckElementType(element, QueryElementType.QueryExpression);
 
-            return element.Of<QueryExpression>();
+            return (QueryExpression)element;
         }
 
         private QueryConstant PopQueryConstant()
@@ -161,7 +161,7 @@ namespace ModernRoute.WildData.Linq
 
             CheckQueryExpressionType(queryExpression, QueryExpressionType.Constant);
 
-            return queryExpression.Of<QueryConstant>();
+            return (QueryConstant)queryExpression;
         }
 
         protected override Expression VisitBinary(BinaryExpression node)
@@ -279,10 +279,10 @@ namespace ModernRoute.WildData.Linq
         {
             foreach (QueryExpression expression in values)
             {
-                if (expression.Is<FunctionCall>())
-                {
-                    FunctionCall functionCall = expression.Of<FunctionCall>();
+                FunctionCall functionCall = expression as FunctionCall;
 
+                if (functionCall != null)
+                {
                     if (functionCall.FunctionType == FunctionType.Concat)
                     {
                         foreach (QueryExpression arg in functionCall.Arguments)
@@ -319,7 +319,7 @@ namespace ModernRoute.WildData.Linq
 
         private static bool IsQuery(ConstantExpression node)
         {
-            return node.Value.As<IQueryable>() != null;
+            return node.Value as IQueryable != null;
         }
 
         protected override Expression VisitConstant(ConstantExpression node)
@@ -663,7 +663,7 @@ namespace ModernRoute.WildData.Linq
             
             if (args.Count == 1 && args[0].Type == typeof(string[]) && args[0].NodeType == ExpressionType.NewArrayInit)
             {
-                expressions = args[0].Of<NewArrayExpression>().Expressions;
+                expressions = ((NewArrayExpression)args[0]).Expressions;
             }
             else
             {
@@ -727,7 +727,7 @@ namespace ModernRoute.WildData.Linq
                 new FunctionCall(
                     functionType, 
                     functionReturnType, 
-                    EnumerateHelper.Sequence<QueryExpression>(value,arg0,arg1,arg2).Where(arg => arg != null)
+                    Enumerate.Sequence<QueryExpression>(value,arg0,arg1,arg2).Where(arg => arg != null)
                 );
             
             _ElementsStack.Push(functionCall);
@@ -803,7 +803,7 @@ namespace ModernRoute.WildData.Linq
 
         private void ConvertSelect(IReadOnlyList<Expression> args)
         {
-            LambdaExpression conditionExpression = StripQuotes(args[1]).Of<LambdaExpression>();
+            LambdaExpression conditionExpression = (LambdaExpression)StripQuotes(args[1]);
 
             if (conditionExpression.Parameters.Count != 1)
             {
@@ -818,13 +818,13 @@ namespace ModernRoute.WildData.Linq
 
             if (conditionExpression.Body.NodeType == ExpressionType.New)
             {
-                NewExpression newExpression = conditionExpression.Body.Of<NewExpression>();
+                NewExpression newExpression = (NewExpression)conditionExpression.Body;
 
                 regularSelect = ConvertNewExpression(newExpression);
             }
             else if (conditionExpression.Body.NodeType == ExpressionType.MemberInit)
             {
-                MemberInitExpression memberInitExpression = conditionExpression.Body.Of<MemberInitExpression>();
+                MemberInitExpression memberInitExpression = (MemberInitExpression)conditionExpression.Body;
 
                 regularSelect = ConvertMemberInitExpression(memberInitExpression);
             }
@@ -850,7 +850,7 @@ namespace ModernRoute.WildData.Linq
                     map.AsReadOnly(),
                     lambdaExpression.Compile(),
                     _AliasGenerator.GenerateAlias(),
-                    EnumerateHelper.Sequence(column),
+                    Enumerate.Sequence(column),
                     select);
             }
 
@@ -878,7 +878,7 @@ namespace ModernRoute.WildData.Linq
                     throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,Resources.Strings.MemberBindingTypeIsNotSupportedInThisContext,memberBinding.GetType().FullName));
                 }
 
-                MemberAssignment assignment = memberBinding.Of<MemberAssignment>();
+                MemberAssignment assignment = (MemberAssignment)memberBinding;
 
                 Visit(assignment.Expression);
 
@@ -1019,7 +1019,7 @@ namespace ModernRoute.WildData.Linq
                     map.AsReadOnly(),
                     projector,
                     _AliasGenerator.GenerateAlias(),
-                    EnumerateHelper.Sequence(projection),
+                    Enumerate.Sequence(projection),
                     sourceQuery);
 
                 _ElementsStack.Push(select);
@@ -1065,7 +1065,7 @@ namespace ModernRoute.WildData.Linq
                    map.AsReadOnly(),
                    projector,
                    _AliasGenerator.GenerateAlias(),
-                   EnumerateHelper.Sequence(projection),
+                   Enumerate.Sequence(projection),
                    sourceQuery);
 
                 _ElementsStack.Push(select);
@@ -1074,7 +1074,7 @@ namespace ModernRoute.WildData.Linq
 
         private void ConvertPredicate(IReadOnlyList<Expression> args)
         {
-            LambdaExpression conditionExpression = StripQuotes(args[1]).Of<LambdaExpression>();
+            LambdaExpression conditionExpression = (LambdaExpression)StripQuotes(args[1]);
 
             if (conditionExpression.Parameters.Count != 1)
             {
@@ -1159,7 +1159,7 @@ namespace ModernRoute.WildData.Linq
             }
 
             Expression source = args[0];
-            Expression body = StripQuotes(args[1]).Of<LambdaExpression>().Body;
+            Expression body = ((LambdaExpression)StripQuotes(args[1])).Body;
 
             Visit(source);
             Visit(body);
@@ -1288,9 +1288,10 @@ namespace ModernRoute.WildData.Linq
 
         private static bool CanBeEvaluatedLocally(Expression expression)
         {
-            if (expression.Is<ConstantExpression>())
+            ConstantExpression constantExpression = expression as ConstantExpression;
+
+            if (constantExpression != null)
             {
-                ConstantExpression constantExpression = expression.Of<ConstantExpression>();
                 return !IsQuery(constantExpression);
             }
 
@@ -1318,7 +1319,7 @@ namespace ModernRoute.WildData.Linq
 
                     CheckElementSelect(treeElement);
 
-                    return treeElement.Of<SourceBase>();
+                    return (SourceBase)treeElement;
                 }
 
                 throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,Resources.Strings.UnexpectedStackSize, _ElementsStack.Count));

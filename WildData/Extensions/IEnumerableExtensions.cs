@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace ModernRoute.WildData.Extensions
 {
-    public static class IEnumerableExtensions
+    static class IEnumerableExtensions
     {
         public static void ThrowIfAnyNull<T>(this IEnumerable<T> obj) where T : class
         {

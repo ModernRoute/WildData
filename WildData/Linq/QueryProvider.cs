@@ -33,12 +33,12 @@ namespace ModernRoute.WildData.Linq
 
             Type elementType = expression.Type.GetCollectionElementType();
 
-            return Activator.CreateInstance(typeof(Query<>).MakeGenericType(elementType), new object[] { this, expression }).Of<IQueryable>();
+            return (IQueryable)Activator.CreateInstance(typeof(Query<>).MakeGenericType(elementType), new object[] { this, expression });
         }
 
         public TResult Execute<TResult>(Expression expression)
         {
-            return Execute(expression).Of<TResult>();
+            return (TResult)Execute(expression);
         }
 
         public object Execute(Expression expression)

@@ -104,7 +104,7 @@ namespace ModernRoute.WildData.Npgsql.Linq
 
                     while (reader.Read())
                     {
-                        list.Add(sourceBase.Projector.DynamicInvoke(wrapper).Of<T>());
+                        list.Add((T)sourceBase.Projector.DynamicInvoke(wrapper));
                     }
                 }
             }

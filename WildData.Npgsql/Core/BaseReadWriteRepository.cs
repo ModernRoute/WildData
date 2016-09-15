@@ -1,23 +1,39 @@
 ﻿using ModernRoute.WildData.Core;
+using ModernRoute.WildData.Helpers;
 using ModernRoute.WildData.Models;
-using Npgsql;
 using System;
 
 namespace ModernRoute.WildData.Npgsql.Core
 {
     abstract class BaseReadWriteRepository<T,TKey> : BaseReadOnlyRepository<T,TKey>, IReadWriteRepository<T,TKey> where T : IReadWriteModel<TKey>, new()
     {
+        protected ReadWriteRepositoryHelper<T,TKey> ReadWriteRepositoryHelper
+        {
+            get;
+            private set;
+        }
+
         public BaseReadWriteRepository(BaseSession session) 
-            : base(session)
+            : this(session, new ReadWriteRepositoryHelper<T,TKey>())
         {
 
         }
 
-        public abstract T Fetch(int id);
+        protected BaseReadWriteRepository(BaseSession session, ReadWriteRepositoryHelper<T,TKey> helper)
+            : base(session, helper)
+        {
+            ReadWriteRepositoryHelper = helper;
+        }
 
-        public abstract WriteResult Update(T entity);
+        public WriteResult Update(T entity)
+        {
+            throw new NotImplementedException();
+        }
 
-        public abstract WriteResult Store(T entity);
+        public WriteResult Store(T entity)
+        {
+            throw new NotImplementedException();
+        }
         
         public WriteResult StoreOrUpdate(T entity)
         {
@@ -29,7 +45,10 @@ namespace ModernRoute.WildData.Npgsql.Core
             return Update(entity);
         }
 
-        public abstract WriteResult Delete(TKey id);
+        public WriteResult Delete(TKey id)
+        {
+            throw new NotImplementedException();
+        }
 
         public WriteResult Delete(T entity)
         {
@@ -39,13 +58,6 @@ namespace ModernRoute.WildData.Npgsql.Core
             }
 
             return Delete(entity.Id);
-        }
-
-        protected abstract void SetParametersFromObject(NpgsqlParameterCollection parameters, T entity);        
-
-        protected string GetParamName(string fieldName)
-        {
-            return string.Join("@", fieldName);
         }
     }
 }

@@ -189,13 +189,13 @@ namespace ModernRoute.WildData.Npgsql.Linq
             switch (sourceBase.SelectType)
             {
                 case SelectType.Projection:
-                    VisitProjectionSelect(sourceBase.Of<ProjectionSelect>());
+                    VisitProjectionSelect((ProjectionSelect)sourceBase);
                     break;
                 case SelectType.Regular:
-                    VisitRegularSelect(sourceBase.Of<RegularSelect>());
+                    VisitRegularSelect((RegularSelect)sourceBase);
                     break;
                 case SelectType.Source:
-                    VisitSourceQuery(sourceBase.Of<SourceQuery>());
+                    VisitSourceQuery((SourceQuery)sourceBase);
                     break;
                 default:
                     throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Resources.Strings.SelectTypeIsNotSupported, sourceBase.SelectType));
@@ -443,19 +443,19 @@ namespace ModernRoute.WildData.Npgsql.Linq
             switch (queryExpression.ExpressionType)
             {
                 case QueryExpressionType.BinaryOperation:
-                    VisitBinaryOperation(queryExpression.Of<BinaryQueryExpression>());
+                    VisitBinaryOperation((BinaryQueryExpression)queryExpression);
                     break;
                 case QueryExpressionType.ColumnReference:
-                    VisitColumnReference(queryExpression.Of<ColumnReference>());
+                    VisitColumnReference((ColumnReference)queryExpression);
                     break;
                 case QueryExpressionType.Constant:
-                    VisitConstant(queryExpression.Of<QueryConstant>());
+                    VisitConstant((QueryConstant)queryExpression);
                     break;
                 case QueryExpressionType.FunctionCall:
-                    VisitFunctionCall(queryExpression.Of<FunctionCall>());
+                    VisitFunctionCall((FunctionCall)queryExpression);
                     break;
                 case QueryExpressionType.UnaryOperation:
-                    VisitUnaryOperation(queryExpression.Of<UnaryQueryExpression>());
+                    VisitUnaryOperation((UnaryQueryExpression)queryExpression);
                     break;
                 case QueryExpressionType.SourceReference:
                 default:

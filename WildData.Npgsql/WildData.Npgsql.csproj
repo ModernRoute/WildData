@@ -47,7 +47,7 @@
     <Compile Include="Core\BaseReadOnlyRepository.cs" />
     <Compile Include="Core\BaseReadWriteRepository.cs" />
     <Compile Include="Core\BaseSession.cs" />
-    <Compile Include="Core\Transactioncs.cs" />
+    <Compile Include="Core\Transaction.cs" />
     <Compile Include="Extensions\GenericExtensions.cs" />
     <Compile Include="Extensions\NpgsqlExceptionExtensions.cs" />
     <Compile Include="Helpers\NpgsqlHelper.cs" />

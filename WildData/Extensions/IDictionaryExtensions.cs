@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 
 namespace ModernRoute.WildData.Extensions
 {
-    public static class IDictionaryExtensions
+    static class IDictionaryExtensions
     {
         public static IReadOnlyDictionary<TKey, TValue> AsReadOnly<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)
         {

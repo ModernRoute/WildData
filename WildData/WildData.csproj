@@ -64,7 +64,6 @@
     <Compile Include="Core\WriteResultType.cs" />
     <Compile Include="Extensions\IDictionaryExtensions.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
-    <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\TypeAndReturnTypeExtensions.cs" />
     <Compile Include="Helpers\EnumerateHelper.cs" />
     <Compile Include="Core\IAliasGenerator.cs" />
