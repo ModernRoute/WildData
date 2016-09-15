@@ -95,7 +95,7 @@ namespace ModernRoute.WildData.Test.Core
 
     class Wrapper : IReaderWrapper, IDbParameterCollectionWrapper
     {
-        private Regex regex = new Regex("__p_internal_([0-9]+)", RegexOptions.Compiled);
+        private Regex regex = new Regex("__p_([0-9]+)", RegexOptions.Compiled);
         private IDictionary<int, object> _Values;
 
         public Wrapper()

@@ -2,6 +2,7 @@
 using ModernRoute.WildData.Extensions;
 using ModernRoute.WildData.Linq;
 using System;
+using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -9,10 +10,19 @@ namespace ModernRoute.WildData.Helpers
 {
     public abstract class ColumnInfo
     {
+        internal const int ColumnIndexDefaultValue = 0;
         private const string _DbParameterCollectionWrapperAddParamMethodName = "AddParam";
-        private const string _DbParameterCollectionWrapperAddParamNotNullMethodName = "AddParamNotNull";
+        private const string _DbParameterCollectionWrapperAddParamNotNullMethodName = "AddParamNotNull";        
+
+        public const string ParameterNameBasePrefix = "__p_";
 
         public string ColumnName
+        {
+            get;
+            private set;
+        }
+
+        public int ColumnIndex
         {
             get;
             private set;
@@ -56,8 +66,10 @@ namespace ModernRoute.WildData.Helpers
 
         public string ParamNameBase
         {
-            get;
-            internal set;
+            get
+            {
+                return string.Concat(ParameterNameBasePrefix, ColumnIndex.ToString(CultureInfo.InvariantCulture));
+            }
         }
 
         internal ColumnReference ColumnReference
@@ -78,11 +90,13 @@ namespace ModernRoute.WildData.Helpers
                 ));
         }
 
-        internal abstract MemberAssignment GetMemberAssignment(ParameterExpression readerWrapperParameter, int columnIndex);
+        internal abstract MemberAssignment GetMemberAssignment(ParameterExpression readerWrapperParameter);
 
         internal abstract MemberExpression GetGetMemberExpression(ParameterExpression entityParameter);
 
         internal abstract MemberExpression GetSetMemberExpression(ParameterExpression entityParameter);
+
+        internal abstract ColumnInfo Clone(int columnIndex);
 
         internal MethodCallExpression GetMethodCall(ParameterExpression parametersParameter, ParameterExpression entityParameter)
         {
@@ -111,7 +125,7 @@ namespace ModernRoute.WildData.Helpers
             }
         }
 
-        internal ColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, bool volatileOnStore, bool volatileOnUpdate)
+        internal ColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, bool volatileOnStore, bool volatileOnUpdate, int columnIndex = ColumnIndexDefaultValue)
         {
             ColumnName = columnName;
             ColumnSize = columnSize;
@@ -120,6 +134,7 @@ namespace ModernRoute.WildData.Helpers
             MemberType = memberType;
             VolatileOnStore = volatileOnStore;
             VolatileOnUpdate = volatileOnUpdate;
+            ColumnIndex = columnIndex;
             ColumnReference = new ColumnReference(ColumnName, ReturnType);
         }
     }

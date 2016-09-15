@@ -13,8 +13,7 @@ namespace ModernRoute.WildData.Helpers
 {
     public class ReadOnlyRepositoryHelper<T> where T : IReadOnlyModel, new()
     {
-        private const string _IReaderWrapperParameterName = "reader";
-        private const string _ParameterNamePrefix = "__p_internal_";
+        private const string _IReaderWrapperParameterName = "reader";        
 
         public IReadOnlyDictionary<string, ColumnInfo> MemberColumnMap
         {
@@ -42,8 +41,6 @@ namespace ModernRoute.WildData.Helpers
 
         private static IReadOnlyDictionary<string, ColumnInfo> GetMemberColumnMap()
         {
-            IAliasGenerator aliasGenerator = new SimpleAliasGenerator(_ParameterNamePrefix);
-
             Type itemType = typeof(T);
 
             IDictionary<string, ColumnInfo> columnInfoMap = new SortedDictionary<string, ColumnInfo>();
@@ -56,12 +53,16 @@ namespace ModernRoute.WildData.Helpers
                 throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.NoColumnsFoundForType, itemType));
             }
 
+            int columnIndex = 0;
+
+            IDictionary<string, ColumnInfo> result = new SortedDictionary<string, ColumnInfo>();
+            
             foreach (KeyValuePair<string, ColumnInfo> memberColumnInfo in columnInfoMap)
             {
-                memberColumnInfo.Value.ParamNameBase = aliasGenerator.GenerateAlias();
+                result.Add(memberColumnInfo.Key, memberColumnInfo.Value.Clone(columnIndex++));
             }
 
-            return columnInfoMap.AsReadOnly();
+            return result.AsReadOnly();
         }
 
         public ReadOnlyRepositoryHelper()
@@ -86,11 +87,9 @@ namespace ModernRoute.WildData.Helpers
 
             ParameterExpression readerWrapperParameter = Expression.Parameter(typeof(IReaderWrapper), _IReaderWrapperParameterName);
 
-            int columnIndex = 0;
-
             foreach (KeyValuePair<string,ColumnInfo> columnMemberInfo in MemberColumnMap)
             {
-                memberAssignments.Add(columnMemberInfo.Value.GetMemberAssignment(readerWrapperParameter, columnIndex++));
+                memberAssignments.Add(columnMemberInfo.Value.GetMemberAssignment(readerWrapperParameter));
             }
 
             ReadSingleObject = CompileReadSingleObject(memberAssignments, readerWrapperParameter);

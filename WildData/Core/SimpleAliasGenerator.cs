@@ -1,4 +1,6 @@
-﻿namespace ModernRoute.WildData.Core
+﻿using System.Globalization;
+
+namespace ModernRoute.WildData.Core
 {
     public class SimpleAliasGenerator : IAliasGenerator
     {
@@ -13,7 +15,7 @@
 
         public string GenerateAlias()
         {
-            return string.Concat(_Prefix, _Next++.ToString());
+            return string.Concat(_Prefix, _Next++.ToString(CultureInfo.InvariantCulture));
         }
     }
 }

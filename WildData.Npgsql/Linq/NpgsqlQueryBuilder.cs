@@ -1,5 +1,6 @@
 ﻿using ModernRoute.WildData.Core;
 using ModernRoute.WildData.Extensions;
+using ModernRoute.WildData.Helpers;
 using ModernRoute.WildData.Linq;
 using ModernRoute.WildData.Npgsql.Helpers;
 using Npgsql;
@@ -15,7 +16,6 @@ namespace ModernRoute.WildData.Npgsql.Linq
     class NpgsqlQueryBuilder
     {
         private const char _ParameterPrefix = '@';
-        private const string _ParameterNameBase = "__p_query_";
         private const char _ParameterNamePart = 'p';
         private const char _ParameterNamePartSeparator = '_';
         private const string _NoLimitValue = "ALL";
@@ -167,7 +167,7 @@ namespace ModernRoute.WildData.Npgsql.Linq
         {
             StringBuilder prefix = new StringBuilder();
             prefix.Append(_ParameterPrefix);
-            prefix.Append(_ParameterNameBase);
+            prefix.Append(ColumnInfo.ParameterNameBasePrefix);
             int length = Math.Max(0, paramPrefixLength - prefix.Length);
             
             if (length > 0)
