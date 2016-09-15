@@ -74,7 +74,6 @@
     <Compile Include="Linq\QueryConverter.cs" />
     <Compile Include="Linq\QueryExecutor.cs" />
     <Compile Include="Linq\QueryProvider.cs" />
-    <Compile Include="Core\RandomAliasGenerator.cs" />
     <Compile Include="Core\SimpleAliasGenerator.cs" />
     <Compile Include="Linq\SubtreeEvaluator.cs" />
     <Compile Include="Linq\Column.cs" />
