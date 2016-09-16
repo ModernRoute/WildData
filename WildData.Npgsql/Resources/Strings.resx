@@ -144,6 +144,9 @@
   <data name="QueryExpressionTypeIsNotSupported" xml:space="preserve">
     <value>Query expression type {0} is not supported.</value>
   </data>
+  <data name="ReturnTypeIsNotSupported" xml:space="preserve">
+    <value>Return type {0} is not supported.</value>
+  </data>
   <data name="SelectTypeIsNotSupported" xml:space="preserve">
     <value>Select type {0} is not supported.</value>
   </data>

@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ModernRoute.WildData.Npgsql.Resources
-{
-
-
+namespace ModernRoute.WildData.Npgsql.Resources {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -138,6 +138,15 @@ namespace ModernRoute.WildData.Npgsql.Resources
         internal static string QueryExpressionTypeIsNotSupported {
             get {
                 return ResourceManager.GetString("QueryExpressionTypeIsNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Return type {0} is not supported..
+        /// </summary>
+        internal static string ReturnTypeIsNotSupported {
+            get {
+                return ResourceManager.GetString("ReturnTypeIsNotSupported", resourceCulture);
             }
         }
         

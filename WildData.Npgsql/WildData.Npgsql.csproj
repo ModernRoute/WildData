@@ -50,7 +50,9 @@
     <Compile Include="Core\Transaction.cs" />
     <Compile Include="Extensions\GenericExtensions.cs" />
     <Compile Include="Extensions\NpgsqlExceptionExtensions.cs" />
+    <Compile Include="Extensions\ReturnTypeExtensions.cs" />
     <Compile Include="Helpers\NpgsqlHelper.cs" />
+    <Compile Include="Helpers\NpgsqlSyntax.cs" />
     <Compile Include="Linq\NpgsqlQueryBuilder.cs" />
     <Compile Include="Linq\NpgsqlQueryExecutor.cs" />
     <Compile Include="Linq\NpgsqlReaderWrapper.cs" />
