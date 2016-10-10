@@ -14,48 +14,6 @@ namespace ModernRoute.WildData.Linq
     {
         private const string _AliasGeneratorPrefix = "a";
 
-        private const string _SelectMethodName = "Select";
-        private const string _WhereMethodName = "Where";
-        private const string _OrderByMethodName = "OrderBy";
-        private const string _OrderByDescendingMethodName = "OrderByDescending";
-        private const string _ThenByMethodName = "ThenBy";
-        private const string _ThenByDescendingMethodName = "ThenByDescending";
-        private const string _TakeMethodName = "Take";
-        private const string _SkipMethodName = "Skip";
-        private const string _CountMethodName = "Count";
-        private const string _LongCountMethodName = "LongCount";
-        private const string _MinMethodName = "Min";
-        private const string _MaxMethodName = "Max";
-        private const string _AverageMethodName = "Average";
-        private const string _SumMethodName = "Sum";
-        private const string _DistinctMethodName = "Distinct";
-
-        private const string _StringContainsMethodName = "Contains";
-        private const string _StringStartsWithMethodName = "StartsWith";
-        private const string _StringEndsWithMethodName = "EndsWith";
-        private const string _StringTrimMethodName = "Trim";
-        private const string _StringToLowerMethodName = "ToLower";
-        private const string _StringToUpperMethodName = "ToUpper";
-
-        private const string _StringReplaceMethodName = "Replace";
-        private const string _StringIndexOfMethodName = "IndexOf";
-
-        private const string _StringConcatMethodName = "Concat";
-        private const string _StringIsNullOrEmptyMethodName = "IsNullOrEmpty";
-
-        private const string _StringLength = "Length";
-
-        private const string _NullableHasValue = "HasValue";
-        private const string _NullableValue = "Value";
-
-        private const string _DateTimeDay = "Day";
-        private const string _DateTimeMonth = "Month";
-        private const string _DateTimeYear = "Year";
-        private const string _DateTimeHour = "Hour";
-        private const string _DateTimeMinute = "Minute";
-        private const string _DateTimeSecond = "Second";
-        private const string _DateTimeMillisecond = "Millisecond";
-
         private Stack<QueryElementBase> _ElementsStack;
         private SourceQuery _SourceQuery;
 
@@ -441,12 +399,12 @@ namespace ModernRoute.WildData.Linq
             {
                 switch (node.Member.Name)
                 {
-                    case _NullableHasValue:
+                    case nameof(Nullable<int>.HasValue):
                         BinaryQueryExpression binaryExpression =
                             new BinaryQueryExpression(source, QueryConstant.CreateNull(), ReturnType.Boolean, BinaryOperationType.Equal);
                         _ElementsStack.Push(binaryExpression);
                         return;
-                    case _NullableValue:
+                    case nameof(Nullable<int>.Value):
                         ReturnType typeToConvertTo = node.Expression.Type.GetGenericArguments()[0].GetReturnType();
                         FunctionCall functionCall = new FunctionCall(FunctionType.Convert, typeToConvertTo, source);
                         _ElementsStack.Push(functionCall);
@@ -457,7 +415,7 @@ namespace ModernRoute.WildData.Linq
             {
                 switch (node.Member.Name)
                 {
-                    case _StringLength:
+                    case nameof(string.Length):
                         FunctionCall functionCall = new FunctionCall(FunctionType.Length, ReturnType.Int32, source);
                         _ElementsStack.Push(functionCall);
                         return;
@@ -465,7 +423,16 @@ namespace ModernRoute.WildData.Linq
             }
             else if (node.Expression.Type == typeof(DateTime) || node.Expression.Type == typeof(DateTimeOffset))
             {
-                FunctionType? functionType = GetDateTimeFunctionTypeByMemberName(node.Member.Name);
+                FunctionType? functionType;
+
+                if (node.Expression.Type == typeof(DateTime))
+                {
+                    functionType = GetDateTimeFunctionTypeByMemberName(node.Member.Name);
+                }
+                else
+                {
+                    functionType = GetDateTimeOffsetFunctionTypeByMemberName(node.Member.Name);
+                }
 
                 if (functionType.HasValue)
                 {
@@ -477,24 +444,46 @@ namespace ModernRoute.WildData.Linq
 
             throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,Resources.Strings.MemberIsNotSupported, node.Member.Name));            
         }
+        private FunctionType? GetDateTimeOffsetFunctionTypeByMemberName(string memberName)
+        {
+            switch (memberName)
+            {
+                case nameof(DateTimeOffset.Day):
+                    return FunctionType.Day;
+                case nameof(DateTimeOffset.Month):
+                    return FunctionType.Month;
+                case nameof(DateTimeOffset.Year):
+                    return FunctionType.Year;
+                case nameof(DateTimeOffset.Hour):
+                    return FunctionType.Hour;
+                case nameof(DateTimeOffset.Minute):
+                    return FunctionType.Minute;
+                case nameof(DateTimeOffset.Second):
+                    return FunctionType.Second;
+                case nameof(DateTimeOffset.Millisecond):
+                    return FunctionType.Millisecond;
+                default:
+                    return null;
+            }
+        }
 
         private FunctionType? GetDateTimeFunctionTypeByMemberName(string memberName)
         {
             switch (memberName)
             {
-                case _DateTimeDay:
+                case nameof(DateTime.Day):
                     return FunctionType.Day;
-                case _DateTimeMonth:
+                case nameof(DateTime.Month):
                     return FunctionType.Month;
-                case _DateTimeYear:
+                case nameof(DateTime.Year):
                     return FunctionType.Year;
-                case _DateTimeHour:
+                case nameof(DateTime.Hour):
                     return FunctionType.Hour;
-                case _DateTimeMinute:
+                case nameof(DateTime.Minute):
                     return FunctionType.Minute;
-                case _DateTimeSecond:
+                case nameof(DateTime.Second):
                     return FunctionType.Second;
-                case _DateTimeMillisecond:
+                case nameof(DateTime.Millisecond):
                     return FunctionType.Millisecond;
                 default:
                     return null;
@@ -528,53 +517,107 @@ namespace ModernRoute.WildData.Linq
 
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
-            if (node.Method.DeclaringType == typeof(Queryable) || node.Method.DeclaringType == typeof(Enumerable))
+            if (node.Method.DeclaringType == typeof(Queryable))
             {
                 switch (node.Method.Name)
                 {
-                    case _SelectMethodName:
+                    case nameof(Queryable.Select):
                         ConvertSelect(node.Arguments);
                         break;
-                    case _WhereMethodName:
+                    case nameof(Queryable.Where):
                         ConvertPredicate(node.Arguments);
                         break;
-                    case _OrderByMethodName:
+                    case nameof(Queryable.OrderBy):
                         ConvertOrderBy(node.Arguments, OrderType.Ascending, false);
                         break;
-                    case _OrderByDescendingMethodName:
+                    case nameof(Queryable.OrderByDescending):
                         ConvertOrderBy(node.Arguments, OrderType.Descending, false);
                         break;
-                    case _ThenByMethodName:
+                    case nameof(Queryable.ThenBy):
                         ConvertOrderBy(node.Arguments, OrderType.Ascending, true);
                         break;
-                    case _ThenByDescendingMethodName:
+                    case nameof(Queryable.ThenByDescending):
                         ConvertOrderBy(node.Arguments, OrderType.Descending, true);
                         break;
-                    case _SkipMethodName:
+                    case nameof(Queryable.Skip):
                         ConvertSkip(node.Arguments);
                         break;
-                    case _TakeMethodName:
+                    case nameof(Queryable.Take):
                         ConvertTake(node.Arguments);
                         break;
-                    case _MinMethodName:
+                    case nameof(Queryable.Min):
                         ConvertAggregate(node.Arguments, ProjectionType.Min, node.Type);
                         break;
-                    case _MaxMethodName:
+                    case nameof(Queryable.Max):
                         ConvertAggregate(node.Arguments, ProjectionType.Max, node.Type);
                         break;
-                    case _AverageMethodName:
+                    case nameof(Queryable.Average):
                         ConvertAggregate(node.Arguments, ProjectionType.Average, node.Type);
                         break;
-                    case _SumMethodName:
+                    case nameof(Queryable.Sum):
                         ConvertAggregate(node.Arguments, ProjectionType.Sum, node.Type);
                         break;
-                    case _LongCountMethodName:
+                    case nameof(Queryable.LongCount):
                         ConvertAggregate(node.Arguments, ProjectionType.LongCount, node.Type);
                         break;
-                    case _CountMethodName:
+                    case nameof(Queryable.Count):
                         ConvertAggregate(node.Arguments, ProjectionType.Count, node.Type);
                         break;
-                    case _DistinctMethodName:
+                    case nameof(Queryable.Distinct):
+                        ConvertDistinct(node.Arguments);
+                        break;
+                    default:
+                        ThrowMethodNotSupported(node);
+                        break;
+                }
+            }
+            else if (node.Method.DeclaringType == typeof(Enumerable))
+            {
+                switch (node.Method.Name)
+                {
+                    case nameof(Enumerable.Select):
+                        ConvertSelect(node.Arguments);
+                        break;
+                    case nameof(Enumerable.Where):
+                        ConvertPredicate(node.Arguments);
+                        break;
+                    case nameof(Enumerable.OrderBy):
+                        ConvertOrderBy(node.Arguments, OrderType.Ascending, false);
+                        break;
+                    case nameof(Enumerable.OrderByDescending):
+                        ConvertOrderBy(node.Arguments, OrderType.Descending, false);
+                        break;
+                    case nameof(Enumerable.ThenBy):
+                        ConvertOrderBy(node.Arguments, OrderType.Ascending, true);
+                        break;
+                    case nameof(Enumerable.ThenByDescending):
+                        ConvertOrderBy(node.Arguments, OrderType.Descending, true);
+                        break;
+                    case nameof(Enumerable.Skip):
+                        ConvertSkip(node.Arguments);
+                        break;
+                    case nameof(Enumerable.Take):
+                        ConvertTake(node.Arguments);
+                        break;
+                    case nameof(Enumerable.Min):
+                        ConvertAggregate(node.Arguments, ProjectionType.Min, node.Type);
+                        break;
+                    case nameof(Enumerable.Max):
+                        ConvertAggregate(node.Arguments, ProjectionType.Max, node.Type);
+                        break;
+                    case nameof(Enumerable.Average):
+                        ConvertAggregate(node.Arguments, ProjectionType.Average, node.Type);
+                        break;
+                    case nameof(Enumerable.Sum):
+                        ConvertAggregate(node.Arguments, ProjectionType.Sum, node.Type);
+                        break;
+                    case nameof(Enumerable.LongCount):
+                        ConvertAggregate(node.Arguments, ProjectionType.LongCount, node.Type);
+                        break;
+                    case nameof(Enumerable.Count):
+                        ConvertAggregate(node.Arguments, ProjectionType.Count, node.Type);
+                        break;
+                    case nameof(Enumerable.Distinct):
                         ConvertDistinct(node.Arguments);
                         break;
                     default:
@@ -586,34 +629,34 @@ namespace ModernRoute.WildData.Linq
             {
                 switch (node.Method.Name)
                 {
-                    case _StringContainsMethodName:
+                    case nameof(string.Contains):
                         ConvertStringStringFunction(node.Arguments, node.Object, node.Type, FunctionType.Contains);
                         break;
-                    case _StringStartsWithMethodName:
+                    case nameof(string.StartsWith):
                         ConvertStringStringFunction(node.Arguments, node.Object, node.Type, FunctionType.StartsWith);
                         break;
-                    case _StringEndsWithMethodName:
+                    case nameof(string.EndsWith):
                         ConvertStringStringFunction(node.Arguments, node.Object, node.Type, FunctionType.EndsWith);
                         break;
-                    case _StringTrimMethodName:
+                    case nameof(string.Trim):
                         ConvertStringFunction(node.Object, node.Type, FunctionType.Trim);
                         break;
-                    case _StringToUpperMethodName:
+                    case nameof(string.ToUpper):
                         ConvertStringFunction(node.Object, node.Type, FunctionType.ToUpper);
                         break;
-                    case _StringToLowerMethodName:
+                    case nameof(string.ToLower):
                         ConvertStringFunction(node.Object, node.Type, FunctionType.ToLower);
                         break;
-                    case _StringReplaceMethodName:
+                    case nameof(string.Replace):
                         ConvertReplace(node.Arguments, node.Object, node.Type, FunctionType.Replace);
                         break;
-                    case _StringIndexOfMethodName:
+                    case nameof(string.IndexOf):
                         ConvertIndexOf(node.Arguments, node.Object, node.Type, FunctionType.IndexOf);
                         break;
-                    case _StringConcatMethodName:
+                    case nameof(string.Concat):
                         ConvertConcat(node.Arguments, node.Type, FunctionType.Concat);
                         break;
-                    case _StringIsNullOrEmptyMethodName:
+                    case nameof(string.IsNullOrEmpty):
                         ConvertIsNullOrEmpty(node.Arguments, node.Type, FunctionType.IsNullOrEmpty);
                         break;
                     default:

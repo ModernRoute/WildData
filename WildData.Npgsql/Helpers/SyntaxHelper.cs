@@ -1,6 +1,6 @@
 ﻿namespace ModernRoute.WildData.Npgsql.Helpers
 {
-    public static class NpgsqlSyntax
+    public static class SyntaxHelper
     {
         public const string SelectToken = "SELECT";
         public const string FromToken = "FROM";

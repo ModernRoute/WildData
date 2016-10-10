@@ -1,6 +1,6 @@
 ﻿namespace ModernRoute.WildData.Npgsql.Helpers
 {
-    static class NpgsqlHelper
+    static class EscapeHelper
     {
         public static string EscapeString(string columnName)
         {

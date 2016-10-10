@@ -9,31 +9,6 @@ namespace ModernRoute.WildData.Extensions
 {
     public static class TypeAndReturnTypeExtensions
     {
-        private const string _ReaderWrapperGetBytesMethodName = "GetBytes";
-        private const string _ReaderWrapperGetByteMethodName = "GetByte";
-        private const string _ReaderWrapperGetByteNullableMethodName = "GetByteNullable";
-        private const string _ReaderWrapperGetDateTimeOffsetMethodName = "GetDateTimeOffset";
-        private const string _ReaderWrapperGetDateTimeOffsetNullableMethodName = "GetDateTimeOffsetNullable";
-        private const string _ReaderWrapperGetDateTimeMethodName = "GetDateTime";
-        private const string _ReaderWrapperGetDateTimeNullableMethodName = "GetDateTimeNullable";
-        private const string _ReaderWrapperGetFloatMethodName = "GetFloat";
-        private const string _ReaderWrapperGetFloatNullableMethodName = "GetFloatNullable";
-        private const string _ReaderWrapperGetDoubleMethodName = "GetDouble";
-        private const string _ReaderWrapperGetDoubleNullableMethodName = "GetDoubleNullable";
-        private const string _ReaderWrapperGetDecimalMethodName = "GetDecimal";
-        private const string _ReaderWrapperGetDecimalNullableMethodName = "GetDecimalNullable";
-        private const string _ReaderWrapperGetIntMethodName = "GetInt";
-        private const string _ReaderWrapperGetIntNullableMethodName = "GetIntNullable";
-        private const string _ReaderWrapperGetShortMethodName = "GetShort";
-        private const string _ReaderWrapperGetShortNullableMethodName = "GetShortNullable";
-        private const string _ReaderWrapperGetLongMethodName = "GetLong";
-        private const string _ReaderWrapperGetLongNullableMethodName = "GetLongNullable";
-        private const string _ReaderWrapperGetGuidMethodName = "GetGuid";
-        private const string _ReaderWrapperGetGuidNullableMethodName = "GetGuidNullable";
-        private const string _ReaderWrapperGetBooleanMethodName = "GetBoolean";
-        private const string _ReaderWrapperGetBooleanNullableMethodName = "GetBooleanNullable";
-        private const string _ReaderWrapperGetStringMethodName = "GetString";
-
         private static IReadOnlyDictionary<Type, ReturnType> _Map;
 
         static TypeAndReturnTypeExtensions()
@@ -145,53 +120,53 @@ namespace ModernRoute.WildData.Extensions
             switch (returnType)
             {
                 case ReturnType.Binary:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetBytesMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetBytes));
                 case ReturnType.Byte:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetByteMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetByte));
                 case ReturnType.ByteNullable:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetByteNullableMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetByteNullable));
                 case ReturnType.DateTimeOffset:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetDateTimeOffsetMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetDateTimeOffset));
                 case ReturnType.DateTimeOffsetNullable:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetDateTimeOffsetNullableMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetDateTimeOffsetNullable));
                 case ReturnType.DateTime:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetDateTimeMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetDateTime));
                 case ReturnType.DateTimeNullable:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetDateTimeNullableMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetDateTimeNullable));
                 case ReturnType.Float:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetFloatMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetFloat));
                 case ReturnType.FloatNullable:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetFloatNullableMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetFloatNullable));
                 case ReturnType.Double:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetDoubleMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetDouble));
                 case ReturnType.DoubleNullable:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetDoubleNullableMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetDoubleNullable));
                 case ReturnType.Decimal:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetDecimalMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetDecimal));
                 case ReturnType.DecimalNullable:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetDecimalNullableMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetDecimalNullable));
                 case ReturnType.Int32:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetIntMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetInt));
                 case ReturnType.Int32Nullable:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetIntNullableMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetIntNullable));
                 case ReturnType.Int16:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetShortMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetShort));
                 case ReturnType.Int16Nullable:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetShortNullableMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetShortNullable));
                 case ReturnType.Int64:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetLongMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetLong));
                 case ReturnType.Int64Nullable:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetLongNullableMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetLongNullable));
                 case ReturnType.Guid:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetGuidMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetGuid));
                 case ReturnType.GuidNullable:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetGuidNullableMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetGuidNullable));
                 case ReturnType.Boolean:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetBooleanMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetBoolean));
                 case ReturnType.BooleanNullable:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetBooleanNullableMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetBooleanNullable));
                 case ReturnType.String:
-                    return readerWrapperType.GetMethod(_ReaderWrapperGetStringMethodName);
+                    return readerWrapperType.GetMethod(nameof(IReaderWrapper.GetString));
                 default:
                     throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Resources.Strings.ReturnTypeIsNotSupported, returnType));
             }

@@ -3,13 +3,13 @@ using Npgsql;
 using System;
 using System.IO;
 
-namespace ModernRoute.WildData.Npgsql.Linq
+namespace ModernRoute.WildData.Npgsql.Core
 {
-    class NpgsqlReaderWrapper : IReaderWrapper
+    public class ReaderWrapper : IReaderWrapper
     {
         private NpgsqlDataReader _Reader;
 
-        public NpgsqlReaderWrapper(NpgsqlDataReader reader)
+        public ReaderWrapper(NpgsqlDataReader reader)
         {
             if (reader == null)
             {

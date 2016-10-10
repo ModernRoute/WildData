@@ -11,10 +11,8 @@ namespace ModernRoute.WildData.Helpers
     public abstract class ColumnInfo
     {
         internal const int ColumnIndexDefaultValue = 0;
-        private const string _DbParameterCollectionWrapperAddParamMethodName = "AddParam";
-        private const string _DbParameterCollectionWrapperAddParamNotNullMethodName = "AddParamNotNull";        
 
-        public const string ParameterNameBasePrefix = "__p_";
+        public const string ParameterNameBasePrefix = "@__p_";
 
         public string ColumnName
         {
@@ -100,7 +98,7 @@ namespace ModernRoute.WildData.Helpers
 
         internal MethodCallExpression GetMethodCall(ParameterExpression parametersParameter, ParameterExpression entityParameter)
         {
-            string methodName = NotNull || ReturnType.IsNotNullType() ? _DbParameterCollectionWrapperAddParamNotNullMethodName : _DbParameterCollectionWrapperAddParamMethodName;
+            string methodName = NotNull || ReturnType.IsNotNullType() ? nameof(IDbParameterCollectionWrapper.AddParamNotNullBase) : nameof(IDbParameterCollectionWrapper.AddParamBase);
 
             if (ReturnType.IsSizeableType())
             {

@@ -221,4 +221,80 @@ namespace ModernRoute.WildData.Helpers
             return Attribute.GetCustomAttribute(memberInfo, typeof(A)) as A != null;
         }
     }
+
+    public class ReadOnlyRepositoryHelper<T, TKey> : ReadOnlyRepositoryHelper<T> where T : IReadOnlyModel<TKey>, new()
+    {
+        private const string _CollectionParameterName = "collectionWrapper";
+        private const string _ValueParameterName = "value";
+
+        public ReadOnlyRepositoryHelper()
+            : base()
+        {
+            if (!MemberColumnMap.ContainsKey(nameof(IReadOnlyModel<TKey>.Id)))
+            {
+                throw new InvalidOperationException(""); // TODO: message
+            }
+
+            InitAddIdParameter();
+        }
+
+        private void InitAddIdParameter()
+        {
+            ParameterExpression collectionParameter = Expression.Parameter(typeof(IDbParameterCollectionWrapper), _CollectionParameterName);
+            ParameterExpression valueParameter = Expression.Parameter(typeof(TKey), _ValueParameterName);
+
+            ColumnInfo columnInfo = MemberColumnMap[nameof(IReadOnlyModel<TKey>.Id)];
+
+            string methodName = columnInfo.NotNull || columnInfo.ReturnType.IsNotNullType() ? nameof(IDbParameterCollectionWrapper.AddParamNotNull) : nameof(IDbParameterCollectionWrapper.AddParam);
+
+            MethodCallExpression methodCallExpression;
+
+            if (columnInfo.ReturnType.IsSizeableType())
+            {
+                MethodInfo methodInfo = typeof(IDbParameterCollectionWrapper).GetMethod(methodName, new Type[] { typeof(string), columnInfo.MemberType, typeof(int) });
+
+                methodCallExpression = Expression.Call(collectionParameter, methodInfo, new Expression[]
+                {
+                    Expression.Constant(columnInfo.ParamNameBase, typeof(string)),
+                    valueParameter,
+                    Expression.Constant(columnInfo.ColumnSize, typeof(int))
+                });
+            }
+            else
+            {
+                MethodInfo methodInfo = typeof(IDbParameterCollectionWrapper).GetMethod(methodName, new Type[] { typeof(string), columnInfo.MemberType });
+
+                methodCallExpression = Expression.Call(collectionParameter, methodInfo, new Expression[]
+                {
+                    Expression.Constant(columnInfo.ParamNameBase, typeof(string)),
+                    valueParameter
+                });
+            }
+
+            ConditionalExpression ifThenExpression =
+                Expression.IfThenElse(
+                    Expression.Equal(collectionParameter, Expression.Constant(null)),
+                    Expression.Throw(
+                            Expression.New(
+                                typeof(ArgumentNullException).GetConstructor(new Type[] { typeof(string) }),
+                                Expression.Constant(collectionParameter.Name)
+                            )
+                    ),
+                    methodCallExpression
+                );
+
+            AddIdParameter = Expression.Lambda<Action<IDbParameterCollectionWrapper, TKey>>(ifThenExpression, new ParameterExpression[] { collectionParameter, valueParameter }).Compile();
+        }
+
+        public string GetIdParamName()
+        {
+            return MemberColumnMap[nameof(IReadOnlyModel<TKey>.Id)].ParamNameBase;            
+        }
+
+        public Action<IDbParameterCollectionWrapper, TKey> AddIdParameter
+        {
+            get;
+            private set;
+        }
+    }
 }

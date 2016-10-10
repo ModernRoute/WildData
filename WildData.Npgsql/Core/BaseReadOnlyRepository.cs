@@ -1,13 +1,10 @@
 ﻿using ModernRoute.WildData.Core;
-using ModernRoute.WildData.Extensions;
 using ModernRoute.WildData.Helpers;
 using ModernRoute.WildData.Linq;
 using ModernRoute.WildData.Models;
-using ModernRoute.WildData.Npgsql.Extensions;
 using ModernRoute.WildData.Npgsql.Helpers;
 using ModernRoute.WildData.Npgsql.Linq;
 using Npgsql;
-using NpgsqlTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,7 +51,7 @@ namespace ModernRoute.WildData.Npgsql.Core
         {
             using (NpgsqlDataReader reader = command.ExecuteReader())
             {
-                NpgsqlReaderWrapper wrapper = new NpgsqlReaderWrapper(reader);
+                ReaderWrapper wrapper = new ReaderWrapper(reader);
 
                 while (reader.Read())
                 {
@@ -82,14 +79,14 @@ namespace ModernRoute.WildData.Npgsql.Core
         {
             StringBuilder query = new StringBuilder();
 
-            query.Append(NpgsqlSyntax.SelectToken);
-            query.Append(NpgsqlSyntax.Space);
+            query.Append(SyntaxHelper.SelectToken);
+            query.Append(SyntaxHelper.Space);
 
             AppendColumnList(query);
 
-            query.Append(NpgsqlSyntax.Space);
-            query.Append(NpgsqlSyntax.FromToken);
-            query.Append(NpgsqlSyntax.Space);
+            query.Append(SyntaxHelper.Space);
+            query.Append(SyntaxHelper.FromToken);
+            query.Append(SyntaxHelper.Space);
 
             AppendStorageName(query);
 
@@ -100,22 +97,22 @@ namespace ModernRoute.WildData.Npgsql.Core
         {
             if (ReadOnlyRepositoryHelper.StorageSchema != null)
             {
-                query.Append(NpgsqlSyntax.Quote);
-                query.Append(NpgsqlHelper.EscapeString(ReadOnlyRepositoryHelper.StorageSchema));
-                query.Append(NpgsqlSyntax.Quote);
-                query.Append(NpgsqlSyntax.Dot);
+                query.Append(SyntaxHelper.Quote);
+                query.Append(EscapeHelper.EscapeString(ReadOnlyRepositoryHelper.StorageSchema));
+                query.Append(SyntaxHelper.Quote);
+                query.Append(SyntaxHelper.Dot);
             }
 
-            query.Append(NpgsqlSyntax.Quote);
-            query.Append(NpgsqlHelper.EscapeString(ReadOnlyRepositoryHelper.StorageName));
-            query.Append(NpgsqlSyntax.Quote);
+            query.Append(SyntaxHelper.Quote);
+            query.Append(EscapeHelper.EscapeString(ReadOnlyRepositoryHelper.StorageName));
+            query.Append(SyntaxHelper.Quote);
         }
 
         private void AppendColumn(StringBuilder query, ColumnInfo columnInfo)
         {
-            query.Append(NpgsqlSyntax.Quote);
-            query.Append(NpgsqlHelper.EscapeString(columnInfo.ColumnName));
-            query.Append(NpgsqlSyntax.Quote);
+            query.Append(SyntaxHelper.Quote);
+            query.Append(EscapeHelper.EscapeString(columnInfo.ColumnName));
+            query.Append(SyntaxHelper.Quote);
         }
 
         protected void AppendColumn(StringBuilder query, string memberName)
@@ -135,7 +132,7 @@ namespace ModernRoute.WildData.Npgsql.Core
                 }
                 else
                 {
-                    query.Append(NpgsqlSyntax.Comma);
+                    query.Append(SyntaxHelper.Comma);
                 }
 
                 AppendColumn(query, columnInfo.Value);
@@ -145,18 +142,22 @@ namespace ModernRoute.WildData.Npgsql.Core
 
     abstract class BaseReadOnlyRepository<T,TKey> : BaseReadOnlyRepository<T>, IReadOnlyRepository<T,TKey> where T : IReadOnlyModel<TKey>, new()
     {
-        private const string _IdParameterName = "@id";
+        protected ReadOnlyRepositoryHelper<T,TKey> ReadOnlyRepositoryHelperWithKey
+        {
+            get;
+            private set;
+        }
 
         public BaseReadOnlyRepository(BaseSession session)
-            : base(session)
+            : this(session, new ReadOnlyRepositoryHelper<T, TKey>())
         {
 
         }
 
-        protected BaseReadOnlyRepository(BaseSession session, ReadOnlyRepositoryHelper<T> helper)
+        protected BaseReadOnlyRepository(BaseSession session, ReadOnlyRepositoryHelper<T,TKey> helper)
             : base(session, helper)
         {
-
+            ReadOnlyRepositoryHelperWithKey = helper;
         }
 
         public T Fetch(TKey id)
@@ -165,49 +166,36 @@ namespace ModernRoute.WildData.Npgsql.Core
             {
                 StringBuilder query = new StringBuilder();
 
-                query.Append(NpgsqlSyntax.SelectToken);
-                query.Append(NpgsqlSyntax.Space);
+                query.Append(SyntaxHelper.SelectToken);
+                query.Append(SyntaxHelper.Space);
 
                 AppendColumnList(query);
 
-                query.Append(NpgsqlSyntax.Space);
-                query.Append(NpgsqlSyntax.FromToken);
-                query.Append(NpgsqlSyntax.Space);
+                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.FromToken);
+                query.Append(SyntaxHelper.Space);
 
                 AppendStorageName(query);
 
-                query.Append(NpgsqlSyntax.Space);
-                query.Append(NpgsqlSyntax.WhereToken);
-                query.Append(NpgsqlSyntax.Space);
+                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.WhereToken);
+                query.Append(SyntaxHelper.Space);
 
                 AppendColumn(query, nameof(IReadOnlyModel<TKey>.Id));
-                query.Append(NpgsqlSyntax.Space);
-                query.Append(NpgsqlSyntax.EqualSign);
-                query.Append(NpgsqlSyntax.Space);
+                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.EqualSign);
+                query.Append(SyntaxHelper.Space);
 
-                AddIdParameter(command, _IdParameterName, id);
-                query.Append(_IdParameterName);
+                string idParamName = ReadOnlyRepositoryHelperWithKey.GetIdParamName();
+
+                ReadOnlyRepositoryHelperWithKey.AddIdParameter(new DbParameterCollectionWrapper(command.Parameters), id);
+                query.Append(idParamName);
 
                 command.CommandText = query.ToString();
 
                 command.Prepare();
 
                 return ExecuteReader(command).SingleOrDefault();
-            }
-        }
-
-        protected void AddIdParameter(NpgsqlCommand command, string paramName, TKey paramValue)
-        {
-            ColumnInfo columnInfo = ReadOnlyRepositoryHelper.MemberColumnMap[nameof(IReadOnlyModel<TKey>.Id)];
-            NpgsqlDbType type = columnInfo.ReturnType.GetNpgsqlType();
-
-            if (columnInfo.ReturnType.IsSizeableType())
-            {
-                command.Parameters.Add(paramName, type, columnInfo.ColumnSize).Value = paramValue;
-            }
-            else
-            {
-                command.Parameters.Add(paramName, type).Value = paramValue;
             }
         }
     }

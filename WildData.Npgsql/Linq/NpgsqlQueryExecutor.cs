@@ -1,5 +1,4 @@
-﻿using ModernRoute.WildData.Extensions;
-using ModernRoute.WildData.Helpers;
+﻿using ModernRoute.WildData.Helpers;
 using ModernRoute.WildData.Linq;
 using ModernRoute.WildData.Npgsql.Core;
 using Npgsql;
@@ -100,7 +99,7 @@ namespace ModernRoute.WildData.Npgsql.Linq
 
                 using (NpgsqlDataReader reader = npgsqlCommand.ExecuteReader())
                 {
-                    NpgsqlReaderWrapper wrapper = new NpgsqlReaderWrapper(reader);
+                    ReaderWrapper wrapper = new ReaderWrapper(reader);
 
                     while (reader.Read())
                     {

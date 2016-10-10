@@ -376,7 +376,7 @@ namespace ModernRoute.WildData.Npgsql.Linq
             _QueryString.Append(_AsToken);
             _QueryString.Append(_SpaceToken);
             _QueryString.Append(_ColumnNameDelimiter);
-            _QueryString.Append(NpgsqlHelper.EscapeString(column.Alias));
+            _QueryString.Append(EscapeHelper.EscapeString(column.Alias));
             _QueryString.Append(_ColumnNameDelimiter);
         }
 
@@ -414,7 +414,7 @@ namespace ModernRoute.WildData.Npgsql.Linq
             _QueryString.Append(_AsToken);
             _QueryString.Append(_SpaceToken);
             _QueryString.Append(_ColumnNameDelimiter);
-            _QueryString.Append(NpgsqlHelper.EscapeString(projection.Alias));
+            _QueryString.Append(EscapeHelper.EscapeString(projection.Alias));
             _QueryString.Append(_ColumnNameDelimiter);
         }
 
@@ -632,7 +632,7 @@ namespace ModernRoute.WildData.Npgsql.Linq
         private void VisitColumnReference(ColumnReference columnReference)
         {
             _QueryString.Append(_ColumnNameDelimiter);
-            _QueryString.Append(NpgsqlHelper.EscapeString(columnReference.ColumnName));
+            _QueryString.Append(EscapeHelper.EscapeString(columnReference.ColumnName));
             _QueryString.Append(_ColumnNameDelimiter);            
         }
 
