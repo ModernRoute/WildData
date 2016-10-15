@@ -66,7 +66,7 @@ namespace ModernRoute.WildData.Npgsql.Core
 
                 string idParamName = ReadOnlyRepositoryHelperWithKey.GetIdParamName();
 
-                AppendColumn(query, nameof(IReadWriteModel<TKey>.Id));
+                AppendIdColumn(query);
                 query.Append(SyntaxHelper.Space);
                 query.Append(SyntaxHelper.EqualSign);
                 query.Append(SyntaxHelper.Space);
@@ -197,7 +197,7 @@ namespace ModernRoute.WildData.Npgsql.Core
 
             foreach (KeyValuePair<string, ColumnInfo> columnInfo in ReadOnlyRepositoryHelper.MemberColumnMap)
             {
-                if (columnInfo.Key == nameof(IReadOnlyModel<TKey>.Id))
+                if (string.Equals(columnInfo.Key, nameof(IReadOnlyModel<TKey>.Id), StringComparison.Ordinal))
                 {
                     continue;
                 }
@@ -276,7 +276,7 @@ namespace ModernRoute.WildData.Npgsql.Core
 
                 string idParamName = ReadOnlyRepositoryHelperWithKey.GetIdParamName();
 
-                AppendColumn(query, nameof(IReadWriteModel<TKey>.Id));
+                AppendIdColumn(query);
                 query.Append(SyntaxHelper.Space);
                 query.Append(SyntaxHelper.EqualSign);
                 query.Append(SyntaxHelper.Space);

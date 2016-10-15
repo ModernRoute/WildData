@@ -19,12 +19,12 @@ namespace ModernRoute.WildData.Helpers
 
         private IReadOnlyDictionary<string, ColumnInfo> GetVolatileOnStoreMemberColumnMap()
         {
-            return MemberColumnMap.Where(kv => kv.Value.VolatileOnStore).ToDictionary(kv => kv.Key, kv => kv.Value).AsReadOnly();
+            return MemberColumnMap.Where(kv => kv.Value.VolatileOnStore).ToDictionary(kv => kv.Key, kv => kv.Value, StringComparer.Ordinal).AsReadOnly();
         }
 
         private IReadOnlyDictionary<string, ColumnInfo> GetVolatileOnUpdateMemberColumnMap()
         {
-            return MemberColumnMap.Where(kv => kv.Value.VolatileOnUpdate).ToDictionary(kv => kv.Key, kv => kv.Value).AsReadOnly();
+            return MemberColumnMap.Where(kv => kv.Value.VolatileOnUpdate).ToDictionary(kv => kv.Key, kv => kv.Value, StringComparer.Ordinal).AsReadOnly();
         }
 
         public IReadOnlyDictionary<string, ColumnInfo> VolatileOnStoreMemberColumnMap

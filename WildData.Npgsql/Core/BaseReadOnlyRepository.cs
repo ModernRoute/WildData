@@ -166,6 +166,11 @@ namespace ModernRoute.WildData.Npgsql.Core
             ReadOnlyRepositoryHelperWithKey = helper;
         }
 
+        protected void AppendIdColumn(StringBuilder query)
+        {
+            AppendColumn(query, nameof(IReadWriteModel<TKey>.Id));
+        }
+
         public T Fetch(TKey id)
         {
             using (NpgsqlCommand command = Session.CreateCommand())

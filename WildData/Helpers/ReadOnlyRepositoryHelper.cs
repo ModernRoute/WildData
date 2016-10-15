@@ -43,7 +43,7 @@ namespace ModernRoute.WildData.Helpers
         {
             Type itemType = typeof(T);
 
-            IDictionary<string, ColumnInfo> columnInfoMap = new SortedDictionary<string, ColumnInfo>();
+            IDictionary<string, ColumnInfo> columnInfoMap = new SortedDictionary<string, ColumnInfo>(StringComparer.Ordinal);
 
             CollectPropetiesInfo(itemType, columnInfoMap);
             CollectFieldInfo(itemType, columnInfoMap);
@@ -55,7 +55,7 @@ namespace ModernRoute.WildData.Helpers
 
             int columnIndex = 0;
 
-            IDictionary<string, ColumnInfo> result = new SortedDictionary<string, ColumnInfo>();
+            IDictionary<string, ColumnInfo> result = new SortedDictionary<string, ColumnInfo>(StringComparer.Ordinal);
             
             foreach (KeyValuePair<string, ColumnInfo> memberColumnInfo in columnInfoMap)
             {

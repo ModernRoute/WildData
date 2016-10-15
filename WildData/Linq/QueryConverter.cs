@@ -886,7 +886,7 @@ namespace ModernRoute.WildData.Linq
 
                 Column column = new Column(_AliasGenerator.GenerateAlias(),queryExpression);
                 
-                IDictionary<string,ColumnReference> map = new Dictionary<string,ColumnReference>();
+                IDictionary<string,ColumnReference> map = new Dictionary<string,ColumnReference>(StringComparer.Ordinal);
                 map.Add(string.Empty, column.GetColumnReference());
 
                 regularSelect = new RegularSelect(
@@ -903,7 +903,7 @@ namespace ModernRoute.WildData.Linq
         private RegularSelect ConvertMemberInitExpression(MemberInitExpression memberInitExpression)
         {
             IList<Column> columns = new List<Column>();
-            IDictionary<string, ColumnReference> memberColumnMap = new Dictionary<string, ColumnReference>();
+            IDictionary<string, ColumnReference> memberColumnMap = new Dictionary<string, ColumnReference>(StringComparer.Ordinal);
 
             ParameterExpression parameter = Expression.Parameter(typeof(IReaderWrapper));
 
@@ -955,7 +955,7 @@ namespace ModernRoute.WildData.Linq
         private RegularSelect ConvertNewExpression(NewExpression newExpression)
         {
             IList<Column> columns = new List<Column>();
-            IDictionary<string, ColumnReference> memberColumnMap = new Dictionary<string, ColumnReference>();
+            IDictionary<string, ColumnReference> memberColumnMap = new Dictionary<string, ColumnReference>(StringComparer.Ordinal);
 
             ParameterExpression parameter = Expression.Parameter(typeof(IReaderWrapper));
 
@@ -1040,7 +1040,7 @@ namespace ModernRoute.WildData.Linq
                 string columnAlias = _AliasGenerator.GenerateAlias();
                 ReturnType columnType = returnType.GetReturnType();
 
-                IDictionary<string, ColumnReference> map = new Dictionary<string, ColumnReference>();
+                IDictionary<string, ColumnReference> map = new Dictionary<string, ColumnReference>(StringComparer.Ordinal);
                 map.Add(string.Empty, new ColumnReference(columnAlias, columnType));
 
                 ParameterExpression parameter = Expression.Parameter(typeof(IReaderWrapper));
@@ -1086,7 +1086,7 @@ namespace ModernRoute.WildData.Linq
                 string columnAlias = _AliasGenerator.GenerateAlias();
                 ReturnType columnType = returnType.GetReturnType();
 
-                IDictionary<string, ColumnReference> map = new Dictionary<string, ColumnReference>();
+                IDictionary<string, ColumnReference> map = new Dictionary<string, ColumnReference>(StringComparer.Ordinal);
                 map.Add(string.Empty, new ColumnReference(columnAlias, columnType));
 
                 ParameterExpression parameter = Expression.Parameter(typeof(IReaderWrapper));

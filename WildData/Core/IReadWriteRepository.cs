@@ -13,7 +13,5 @@ namespace ModernRoute.WildData.Core
         WriteResult Delete(T entity);
 
         WriteResult Delete(TKey id);
-
-        // Put additional common methods here
     }
 }
