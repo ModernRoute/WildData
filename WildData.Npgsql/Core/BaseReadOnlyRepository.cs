@@ -192,7 +192,7 @@ namespace ModernRoute.WildData.Npgsql.Core
                 query.Append(SyntaxHelper.WhereToken);
                 query.Append(SyntaxHelper.Space);
 
-                AppendColumn(query, nameof(IReadOnlyModel<TKey>.Id));
+                AppendIdColumn(query);
                 query.Append(SyntaxHelper.Space);
                 query.Append(SyntaxHelper.EqualSign);
                 query.Append(SyntaxHelper.Space);

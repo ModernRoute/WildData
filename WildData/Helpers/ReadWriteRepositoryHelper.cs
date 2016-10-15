@@ -16,6 +16,7 @@ namespace ModernRoute.WildData.Helpers
 
         private readonly Lazy<IReadOnlyDictionary<string, ColumnInfo>> _VolatileOnStoreMemberColumnMap;
         private readonly Lazy<IReadOnlyDictionary<string, ColumnInfo>> _VolatileOnUpdateMemberColumnMap;
+        private readonly Lazy<IReadOnlyDictionary<string, ColumnInfo>> _MemberColumnMapWithoutId;
 
         private IReadOnlyDictionary<string, ColumnInfo> GetVolatileOnStoreMemberColumnMap()
         {
@@ -25,6 +26,11 @@ namespace ModernRoute.WildData.Helpers
         private IReadOnlyDictionary<string, ColumnInfo> GetVolatileOnUpdateMemberColumnMap()
         {
             return MemberColumnMap.Where(kv => kv.Value.VolatileOnUpdate).ToDictionary(kv => kv.Key, kv => kv.Value, StringComparer.Ordinal).AsReadOnly();
+        }
+
+        private IReadOnlyDictionary<string, ColumnInfo> GetMemberColumnMapWithoutId()
+        {
+            return MemberColumnMap.Where(kv => !string.Equals(kv.Key, nameof(IReadOnlyModel<TKey>.Id))).ToDictionary(kv => kv.Key, kv => kv.Value, StringComparer.Ordinal).AsReadOnly();
         }
 
         public IReadOnlyDictionary<string, ColumnInfo> VolatileOnStoreMemberColumnMap
@@ -40,6 +46,14 @@ namespace ModernRoute.WildData.Helpers
             get
             {
                 return _VolatileOnUpdateMemberColumnMap.Value;
+            }
+        }
+
+        public IReadOnlyDictionary<string, ColumnInfo> MemberColumnMapWithoutId
+        {
+            get
+            {
+                return _MemberColumnMapWithoutId.Value;
             }
         }
 
@@ -95,7 +109,8 @@ namespace ModernRoute.WildData.Helpers
             SetParametersFromObject = CompileSetParametersFromObject(methodCalls, parametersParameter, entityParameter);
 
             _VolatileOnStoreMemberColumnMap = new Lazy<IReadOnlyDictionary<string, ColumnInfo>>(GetVolatileOnStoreMemberColumnMap);
-            _VolatileOnUpdateMemberColumnMap = new Lazy<IReadOnlyDictionary<string, ColumnInfo>>(GetVolatileOnUpdateMemberColumnMap);            
+            _VolatileOnUpdateMemberColumnMap = new Lazy<IReadOnlyDictionary<string, ColumnInfo>>(GetVolatileOnUpdateMemberColumnMap);
+            _MemberColumnMapWithoutId = new Lazy<IReadOnlyDictionary<string, ColumnInfo>>(GetMemberColumnMapWithoutId);
         }
 
         private static Action<IReaderWrapper, T> CompileUpdateVolatileColumns(IList<Expression> expressions, ParameterExpression readerWrapperParameter, ParameterExpression entityParameter)

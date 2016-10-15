@@ -36,7 +36,7 @@ namespace ModernRoute.WildData.Npgsql.Core
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            if (ReadWriteRepositoryHelper.MemberColumnMap.Count <= 1)
+            if (ReadWriteRepositoryHelper.MemberColumnMapWithoutId.Count <= 0)
             {
                 return WriteResult.Ok();
             }
@@ -195,13 +195,8 @@ namespace ModernRoute.WildData.Npgsql.Core
         {
             bool first = true;
 
-            foreach (KeyValuePair<string, ColumnInfo> columnInfo in ReadOnlyRepositoryHelper.MemberColumnMap)
+            foreach (KeyValuePair<string, ColumnInfo> columnInfo in ReadWriteRepositoryHelper.MemberColumnMapWithoutId)
             {
-                if (string.Equals(columnInfo.Key, nameof(IReadOnlyModel<TKey>.Id), StringComparison.Ordinal))
-                {
-                    continue;
-                }
-                
                 if (first)
                 {
                     first = false;
