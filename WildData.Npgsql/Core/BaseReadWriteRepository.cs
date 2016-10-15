@@ -126,7 +126,7 @@ namespace ModernRoute.WildData.Npgsql.Core
             {
                 DbParameterCollectionWrapper collectionWrapper = new DbParameterCollectionWrapper(command.Parameters);
 
-                ReadWriteRepositoryHelper.SetParametersFromObject(collectionWrapper, entity);
+                ReadWriteRepositoryHelper.SetParametersFromObjectExceptId(collectionWrapper, entity);
 
                 StringBuilder query = new StringBuilder();
 

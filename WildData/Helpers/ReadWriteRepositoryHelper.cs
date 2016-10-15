@@ -75,10 +75,17 @@ namespace ModernRoute.WildData.Helpers
             private set;
         }
 
+        public Action<IDbParameterCollectionWrapper, T> SetParametersFromObjectExceptId
+        {
+            get;
+            private set;
+        }
+
         public ReadWriteRepositoryHelper()
             : base()
         {
             IList<MethodCallExpression> methodCalls = new List<MethodCallExpression>();
+            IList<MethodCallExpression> methodCallsWithoutId = new List<MethodCallExpression>();
             IList<Expression> volatileOnUpdateExpression = new List<Expression>();
             IList<Expression> volatileOnStoreExpression = new List<Expression>();
 
@@ -91,7 +98,14 @@ namespace ModernRoute.WildData.Helpers
 
             foreach (KeyValuePair<string, ColumnInfo> memberColumnInfo in MemberColumnMap)
             {
-                methodCalls.Add(memberColumnInfo.Value.GetMethodCall(parametersParameter, entityParameter));
+                MethodCallExpression methodCall = memberColumnInfo.Value.GetMethodCall(parametersParameter, entityParameter);
+
+                methodCalls.Add(methodCall);
+
+                if (!string.Equals(memberColumnInfo.Key, nameof(IReadWriteModel<TKey>.Id), StringComparison.Ordinal))
+                {
+                    methodCallsWithoutId.Add(methodCall);
+                }
 
                 if (memberColumnInfo.Value.VolatileOnStore)
                 {
@@ -107,6 +121,7 @@ namespace ModernRoute.WildData.Helpers
             UpdateVolatileColumnsOnStore = CompileUpdateVolatileColumns(volatileOnStoreExpression, readerWrapperParameter, entityParameter);
             UpdateVolatileColumnsOnUpdate = CompileUpdateVolatileColumns(volatileOnUpdateExpression, readerWrapperParameter, entityParameter);
             SetParametersFromObject = CompileSetParametersFromObject(methodCalls, parametersParameter, entityParameter);
+            SetParametersFromObjectExceptId = CompileSetParametersFromObject(methodCallsWithoutId, parametersParameter, entityParameter);
 
             _VolatileOnStoreMemberColumnMap = new Lazy<IReadOnlyDictionary<string, ColumnInfo>>(GetVolatileOnStoreMemberColumnMap);
             _VolatileOnUpdateMemberColumnMap = new Lazy<IReadOnlyDictionary<string, ColumnInfo>>(GetVolatileOnUpdateMemberColumnMap);
@@ -123,7 +138,7 @@ namespace ModernRoute.WildData.Helpers
             return null;
         }
 
-        private static Action<IDbParameterCollectionWrapper, T> CompileSetParametersFromObject(IList<MethodCallExpression> methodCalls, ParameterExpression parametersParameter, ParameterExpression entityParameter)
+        private static Action<IDbParameterCollectionWrapper, T> CompileSetParametersFromObject(IEnumerable<MethodCallExpression> methodCalls, ParameterExpression parametersParameter, ParameterExpression entityParameter)
         {
             return Expression.Lambda<Action<IDbParameterCollectionWrapper, T>>(Expression.Block(methodCalls), new ParameterExpression[] { parametersParameter, entityParameter }).Compile();
         }

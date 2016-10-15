@@ -95,7 +95,7 @@ namespace ModernRoute.WildData.Helpers
             ReadSingleObject = CompileReadSingleObject(memberAssignments, readerWrapperParameter);
         }
 
-        private static Func<IReaderWrapper, T> CompileReadSingleObject(IList<MemberBinding> memberAssignments, ParameterExpression parameterExpression)
+        private static Func<IReaderWrapper, T> CompileReadSingleObject(IEnumerable<MemberBinding> memberAssignments, ParameterExpression parameterExpression)
         {
             return Expression.Lambda<Func<IReaderWrapper, T>>(Expression.MemberInit(Expression.New(typeof(T)), memberAssignments), new ParameterExpression[] { parameterExpression }).Compile();
         }
