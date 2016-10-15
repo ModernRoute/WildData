@@ -108,7 +108,7 @@ namespace ModernRoute.WildData.Npgsql.Core
             query.Append(SyntaxHelper.Quote);
         }
 
-        private void AppendColumn(StringBuilder query, ColumnInfo columnInfo)
+        protected void AppendColumn(StringBuilder query, ColumnInfo columnInfo)
         {
             query.Append(SyntaxHelper.Quote);
             query.Append(EscapeHelper.EscapeString(columnInfo.ColumnName));
@@ -120,11 +120,11 @@ namespace ModernRoute.WildData.Npgsql.Core
             AppendColumn(query, ReadOnlyRepositoryHelper.MemberColumnMap[memberName]);
         }
 
-        protected void AppendColumnList(StringBuilder query)
+        protected void AppendColumnList(StringBuilder query, IEnumerable<KeyValuePair<string, ColumnInfo>> columns)
         {
             bool first = true;
 
-            foreach (KeyValuePair<string, ColumnInfo> columnInfo in ReadOnlyRepositoryHelper.MemberColumnMap)
+            foreach (KeyValuePair<string, ColumnInfo> columnInfo in columns)
             {
                 if (first)
                 {
@@ -133,10 +133,16 @@ namespace ModernRoute.WildData.Npgsql.Core
                 else
                 {
                     query.Append(SyntaxHelper.Comma);
+                    query.Append(SyntaxHelper.Space);
                 }
 
                 AppendColumn(query, columnInfo.Value);
             }
+        }
+
+        protected void AppendColumnList(StringBuilder query)
+        {
+            AppendColumnList(query, ReadOnlyRepositoryHelper.MemberColumnMap);
         }
     }
 
