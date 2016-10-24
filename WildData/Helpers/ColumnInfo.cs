@@ -11,7 +11,6 @@ namespace ModernRoute.WildData.Helpers
     public abstract class ColumnInfo
     {
         internal const int ColumnIndexDefaultValue = 0;
-
         public const string ParameterNameBasePrefix = "@__p_";
 
         public string ColumnName
@@ -50,13 +49,13 @@ namespace ModernRoute.WildData.Helpers
             private set;
         }
 
-        public bool VolatileOnStore
+        public VolatileKind VolatileKindOnStore
         {
             get;
             private set;
         }
 
-        public bool VolatileOnUpdate
+        public VolatileKind VolatileKindOnUpdate
         {
             get;
             private set;
@@ -123,17 +122,17 @@ namespace ModernRoute.WildData.Helpers
             }
         }
 
-        internal ColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, bool volatileOnStore, bool volatileOnUpdate, int columnIndex = ColumnIndexDefaultValue)
+        internal ColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, VolatileKind volatileKindOnStore, VolatileKind volatileKindOnUpdate, int columnIndex = ColumnIndexDefaultValue)
         {
             ColumnName = columnName;
             ColumnSize = columnSize;
             NotNull = notNull;
             ReturnType = returnType;
             MemberType = memberType;
-            VolatileOnStore = volatileOnStore;
-            VolatileOnUpdate = volatileOnUpdate;
+            VolatileKindOnStore = volatileKindOnStore;
+            VolatileKindOnUpdate = volatileKindOnUpdate;
             ColumnIndex = columnIndex;
             ColumnReference = new ColumnReference(ColumnName, ReturnType);
         }
-    }
+    }    
 }

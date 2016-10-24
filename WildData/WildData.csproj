@@ -45,12 +45,14 @@
     <Compile Include="Attributes\IgnoreAttribute.cs" />
     <Compile Include="Attributes\NotNullAttribute.cs" />
     <Compile Include="Attributes\StorageAttribute.cs" />
+    <Compile Include="Attributes\BaseVolatileAttribute.cs" />
     <Compile Include="Attributes\VolatileOnStore.cs" />
     <Compile Include="Attributes\VolatileOnUpdate.cs" />
     <Compile Include="Configuration\ProviderDataImplCollection.cs" />
     <Compile Include="Configuration\ProviderDataImplElement.cs" />
     <Compile Include="Configuration\ProviderDataImplMapConfigSection.cs" />
     <Compile Include="Core\BaseDbParameterCollectionWrapper.cs" />
+    <Compile Include="Core\VolatileKind.cs" />
     <Compile Include="Helpers\ReadOnlyRepositoryHelper.cs" />
     <Compile Include="Helpers\ReadWriteRepositoryHelper.cs" />
     <Compile Include="Helpers\ColumnInfo.cs" />

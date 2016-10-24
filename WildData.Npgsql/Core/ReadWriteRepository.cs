@@ -9,7 +9,7 @@ using System.Text;
 
 namespace ModernRoute.WildData.Npgsql.Core
 {
-    abstract class BaseReadWriteRepository<T,TKey> : BaseReadOnlyRepository<T,TKey>, IReadWriteRepository<T,TKey> where T : IReadWriteModel<TKey>, new()
+    public class ReadWriteRepository<T,TKey> : ReadOnlyRepository<T,TKey>, IReadWriteRepository<T,TKey> where T : IReadWriteModel<TKey>, new()
     {
         protected ReadWriteRepositoryHelper<T,TKey> ReadWriteRepositoryHelper
         {
@@ -17,13 +17,13 @@ namespace ModernRoute.WildData.Npgsql.Core
             private set;
         }
 
-        public BaseReadWriteRepository(BaseSession session) 
+        public ReadWriteRepository(BaseSession session) 
             : this(session, new ReadWriteRepositoryHelper<T,TKey>())
         {
 
         }
 
-        protected BaseReadWriteRepository(BaseSession session, ReadWriteRepositoryHelper<T,TKey> helper)
+        protected ReadWriteRepository(BaseSession session, ReadWriteRepositoryHelper<T,TKey> helper)
             : base(session, helper)
         {
             ReadWriteRepositoryHelper = helper;
@@ -36,16 +36,11 @@ namespace ModernRoute.WildData.Npgsql.Core
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            if (ReadWriteRepositoryHelper.MemberColumnMapWithoutId.Count <= 0)
-            {
-                return WriteResult.Ok();
-            }
-
             using (NpgsqlCommand command = Session.CreateCommand())
             {
                 DbParameterCollectionWrapper collectionWrapper = new DbParameterCollectionWrapper(command.Parameters);
 
-                ReadWriteRepositoryHelper.SetParametersFromObject(collectionWrapper, entity);
+                ReadWriteRepositoryHelper.SetParametersFromObjectForUpdate(collectionWrapper, entity);
 
                 StringBuilder query = new StringBuilder();
 
@@ -102,6 +97,11 @@ namespace ModernRoute.WildData.Npgsql.Core
                             ReadWriteRepositoryHelper.UpdateVolatileColumnsOnUpdate(readerWrapper, entity);
                         }
 
+                        if (!updated)
+                        {
+                            throw new InvalidOperationException(""); // TODO: message
+                        }
+
                         return WriteResult.ForSingleRow(reader.RecordsAffected);
                     }
                 }
@@ -126,7 +126,7 @@ namespace ModernRoute.WildData.Npgsql.Core
             {
                 DbParameterCollectionWrapper collectionWrapper = new DbParameterCollectionWrapper(command.Parameters);
 
-                ReadWriteRepositoryHelper.SetParametersFromObjectExceptId(collectionWrapper, entity);
+                ReadWriteRepositoryHelper.SetParametersFromObjectForStore(collectionWrapper, entity);
 
                 StringBuilder query = new StringBuilder();
 
@@ -178,6 +178,11 @@ namespace ModernRoute.WildData.Npgsql.Core
                             ReadWriteRepositoryHelper.UpdateVolatileColumnsOnStore(readerWrapper, entity);
                         }
 
+                        if (!updated)
+                        {
+                            throw new InvalidOperationException(""); // TODO: message
+                        }
+
                         return WriteResult.ForSingleRow(reader.RecordsAffected);
                     }
                 }
@@ -197,6 +202,11 @@ namespace ModernRoute.WildData.Npgsql.Core
 
             foreach (KeyValuePair<string, ColumnInfo> columnInfo in ReadWriteRepositoryHelper.MemberColumnMapWithoutId)
             {
+                if (columnInfo.Value.VolatileKindOnUpdate == VolatileKind.Regular)
+                {
+                    continue;
+                }
+
                 if (first)
                 {
                     first = false;
@@ -212,6 +222,15 @@ namespace ModernRoute.WildData.Npgsql.Core
                 query.Append(SyntaxHelper.EqualSign);
                 query.Append(SyntaxHelper.Space);
                 query.Append(columnInfo.Value.ParamNameBase);
+            }
+
+            if (first)
+            {
+                AppendIdColumn(query);
+                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.EqualSign);
+                query.Append(SyntaxHelper.Space);
+                AppendIdColumn(query);
             }
         }
 
@@ -231,7 +250,7 @@ namespace ModernRoute.WildData.Npgsql.Core
                     query.Append(SyntaxHelper.Space);
                 }
 
-                if (columnInfo.Value.VolatileOnStore)
+                if (columnInfo.Value.VolatileKindOnStore == VolatileKind.Regular)
                 {
                     query.Append(SyntaxHelper.DefaultToken);
                 }

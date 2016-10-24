@@ -5,7 +5,7 @@ using System.Data;
 
 namespace ModernRoute.WildData.Npgsql.Core
 {
-    class Transaction : ITransaction
+    public class Transaction : ITransaction
     {
         public Transaction(BaseSession session, IsolationLevel level)
         {

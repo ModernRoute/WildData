@@ -6,7 +6,7 @@ using System.Data;
 
 namespace ModernRoute.WildData.Npgsql.Core
 {
-    public class BaseSession : IBaseSession
+    public abstract class BaseSession : IBaseSession
     {
         public BaseSession(string connectionString)
         {

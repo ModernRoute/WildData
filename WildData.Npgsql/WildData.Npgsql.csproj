@@ -44,8 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\BaseReadOnlyRepository.cs" />
-    <Compile Include="Core\BaseReadWriteRepository.cs" />
+    <Compile Include="Core\ReadOnlyRepository.cs" />
+    <Compile Include="Core\ReadWriteRepository.cs" />
     <Compile Include="Core\BaseSession.cs" />
     <Compile Include="Core\DbParameterCollectionWrapper.cs" />
     <Compile Include="Core\Transaction.cs" />

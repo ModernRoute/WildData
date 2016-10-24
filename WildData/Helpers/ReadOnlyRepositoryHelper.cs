@@ -118,15 +118,15 @@ namespace ModernRoute.WildData.Helpers
                 }
 
                 bool notNull = IsNotNull(field);
-                bool volatileOnStore = IsVolatileOnStore(field);
-                bool volatileOnUpdate = IsVolatileOnUpdate(field);
+                VolatileKind volatileKindOnStore = GetVolatileKindOnStore(field);
+                VolatileKind volatileKindOnUpdate = GetVolatileKindOnUpdate(field);
 
                 string columnName;
                 int columnSize;
 
                 GetColumnNameAndSize(field, out columnName, out columnSize);
 
-                columnInfoMap.Add(field.Name, new FieldColumnInfo(columnName, columnSize, notNull, returnType, fieldType, volatileOnStore, volatileOnUpdate, field));
+                columnInfoMap.Add(field.Name, new FieldColumnInfo(columnName, columnSize, notNull, returnType, fieldType, volatileKindOnStore, volatileKindOnUpdate, field));
             }
         }
 
@@ -156,15 +156,15 @@ namespace ModernRoute.WildData.Helpers
                 }
                 
                 bool notNull = IsNotNull(property);
-                bool volatileOnStore = IsVolatileOnStore(property);
-                bool volatileOnUpdate = IsVolatileOnUpdate(property);
+                VolatileKind volatileKindOnStore = GetVolatileKindOnStore(property);
+                VolatileKind volatileKindOnUpdate = GetVolatileKindOnUpdate(property);
 
                 string columnName;
                 int columnSize;
 
                 GetColumnNameAndSize(property, out columnName, out columnSize);
 
-                columnInfoMap.Add(property.Name, new PropertyColumnInfo(columnName, columnSize, notNull, returnType, propertyType, volatileOnStore, volatileOnUpdate, getMethod, setMethod));
+                columnInfoMap.Add(property.Name, new PropertyColumnInfo(columnName, columnSize, notNull, returnType, propertyType, volatileKindOnStore, volatileKindOnUpdate, getMethod, setMethod));
             }
         }
 
@@ -206,14 +206,26 @@ namespace ModernRoute.WildData.Helpers
             return IsCustomAttribute<IgnoreAttribute>(memberInfo);
         }
 
-        private static bool IsVolatileOnUpdate(MemberInfo memberInfo)
+        private static VolatileKind GetVolatileKindOnUpdate(MemberInfo memberInfo)
         {
-            return IsCustomAttribute<VolatileOnUpdate>(memberInfo);
+            return GetVolatileAttribute<VolatileOnUpdate>(memberInfo);
         }
 
-        private static bool IsVolatileOnStore(MemberInfo memberInfo)
+        private static VolatileKind GetVolatileKindOnStore(MemberInfo memberInfo)
         {
-            return IsCustomAttribute<VolatileOnStore>(memberInfo);
+            return GetVolatileAttribute<VolatileOnStore>(memberInfo);
+        }
+
+        private static VolatileKind GetVolatileAttribute<A>(MemberInfo memberInfo) where A : BaseVolatileAttribute
+        {
+            A volatileAttribute = Attribute.GetCustomAttribute(memberInfo, typeof(A)) as A;
+
+            if (volatileAttribute == null)
+            {
+                return VolatileKind.None;
+            }
+
+            return volatileAttribute.ForcePush ? VolatileKind.ForcePush : VolatileKind.Regular;
         }
 
         private static bool IsCustomAttribute<A>(MemberInfo memberInfo) where A : Attribute

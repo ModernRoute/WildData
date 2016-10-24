@@ -71,7 +71,7 @@ namespace ModernRoute.WildData.Test.Core
 
         public void StoreModel(Model model)
         {
-            _RepositoryHelper.SetParametersFromObject(_Wrapper, model);
+            _RepositoryHelper.SetParametersFromObjectForStore(_Wrapper, model);
             _Wrapper.AddParamNotNullBase(_RepositoryHelper.MemberColumnMap[nameof(model.Id)].ParamNameBase, RandomId);
             string value = RandomStringValue;
             _Wrapper.AddParamBase(_RepositoryHelper.MemberColumnMap[nameof(model.Field18)].ParamNameBase, value, value.Length);
@@ -80,7 +80,7 @@ namespace ModernRoute.WildData.Test.Core
 
         public void UpdateModel(Model model)
         {
-            _RepositoryHelper.SetParametersFromObject(_Wrapper, model);
+            _RepositoryHelper.SetParametersFromObjectForUpdate(_Wrapper, model);
             string value = RandomStringValue;
             _Wrapper.AddParamBase(_RepositoryHelper.MemberColumnMap[nameof(model.Field18)].ParamNameBase, value, value.Length);
             _RepositoryHelper.UpdateVolatileColumnsOnUpdate?.Invoke(_Wrapper, model);

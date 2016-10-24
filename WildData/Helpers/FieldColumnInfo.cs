@@ -14,8 +14,8 @@ namespace ModernRoute.WildData.Helpers
             private set;
         }
 
-        public FieldColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, bool volatileOnStore, bool volatileOnUpdate, FieldInfo field, int columnIndex = ColumnIndexDefaultValue)
-            : base(columnName, columnSize, notNull, returnType, memberType, volatileOnStore, volatileOnUpdate)
+        public FieldColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, VolatileKind volatileKindOnStore, VolatileKind volatileKindOnUpdate, FieldInfo field, int columnIndex = ColumnIndexDefaultValue)
+            : base(columnName, columnSize, notNull, returnType, memberType, volatileKindOnStore, volatileKindOnUpdate)
         {
             Field = field;
         }
@@ -49,7 +49,7 @@ namespace ModernRoute.WildData.Helpers
 
         internal override ColumnInfo Clone(int columnIndex)
         {
-            return new FieldColumnInfo(ColumnName, ColumnSize, NotNull, ReturnType, MemberType, VolatileOnStore, VolatileOnUpdate, Field, columnIndex);
+            return new FieldColumnInfo(ColumnName, ColumnSize, NotNull, ReturnType, MemberType, VolatileKindOnStore, VolatileKindOnUpdate, Field, columnIndex);
         }
     }
 }

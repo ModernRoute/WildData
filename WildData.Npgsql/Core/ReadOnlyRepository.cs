@@ -1,4 +1,5 @@
 ﻿using ModernRoute.WildData.Core;
+using ModernRoute.WildData.Extensions;
 using ModernRoute.WildData.Helpers;
 using ModernRoute.WildData.Linq;
 using ModernRoute.WildData.Models;
@@ -12,7 +13,7 @@ using System.Text;
 
 namespace ModernRoute.WildData.Npgsql.Core
 {
-    abstract class BaseReadOnlyRepository<T> : IReadOnlyRepository<T> where T : IReadOnlyModel, new()
+    public class ReadOnlyRepository<T> : IReadOnlyRepository<T> where T : IReadOnlyModel, new()
     {
         protected ReadOnlyRepositoryHelper<T> ReadOnlyRepositoryHelper
         {
@@ -20,12 +21,12 @@ namespace ModernRoute.WildData.Npgsql.Core
             private set;
         }
 
-        public BaseReadOnlyRepository(BaseSession session) : this(session, new ReadOnlyRepositoryHelper<T>())
+        public ReadOnlyRepository(BaseSession session) : this(session, new ReadOnlyRepositoryHelper<T>())
         {
 
         }
 
-        protected BaseReadOnlyRepository(BaseSession session, ReadOnlyRepositoryHelper<T> helper)
+        protected ReadOnlyRepository(BaseSession session, ReadOnlyRepositoryHelper<T> helper)
         {
             if (session == null)
             {
@@ -146,7 +147,7 @@ namespace ModernRoute.WildData.Npgsql.Core
         }
     }
 
-    abstract class BaseReadOnlyRepository<T,TKey> : BaseReadOnlyRepository<T>, IReadOnlyRepository<T,TKey> where T : IReadOnlyModel<TKey>, new()
+    public class ReadOnlyRepository<T,TKey> : ReadOnlyRepository<T>, IReadOnlyRepository<T,TKey> where T : IReadOnlyModel<TKey>, new()
     {
         protected ReadOnlyRepositoryHelper<T,TKey> ReadOnlyRepositoryHelperWithKey
         {
@@ -154,13 +155,13 @@ namespace ModernRoute.WildData.Npgsql.Core
             private set;
         }
 
-        public BaseReadOnlyRepository(BaseSession session)
+        public ReadOnlyRepository(BaseSession session)
             : this(session, new ReadOnlyRepositoryHelper<T, TKey>())
         {
 
         }
 
-        protected BaseReadOnlyRepository(BaseSession session, ReadOnlyRepositoryHelper<T,TKey> helper)
+        protected ReadOnlyRepository(BaseSession session, ReadOnlyRepositoryHelper<T,TKey> helper)
             : base(session, helper)
         {
             ReadOnlyRepositoryHelperWithKey = helper;
