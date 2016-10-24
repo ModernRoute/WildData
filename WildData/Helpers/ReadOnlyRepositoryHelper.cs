@@ -97,7 +97,29 @@ namespace ModernRoute.WildData.Helpers
 
         private static Func<IReaderWrapper, T> CompileReadSingleObject(IEnumerable<MemberBinding> memberAssignments, ParameterExpression parameterExpression)
         {
-            return Expression.Lambda<Func<IReaderWrapper, T>>(Expression.MemberInit(Expression.New(typeof(T)), memberAssignments), new ParameterExpression[] { parameterExpression }).Compile();
+            BlockExpression blockExpression = Expression.Block(GetCheckParameterNullExpression(parameterExpression), Expression.MemberInit(Expression.New(typeof(T)), memberAssignments));
+            return Expression.Lambda<Func<IReaderWrapper, T>>(blockExpression, new ParameterExpression[] { parameterExpression }).Compile();
+        }
+
+        protected static Expression GetCheckParameterNullExpression(ParameterExpression parameter)
+        {
+            if (parameter == null)
+            {
+                throw new ArgumentNullException(nameof(parameter));
+            }
+
+            ConditionalExpression ifThenExpression =
+                Expression.IfThen(
+                    Expression.Equal(parameter, Expression.Constant(null)),
+                    Expression.Throw(
+                            Expression.New(
+                                typeof(ArgumentNullException).GetConstructor(new Type[] { typeof(string) }),
+                                Expression.Constant(parameter.Name)
+                            )
+                    )
+                );
+
+            return ifThenExpression;
         }
 
         private static void CollectFieldInfo(Type itemType, IDictionary<string, ColumnInfo> columnInfoMap)
@@ -283,19 +305,9 @@ namespace ModernRoute.WildData.Helpers
                 });
             }
 
-            ConditionalExpression ifThenExpression =
-                Expression.IfThenElse(
-                    Expression.Equal(collectionParameter, Expression.Constant(null)),
-                    Expression.Throw(
-                            Expression.New(
-                                typeof(ArgumentNullException).GetConstructor(new Type[] { typeof(string) }),
-                                Expression.Constant(collectionParameter.Name)
-                            )
-                    ),
-                    methodCallExpression
-                );
+            BlockExpression blockExpression = Expression.Block(GetCheckParameterNullExpression(collectionParameter), methodCallExpression);
 
-            AddIdParameter = Expression.Lambda<Action<IDbParameterCollectionWrapper, TKey>>(ifThenExpression, new ParameterExpression[] { collectionParameter, valueParameter }).Compile();
+            AddIdParameter = Expression.Lambda<Action<IDbParameterCollectionWrapper, TKey>>(blockExpression, new ParameterExpression[] { collectionParameter, valueParameter }).Compile();
         }
 
         public string GetIdParamName()

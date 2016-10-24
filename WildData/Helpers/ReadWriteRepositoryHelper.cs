@@ -135,17 +135,35 @@ namespace ModernRoute.WildData.Helpers
 
         private static Action<IReaderWrapper, T> CompileUpdateVolatileColumns(IList<Expression> expressions, ParameterExpression readerWrapperParameter, ParameterExpression entityParameter)
         {
+            BlockExpression blockExpression;
+
             if (expressions.Count > 0)
             {
-                return Expression.Lambda<Action<IReaderWrapper, T>>(Expression.Block(expressions), new ParameterExpression[] { readerWrapperParameter, entityParameter }).Compile();
+                blockExpression = Expression.Block(GetCheckParameterNullExpression(readerWrapperParameter), GetCheckParameterNullExpression(entityParameter), Expression.Block(expressions));
+                
+            }
+            else
+            {
+                blockExpression = Expression.Block(GetCheckParameterNullExpression(readerWrapperParameter), GetCheckParameterNullExpression(entityParameter));
             }
 
-            return null;
+            return Expression.Lambda<Action<IReaderWrapper, T>>(blockExpression, new ParameterExpression[] { readerWrapperParameter, entityParameter }).Compile();
         }
 
-        private static Action<IDbParameterCollectionWrapper, T> CompileSetParametersFromObject(IEnumerable<MethodCallExpression> methodCalls, ParameterExpression parametersParameter, ParameterExpression entityParameter)
+        private static Action<IDbParameterCollectionWrapper, T> CompileSetParametersFromObject(IList<MethodCallExpression> methodCalls, ParameterExpression parametersParameter, ParameterExpression entityParameter)
         {
-            return Expression.Lambda<Action<IDbParameterCollectionWrapper, T>>(Expression.Block(methodCalls), new ParameterExpression[] { parametersParameter, entityParameter }).Compile();
+            BlockExpression blockExpression;
+
+            if (methodCalls.Count > 0)
+            {
+                blockExpression = Expression.Block(GetCheckParameterNullExpression(parametersParameter), GetCheckParameterNullExpression(entityParameter), Expression.Block(methodCalls));                                
+            }
+            else
+            {
+                blockExpression = Expression.Block(GetCheckParameterNullExpression(parametersParameter), GetCheckParameterNullExpression(entityParameter));
+            }
+
+            return Expression.Lambda<Action<IDbParameterCollectionWrapper, T>>(blockExpression, new ParameterExpression[] { parametersParameter, entityParameter }).Compile();
         }
     }
 }
