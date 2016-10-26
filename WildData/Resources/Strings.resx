@@ -279,4 +279,7 @@
   <data name="NoColumnsFoundForType" xml:space="preserve">
     <value>No columns found for type {0}.</value>
   </data>
+  <data name="TheModelIgnoresProperty" xml:space="preserve">
+    <value>The model ignores '{0}' property.</value>
+  </data>
 </root>

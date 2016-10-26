@@ -475,6 +475,15 @@ namespace ModernRoute.WildData.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The model ignores &apos;{0}&apos; property..
+        /// </summary>
+        internal static string TheModelIgnoresProperty {
+            get {
+                return ResourceManager.GetString("TheModelIgnoresProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to TryBinary is not supported..
         /// </summary>
         internal static string TryBinaryIsNotSupported {

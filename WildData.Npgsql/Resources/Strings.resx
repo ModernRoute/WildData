@@ -156,4 +156,7 @@
   <data name="UnaryExpressionTypeIsNotSupported" xml:space="preserve">
     <value>Unary expression type {0} is not supported.</value>
   </data>
+  <data name="ExactlyOneRowExpected" xml:space="preserve">
+    <value>Exactly one row expected.</value>
+  </data>
 </root>

@@ -266,7 +266,7 @@ namespace ModernRoute.WildData.Helpers
         {
             if (!MemberColumnMap.ContainsKey(nameof(IReadOnlyModel<TKey>.Id)))
             {
-                throw new InvalidOperationException(""); // TODO: message
+                throw new InvalidOperationException(string.Format(Strings.TheModelIgnoresProperty, nameof(IReadOnlyModel<TKey>.Id)));
             }
 
             InitAddIdParameter();

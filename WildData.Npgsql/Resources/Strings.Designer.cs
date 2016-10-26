@@ -97,6 +97,15 @@ namespace ModernRoute.WildData.Npgsql.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Exactly one row expected..
+        /// </summary>
+        internal static string ExactlyOneRowExpected {
+            get {
+                return ResourceManager.GetString("ExactlyOneRowExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Function type {0} is not supported..
         /// </summary>
         internal static string FunctionTypeIsNotSupported {

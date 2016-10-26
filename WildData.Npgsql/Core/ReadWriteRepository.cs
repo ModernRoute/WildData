@@ -2,6 +2,7 @@
 using ModernRoute.WildData.Helpers;
 using ModernRoute.WildData.Models;
 using ModernRoute.WildData.Npgsql.Helpers;
+using ModernRoute.WildData.Npgsql.Resources;
 using Npgsql;
 using System;
 using System.Collections.Generic;
@@ -82,25 +83,7 @@ namespace ModernRoute.WildData.Npgsql.Core
 
                     using (NpgsqlDataReader reader = command.ExecuteReader())
                     {
-                        ReaderWrapper readerWrapper = new ReaderWrapper(reader);
-
-                        bool updated = false;
-
-                        while (reader.Read())
-                        {
-                            if (updated)
-                            {
-                                throw new InvalidOperationException(""); // TODO: message
-                            }
-
-                            updated = true;
-                            ReadWriteRepositoryHelper.UpdateVolatileColumnsOnUpdate(readerWrapper, entity);
-                        }
-
-                        if (!updated)
-                        {
-                            throw new InvalidOperationException(""); // TODO: message
-                        }
+                        UpdateVolatileColumns(ReadWriteRepositoryHelper.UpdateVolatileColumnsOnUpdate, reader, entity);
 
                         return WriteResult.ForSingleRow(reader.RecordsAffected);
                     }
@@ -112,6 +95,30 @@ namespace ModernRoute.WildData.Npgsql.Core
 
                     return WriteResult.ForSingleRow(command.ExecuteNonQuery());
                 }
+            }
+        }
+
+        private void UpdateVolatileColumns(Action<IReaderWrapper, T> updateVolatileColumnsAction, NpgsqlDataReader reader, T entity)
+        {
+            ReaderWrapper readerWrapper = new ReaderWrapper(reader);
+
+            bool gotRow = false;
+
+            while (reader.Read())
+            {
+                if (gotRow)
+                {
+                    throw new InvalidOperationException(Strings.ExactlyOneRowExpected);
+                }
+
+                gotRow = true;
+
+                updateVolatileColumnsAction(readerWrapper, entity);
+            }
+
+            if (!gotRow)
+            {
+                throw new InvalidOperationException(Strings.ExactlyOneRowExpected);
             }
         }
 
@@ -163,25 +170,7 @@ namespace ModernRoute.WildData.Npgsql.Core
 
                     using (NpgsqlDataReader reader = command.ExecuteReader())
                     {
-                        ReaderWrapper readerWrapper = new ReaderWrapper(reader);
-
-                        bool updated = false;
-
-                        while (reader.Read())
-                        {
-                            if (updated)
-                            {
-                                throw new InvalidOperationException(""); // TODO: message
-                            }
-
-                            updated = true;
-                            ReadWriteRepositoryHelper.UpdateVolatileColumnsOnStore(readerWrapper, entity);
-                        }
-
-                        if (!updated)
-                        {
-                            throw new InvalidOperationException(""); // TODO: message
-                        }
+                        UpdateVolatileColumns(ReadWriteRepositoryHelper.UpdateVolatileColumnsOnStore, reader, entity);
 
                         return WriteResult.ForSingleRow(reader.RecordsAffected);
                     }
