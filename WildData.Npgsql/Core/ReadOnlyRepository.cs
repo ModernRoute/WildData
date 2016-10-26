@@ -12,7 +12,7 @@ using System.Text;
 
 namespace ModernRoute.WildData.Npgsql.Core
 {
-    public class ReadOnlyRepository<T> : IReadOnlyRepository<T> where T : IReadOnlyModel, new()
+    public class ReadOnlyRepository<T> : BaseRepository, IReadOnlyRepository<T> where T : IReadOnlyModel, new()
     {
         protected ReadOnlyRepositoryHelper<T> ReadOnlyRepositoryHelper
         {
@@ -25,26 +25,14 @@ namespace ModernRoute.WildData.Npgsql.Core
 
         }
 
-        protected ReadOnlyRepository(BaseSession session, ReadOnlyRepositoryHelper<T> helper)
+        protected ReadOnlyRepository(BaseSession session, ReadOnlyRepositoryHelper<T> helper) : base(session)
         {
-            if (session == null)
-            {
-                throw new ArgumentNullException(nameof(session));
-            }
-
             if (helper == null)
             {
                 throw new ArgumentNullException(nameof(helper));
             }
 
-            Session = session;
             ReadOnlyRepositoryHelper = helper;
-        }
-
-        protected BaseSession Session
-        {
-            get;
-            private set;
         }
 
         protected IEnumerable<T> ExecuteReader(NpgsqlCommand command)
