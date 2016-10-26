@@ -2,6 +2,7 @@
 {
     public interface IReadWriteModel<TKey> : IReadOnlyModel<TKey>
     {
-        bool IsNew { get; }
+        bool IsPersistent();
+        void SetPersistent(bool value);
     }
 }

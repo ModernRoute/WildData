@@ -81,6 +81,8 @@ namespace ModernRoute.WildData.Helpers
             private set;
         }
 
+        private Func<IReaderWrapper, T> _OldReadSingleObject;
+
         public ReadWriteRepositoryHelper()
             : base()
         {
@@ -131,7 +133,17 @@ namespace ModernRoute.WildData.Helpers
             _VolatileOnUpdateMemberColumnMap = new Lazy<IReadOnlyDictionary<string, ColumnInfo>>(GetVolatileOnUpdateMemberColumnMap);
 
             _MemberColumnMapWithoutId = new Lazy<IReadOnlyDictionary<string, ColumnInfo>>(GetMemberColumnMapWithoutId);
+
+            _OldReadSingleObject = ReadSingleObject;
+            ReadSingleObject = ReadSingleObjectInternal;
         }
+
+        private T ReadSingleObjectInternal(IReaderWrapper reader)
+        {
+            T entity = _OldReadSingleObject(reader);
+            entity.SetPersistent(true);
+            return entity;
+        } 
 
         private static Action<IReaderWrapper, T> CompileUpdateVolatileColumns(IList<Expression> expressions, ParameterExpression readerWrapperParameter, ParameterExpression entityParameter)
         {

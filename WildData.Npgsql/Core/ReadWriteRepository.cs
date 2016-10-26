@@ -37,6 +37,11 @@ namespace ModernRoute.WildData.Npgsql.Core
                 throw new ArgumentNullException(nameof(entity));
             }
 
+            if (!entity.IsPersistent())
+            {
+                throw new InvalidOperationException(""); // TODO: message
+            }
+
             using (NpgsqlCommand command = Session.CreateCommand())
             {
                 DbParameterCollectionWrapper collectionWrapper = new DbParameterCollectionWrapper(command.Parameters);
@@ -129,6 +134,11 @@ namespace ModernRoute.WildData.Npgsql.Core
                 throw new ArgumentNullException(nameof(entity));
             }
 
+            if (entity.IsPersistent())
+            {
+                throw new InvalidOperationException(""); // TODO: message
+            }
+
             using (NpgsqlCommand command = Session.CreateCommand())
             {
                 DbParameterCollectionWrapper collectionWrapper = new DbParameterCollectionWrapper(command.Parameters);
@@ -157,6 +167,8 @@ namespace ModernRoute.WildData.Npgsql.Core
 
                 query.Append(SyntaxHelper.RightParenthesis);
 
+                int rowsAffected;
+
                 if (ReadWriteRepositoryHelper.VolatileOnStoreMemberColumnMap.Count > 0)
                 {
                     query.Append(SyntaxHelper.Space);
@@ -172,7 +184,7 @@ namespace ModernRoute.WildData.Npgsql.Core
                     {
                         UpdateVolatileColumns(ReadWriteRepositoryHelper.UpdateVolatileColumnsOnStore, reader, entity);
 
-                        return WriteResult.ForSingleRow(reader.RecordsAffected);
+                        rowsAffected = reader.RecordsAffected;
                     }
                 }
                 else
@@ -180,8 +192,17 @@ namespace ModernRoute.WildData.Npgsql.Core
                     command.CommandText = query.ToString();
                     command.Prepare();
 
-                    return WriteResult.ForSingleRow(command.ExecuteNonQuery());
+                    rowsAffected = command.ExecuteNonQuery();
                 }
+
+                WriteResult result = WriteResult.ForSingleRow(rowsAffected);
+
+                if (result.ResultType == WriteResultType.Ok)
+                {
+                    entity.SetPersistent(true);
+                }
+
+                return result;
             }
         }
 
@@ -252,7 +273,7 @@ namespace ModernRoute.WildData.Npgsql.Core
 
         public WriteResult StoreOrUpdate(T entity)
         {
-            if (entity.IsNew)
+            if (!entity.IsPersistent())
             {
                 return Store(entity);
             }
@@ -296,12 +317,24 @@ namespace ModernRoute.WildData.Npgsql.Core
 
         public WriteResult Delete(T entity)
         {
+            if (!entity.IsPersistent())
+            {
+                throw new InvalidOperationException(""); // TODO: message
+            }
+
             if (entity == null)
             {
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            return Delete(entity.Id);
+            WriteResult result = Delete(entity.Id);
+
+            if (result.ResultType == WriteResultType.Ok)
+            {
+                entity.SetPersistent(false);
+            }
+
+            return result;
         }
     }
 }

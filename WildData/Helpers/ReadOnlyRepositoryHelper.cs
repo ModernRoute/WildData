@@ -24,7 +24,7 @@ namespace ModernRoute.WildData.Helpers
         public Func<IReaderWrapper, T> ReadSingleObject
         {
             get;
-            private set;
+            internal set;
         }
 
         public string StorageName

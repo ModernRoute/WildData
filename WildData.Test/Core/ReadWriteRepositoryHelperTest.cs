@@ -394,19 +394,13 @@ namespace ModernRoute.WildData.Test.Core
     [Storage("ModelTable")]
     class Model : IReadWriteModel<int>, IEquatable<Model>
     {
+        private bool _IsPersistent = false;
+
         [VolatileOnStore]
         public int Id
         {
             get;
             set;
-        }
-
-        public bool IsNew
-        {
-            get
-            {
-                return Id <= 0;
-            }
         }
 
         public int Property1
@@ -554,6 +548,16 @@ namespace ModernRoute.WildData.Test.Core
                 Field16 = Field16,
                 Field18 = Field18
             };
+        }
+
+        public bool IsPersistent()
+        {
+            return _IsPersistent;
+        }
+
+        public void SetPersistent(bool value)
+        {
+            _IsPersistent = value;
         }
     }
 }
