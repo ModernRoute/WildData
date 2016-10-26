@@ -2,7 +2,7 @@
 {
     public static class SyntaxHelper
     {
-        public const string DeleteToken = "Delete";
+        public const string DeleteToken = "DELETE";
         public const string SelectToken = "SELECT";
         public const string SetToken = "SET";
         public const string InsertToken = "INSERT INTO";
