@@ -159,4 +159,10 @@
   <data name="ExactlyOneRowExpected" xml:space="preserve">
     <value>Exactly one row expected.</value>
   </data>
+  <data name="TheEntityIsNotPersistent" xml:space="preserve">
+    <value>The entity is not persistent.</value>
+  </data>
+  <data name="TheEntityIsPersistent" xml:space="preserve">
+    <value>The entity is persistent.</value>
+  </data>
 </root>

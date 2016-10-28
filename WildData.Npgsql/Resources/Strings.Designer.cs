@@ -169,6 +169,24 @@ namespace ModernRoute.WildData.Npgsql.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The entity is not persistent..
+        /// </summary>
+        internal static string TheEntityIsNotPersistent {
+            get {
+                return ResourceManager.GetString("TheEntityIsNotPersistent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The entity is persistent..
+        /// </summary>
+        internal static string TheEntityIsPersistent {
+            get {
+                return ResourceManager.GetString("TheEntityIsPersistent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Transaction has been created in another session..
         /// </summary>
         internal static string TransactionHasBeenCreatedInAnotherSession {

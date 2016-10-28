@@ -39,7 +39,7 @@ namespace ModernRoute.WildData.Npgsql.Core
 
             if (!entity.IsPersistent())
             {
-                throw new InvalidOperationException(""); // TODO: message
+                throw new InvalidOperationException(Strings.TheEntityIsNotPersistent);
             }
 
             using (NpgsqlCommand command = Session.CreateCommand())
@@ -136,7 +136,7 @@ namespace ModernRoute.WildData.Npgsql.Core
 
             if (entity.IsPersistent())
             {
-                throw new InvalidOperationException(""); // TODO: message
+                throw new InvalidOperationException(Strings.TheEntityIsPersistent);
             }
 
             using (NpgsqlCommand command = Session.CreateCommand())
@@ -319,7 +319,7 @@ namespace ModernRoute.WildData.Npgsql.Core
         {
             if (!entity.IsPersistent())
             {
-                throw new InvalidOperationException(""); // TODO: message
+                throw new InvalidOperationException(Strings.TheEntityIsNotPersistent);
             }
 
             if (entity == null)
