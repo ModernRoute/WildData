@@ -1,4 +1,5 @@
 ﻿using ModernRoute.WildData.Core;
+using ModernRoute.WildData.Models;
 using ModernRoute.WildData.Npgsql.Resources;
 using Npgsql;
 using System;
@@ -89,12 +90,22 @@ namespace ModernRoute.WildData.Npgsql.Core
             }
         }
 
-        internal NpgsqlConnection Connection
+        protected ReadOnlyRepository<T> CreateReadOnlyRepository<T>() where T : IReadOnlyModel, new()
         {
-            get;
-            private set;
+            return new ReadOnlyRepository<T>(this);
         }
 
+        protected ReadOnlyRepository<T, TKey> CreateReadOnlyRepository<T, TKey>() where T : IReadOnlyModel<TKey>, new()
+        {
+            return new ReadOnlyRepository<T, TKey>(this);
+        }
+
+        protected ReadWriteRepository<T, TKey> CreateReadWriteRepository<T, TKey>() where T : IReadWriteModel<TKey>, new()
+        {
+            return new ReadWriteRepository<T, TKey>(this);
+        }
+
+        internal NpgsqlConnection Connection;
         internal Transaction InternalTransaction;
 
         #region IDisposable Support
