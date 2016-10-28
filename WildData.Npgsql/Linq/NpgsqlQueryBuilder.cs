@@ -15,7 +15,6 @@ namespace ModernRoute.WildData.Npgsql.Linq
 {
     class NpgsqlQueryBuilder
     {
-        private const char _ParameterPrefix = '@';
         private const char _ParameterNamePart = 'p';
         private const char _ParameterNamePartSeparator = '_';
         private const string _NoLimitValue = "ALL";
@@ -166,7 +165,6 @@ namespace ModernRoute.WildData.Npgsql.Linq
         private static string GetParameterAliasPrefix(int paramPrefixLength)
         {
             StringBuilder prefix = new StringBuilder();
-            prefix.Append(_ParameterPrefix);
             prefix.Append(ColumnInfo.ParameterNameBasePrefix);
             int length = Math.Max(0, paramPrefixLength - prefix.Length);
             
