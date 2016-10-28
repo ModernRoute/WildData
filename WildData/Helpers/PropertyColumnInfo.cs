@@ -8,29 +8,22 @@ namespace ModernRoute.WildData.Helpers
 {
     class PropertyColumnInfo : ColumnInfo
     {
-        public MethodInfo GetMethod
+        public PropertyInfo PropertyInfo
         {
             get;
             private set;
         }
 
-        public MethodInfo SetMethod
-        {
-            get;
-            private set;
-        }
-
-        public PropertyColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, VolatileKind volatileKindOnStore, VolatileKind volatileKindOnUpdate, MethodInfo getMethod, MethodInfo setMethod, int columnIndex = ColumnIndexDefaultValue)
+        public PropertyColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, VolatileKind volatileKindOnStore, VolatileKind volatileKindOnUpdate, PropertyInfo propertyInfo, int columnIndex = ColumnIndexDefaultValue)
             : base(columnName, columnSize, notNull, returnType, memberType, volatileKindOnStore, volatileKindOnUpdate, columnIndex)
         {
-            GetMethod = getMethod;
-            SetMethod = setMethod;
+            PropertyInfo = propertyInfo;
         }
 
         internal override MemberAssignment GetMemberAssignment(ParameterExpression readerWrapperParameter)
         {
             return Expression.Bind(
-                SetMethod,
+                PropertyInfo,
                 Expression.Call(
                     readerWrapperParameter,
                     ReturnType.GetMethodByReturnType(),
@@ -39,19 +32,14 @@ namespace ModernRoute.WildData.Helpers
             );
         }
 
-        internal override MemberExpression GetGetMemberExpression(ParameterExpression entityParameter)
+        internal override MemberExpression GetMemberExpression(ParameterExpression entityParameter)
         {
-            return Expression.Property(entityParameter, GetMethod);
-        }
-
-        internal override MemberExpression GetSetMemberExpression(ParameterExpression entityParameter)
-        {
-            return Expression.Property(entityParameter, SetMethod);
+            return Expression.Property(entityParameter, PropertyInfo);
         }
 
         internal override ColumnInfo Clone(int columnIndex)
         {
-            return new PropertyColumnInfo(ColumnName, ColumnSize, NotNull, ReturnType, MemberType, VolatileKindOnStore, VolatileKindOnUpdate, GetMethod, SetMethod, columnIndex);
+            return new PropertyColumnInfo(ColumnName, ColumnSize, NotNull, ReturnType, MemberType, VolatileKindOnStore, VolatileKindOnUpdate, PropertyInfo, columnIndex);
         }
     }
 }

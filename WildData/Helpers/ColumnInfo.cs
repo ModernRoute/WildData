@@ -79,7 +79,7 @@ namespace ModernRoute.WildData.Helpers
         {
             return Expression.MakeBinary(
                 ExpressionType.Assign,
-                GetSetMemberExpression(entityParameter),
+                GetMemberExpression(entityParameter),
                 Expression.Call(
                     readerWrapperParameter,
                     ReturnType.GetMethodByReturnType(),
@@ -89,9 +89,7 @@ namespace ModernRoute.WildData.Helpers
 
         internal abstract MemberAssignment GetMemberAssignment(ParameterExpression readerWrapperParameter);
 
-        internal abstract MemberExpression GetGetMemberExpression(ParameterExpression entityParameter);
-
-        internal abstract MemberExpression GetSetMemberExpression(ParameterExpression entityParameter);
+        internal abstract MemberExpression GetMemberExpression(ParameterExpression entityParameter);
 
         internal abstract ColumnInfo Clone(int columnIndex);
 
@@ -106,7 +104,7 @@ namespace ModernRoute.WildData.Helpers
                 return Expression.Call(parametersParameter, methodInfo, new Expression[]
                 {
                         Expression.Constant(ParamNameBase, typeof(string)),
-                        GetGetMemberExpression(entityParameter),
+                        GetMemberExpression(entityParameter),
                         Expression.Constant(ColumnSize, typeof(int))
                 });
             }
@@ -117,7 +115,7 @@ namespace ModernRoute.WildData.Helpers
                 return Expression.Call(parametersParameter, methodInfo, new Expression[]
                 {
                         Expression.Constant(ParamNameBase, typeof(string)),
-                        GetGetMemberExpression(entityParameter)
+                        GetMemberExpression(entityParameter)
                 });
             }
         }

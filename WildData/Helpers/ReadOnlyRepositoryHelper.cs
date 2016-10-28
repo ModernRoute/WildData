@@ -156,7 +156,7 @@ namespace ModernRoute.WildData.Helpers
         {
             foreach (PropertyInfo property in itemType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
-                if (IsIgnored(property))
+                if (IsIgnored(property) || !property.CanRead || !property.CanWrite)
                 {
                     continue;
                 }
@@ -186,7 +186,7 @@ namespace ModernRoute.WildData.Helpers
 
                 GetColumnNameAndSize(property, out columnName, out columnSize);
 
-                columnInfoMap.Add(property.Name, new PropertyColumnInfo(columnName, columnSize, notNull, returnType, propertyType, volatileKindOnStore, volatileKindOnUpdate, getMethod, setMethod));
+                columnInfoMap.Add(property.Name, new PropertyColumnInfo(columnName, columnSize, notNull, returnType, propertyType, volatileKindOnStore, volatileKindOnUpdate, property));
             }
         }
 

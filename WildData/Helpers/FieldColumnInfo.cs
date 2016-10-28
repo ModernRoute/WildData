@@ -32,19 +32,9 @@ namespace ModernRoute.WildData.Helpers
             );
         }
 
-        internal override MemberExpression GetGetMemberExpression(ParameterExpression entityParameter)
-        {
-            return GetMemberExpression(entityParameter);
-        }
-
-        private MemberExpression GetMemberExpression(ParameterExpression entityParameter)
+        internal override MemberExpression GetMemberExpression(ParameterExpression entityParameter)
         {
             return Expression.Field(entityParameter, Field);
-        }
-
-        internal override MemberExpression GetSetMemberExpression(ParameterExpression entityParameter)
-        {
-            return GetMemberExpression(entityParameter);
         }
 
         internal override ColumnInfo Clone(int columnIndex)

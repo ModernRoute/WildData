@@ -75,7 +75,7 @@ namespace ModernRoute.WildData.Test.Core
             _Wrapper.AddParamNotNullBase(_RepositoryHelper.MemberColumnMap[nameof(model.Id)].ParamNameBase, RandomId);
             string value = RandomStringValue;
             _Wrapper.AddParamBase(_RepositoryHelper.MemberColumnMap[nameof(model.Field18)].ParamNameBase, value, value.Length);
-            _RepositoryHelper.UpdateVolatileColumnsOnStore?.Invoke(_Wrapper, model);
+            _RepositoryHelper.UpdateVolatileColumnsOnStore(_Wrapper, model);
         }
 
         public void UpdateModel(Model model)
@@ -83,7 +83,7 @@ namespace ModernRoute.WildData.Test.Core
             _RepositoryHelper.SetParametersFromObjectForUpdate(_Wrapper, model);
             string value = RandomStringValue;
             _Wrapper.AddParamBase(_RepositoryHelper.MemberColumnMap[nameof(model.Field18)].ParamNameBase, value, value.Length);
-            _RepositoryHelper.UpdateVolatileColumnsOnUpdate?.Invoke(_Wrapper, model);
+            _RepositoryHelper.UpdateVolatileColumnsOnUpdate(_Wrapper, model);
         }
 
         public Model GetModel()
@@ -389,10 +389,22 @@ namespace ModernRoute.WildData.Test.Core
         }
     }
 
+    class PreModel
+    {
+        [Column("Field3", 255)]
+        public string Property3
+        {
+            get;
+            set;
+        }
 
+        [VolatileOnUpdate]
+        [VolatileOnStore]
+        public string Field18 = string.Empty;
+    }
 
     [Storage("ModelTable")]
-    class Model : IReadWriteModel<int>, IEquatable<Model>
+    class Model : PreModel, IReadWriteModel<int>, IEquatable<Model>
     {
         private bool _IsPersistent = false;
 
@@ -411,13 +423,6 @@ namespace ModernRoute.WildData.Test.Core
 
         [Column("Field2",255)]
         public string Property2
-        {
-            get;
-            set;
-        }
-
-        [Column("Field3", 255)]
-        public string Property3
         {
             get;
             set;
@@ -489,10 +494,6 @@ namespace ModernRoute.WildData.Test.Core
         internal string Field16 = string.Empty;
 
         public static string Field17 = string.Empty;
-
-        [VolatileOnUpdate]
-        [VolatileOnStore]
-        public string Field18 = string.Empty;
 
         public override bool Equals(object obj)
         {
