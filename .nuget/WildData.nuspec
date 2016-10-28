@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>WildData</id>
+    <version>0.1.0-alpha</version>
+    <title>WildData</title>
+    <authors>ModernRoute team</authors>
+    <licenseUrl>https://github.com/ModernRoute/WildData/blob/0.1.0/LICENSE</licenseUrl>
+    <projectUrl>http://github.com/ModernRoute/WildData</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>.NET Data Client Framework based on native queries and with optional Linq support.</description>
+    <language />
+    <tags>data linq</tags>
+  </metadata>
+  <files>
+    <file src="..\WildData\bin\Release\ModernRoute.WildData.dll" target="lib\net452" />
+  </files>  
+</package>

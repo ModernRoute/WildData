@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>WildData.Npgsql</id>
+    <version>0.1.0-alpha</version>
+    <title>WildData PostgreSQL Provider</title>
+    <authors>ModernRoute team</authors>
+    <licenseUrl>https://github.com/ModernRoute/WildData/blob/0.1.0/LICENSE</licenseUrl>
+    <projectUrl>http://github.com/ModernRoute/WildData</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>.NET Data Client Framework based on native queries and with optional Linq support (PostgreSQL implementation).</description>
+    <language />
+    <tags>data linq npgsql postgres postgresql</tags>
+    <dependencies>
+	<dependency id="WildData" version="0.1.0-alpha" />
+	<dependency id="Npgsql" version="3.1.8" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\WildData.Npgsql\bin\Release\ModernRoute.WildData.Npgsql.dll" target="lib\net452" />
+  </files>  
+</package>
