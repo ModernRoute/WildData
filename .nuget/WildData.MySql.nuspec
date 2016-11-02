@@ -1,22 +1,22 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>WildData.Npgsql</id>
+    <id>WildData.MySql</id>
     <version>0.1.1-alpha</version>
-    <title>WildData PostgreSQL Provider</title>
+    <title>WildData MySql Provider</title>
     <authors>ModernRoute team</authors>
     <licenseUrl>https://github.com/ModernRoute/WildData/blob/0.1.1-alpha/LICENSE</licenseUrl>
     <projectUrl>http://github.com/ModernRoute/WildData</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>.NET Data Client Framework based on native queries and with optional Linq support (PostgreSQL).</description>
+    <description>.NET Data Client Framework based on native queries and with optional Linq support (MySql).</description>
     <language />
-    <tags>Database Linq Npgsql Postgres PostgreSQL</tags>
+    <tags>Database Linq MySql</tags>
     <dependencies>
 	<dependency id="WildData" version="0.1.1-alpha" />
-	<dependency id="Npgsql" version="3.1.8" />
+	<dependency id="MySql.Data" version="6.9.9" />
     </dependencies>
   </metadata>
   <files>
-    <file src="..\WildData.Npgsql\bin\Release\ModernRoute.WildData.Npgsql.dll" target="lib\net452" />
+    <file src="..\WildData.MySql\bin\Release\ModernRoute.WildData.MySql.dll" target="lib\net452" />
   </files>  
 </package>

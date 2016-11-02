@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ModernRoute.WildData.Test")]
-[assembly: AssemblyDescription(".NET Data Client Tests")]
+[assembly: AssemblyTitle("ModernRoute.WildData.SqlServer")]
+[assembly: AssemblyDescription(".NET Data Client: SqlServer provider")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Modern Route")]
 [assembly: AssemblyProduct("WildData")]
@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("654c96a5-d419-48a0-8ed9-4bce247c931e")]
+[assembly: Guid("e6b2f39a-85aa-416a-b488-f4cb030e9aaf")]
 
 // Version information for an assembly consists of the following four values:
 //
