@@ -67,6 +67,13 @@ namespace ModernRoute.WildData.Npgsql.Core
         {
             StringBuilder query = new StringBuilder();
 
+            AppendSelectFrom(query);
+
+            return GetQuery(query.ToString());
+        }
+
+        protected void AppendSelectFrom(StringBuilder query)
+        {
             query.Append(SyntaxHelper.SelectToken);
             query.Append(SyntaxHelper.Space);
 
@@ -77,8 +84,6 @@ namespace ModernRoute.WildData.Npgsql.Core
             query.Append(SyntaxHelper.Space);
 
             AppendStorageName(query);
-
-            return GetQuery(query.ToString());
         }
 
         protected void AppendStorageName(StringBuilder query)
@@ -165,16 +170,7 @@ namespace ModernRoute.WildData.Npgsql.Core
             {
                 StringBuilder query = new StringBuilder();
 
-                query.Append(SyntaxHelper.SelectToken);
-                query.Append(SyntaxHelper.Space);
-
-                AppendColumnList(query);
-
-                query.Append(SyntaxHelper.Space);
-                query.Append(SyntaxHelper.FromToken);
-                query.Append(SyntaxHelper.Space);
-
-                AppendStorageName(query);
+                AppendSelectFrom(query);
 
                 query.Append(SyntaxHelper.Space);
                 query.Append(SyntaxHelper.WhereToken);
