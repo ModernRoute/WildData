@@ -10,7 +10,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>.NET Data Client Framework based on native queries and with optional Linq support.</description>
     <language />
-    <tags>data linq</tags>
+    <tags>Database Linq</tags>
   </metadata>
   <files>
     <file src="..\WildData\bin\Release\ModernRoute.WildData.dll" target="lib\net452" />
