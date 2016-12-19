@@ -41,13 +41,13 @@ using (ISession session = NinjectKernelObject.Get<ISession>())
 
 Tip: if you using the project inside the MVC/WebApi controller it's a good idea to create a base one and implement lazy session initialization. Thus, you always have a session inside your controller and it would be created on demand. Thus, if one of your methods doesn't use a session the attempt to establish database connection would not be done!
 
-# Attributes
+## Attributes
 Use the [attributes](https://github.com/ModernRoute/WildData/tree/master/WildData/Attributes) to customize behaviour (documentation will be added soon.)
 
-# Custom queries
+## Custom queries
 Custom queries should be constructed using a bunch of embedded helpers!
 
-# Roadmap (future plans)
+## Roadmap (future plans)
 - Stable API.
 - More databases support (MySQL, SqlServer are the first candidates).
 - Bulk insert/update/delete.
@@ -56,7 +56,7 @@ Custom queries should be constructed using a bunch of embedded helpers!
 - Tests
 - Better implementation for Linq support.
 
-# Linq
+## Linq
 - Linq support are limited for ordering/filtering/pagination purposes. The native queries must be used instead. The purpose of Linq support is to be compatible with .NET OData libraries. 
 
 Project is in early stage (alpha) and it's not recommended for production use. However, pull requests are welcome!
