@@ -16,7 +16,6 @@ https://github.com/foxanthony/MeteringDevices/tree/master/Application/Data
 4. Introduce [Session](https://github.com/foxanthony/MeteringDevices/blob/master/Application/Data/Session.cs) class that extends the BaseSession and implements your ISession interface defined above.
 5. Are you using dependency injection? No problem! See Ninject [example](https://github.com/foxanthony/MeteringDevices/blob/master/Application/Data/Register.cs).
 6. Use your ISession and repositories like this:
-
 ```csharp
 using (ISession session = NinjectKernelObject.Get<ISession>())
 {
