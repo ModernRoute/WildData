@@ -36,7 +36,8 @@ using (ISession session = NinjectKernelObject.Get<ISession>())
    session.MeteringValueRepository.Delete(meteringValue); 
 }
 ```
-7. Enjoy!
+
+Enjoy!
 
 Tip: if you using the project inside the MVC/WebApi controller it's a good idea to create a base one and implement lazy session initialization. Thus, you always have a session inside your controller and it would be created on demand. Thus, if one of your methods doesn't use a session the attempt to establish database connection would not be done!
 
