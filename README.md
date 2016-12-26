@@ -7,14 +7,14 @@ https://www.nuget.org/packages/WildData
 https://www.nuget.org/packages/WildData.Npgsql
 
 ## Example of use
-https://github.com/foxanthony/MeteringDevices/tree/master/Application/Data
+https://github.com/apodavalov/MeteringDevices/tree/master/Application/Data
 
 ## Quick start
 1. Install nuget packages.
-2. Create your models (examples: [one](https://github.com/foxanthony/MeteringDevices/blob/master/Application/Data/MeteringValue.cs), [two](https://github.com/foxanthony/MeteringDevices/blob/master/Application/Data/CurrentMeteringValue.cs)). The models must implement one of the following interfaces: IReadOnlyModel, IReadOnlyModel\<TKey\>, IReadWriteModel\<TKey\>.
-3. Describe your [session](https://github.com/foxanthony/MeteringDevices/blob/master/Application/Data/ISession.cs) interface. Put your repositories into the session. If you need just base CRUD functions (Store, Update, Delete) you even **don't** have to extend your repositories!
-4. Introduce [Session](https://github.com/foxanthony/MeteringDevices/blob/master/Application/Data/Session.cs) class that extends the BaseSession and implements your ISession interface defined above.
-5. Are you using dependency injection? No problem! See Ninject [example](https://github.com/foxanthony/MeteringDevices/blob/master/Application/Data/Register.cs).
+2. Create your models (examples: [one](https://github.com/apodavalov/MeteringDevices/blob/master/Application/Data/MeteringValue.cs), [two](https://github.com/apodavalov/MeteringDevices/blob/master/Application/Data/CurrentMeteringValue.cs)). The models must implement one of the following interfaces: IReadOnlyModel, IReadOnlyModel\<TKey\>, IReadWriteModel\<TKey\>.
+3. Describe your [session](https://github.com/apodavalov/MeteringDevices/blob/master/Application/Data/ISession.cs) interface. Put your repositories into the session. If you need just base CRUD functions (Store, Update, Delete) you even **don't** have to extend your repositories!
+4. Introduce [Session](https://github.com/apodavalov/MeteringDevices/blob/master/Application/Data/Session.cs) class that extends the BaseSession and implements your ISession interface defined above.
+5. Are you using dependency injection? No problem! See Ninject [example](https://github.com/apodavalov/MeteringDevices/blob/master/Application/Data/Register.cs).
 6. Use your ISession and repositories like this:
 ```csharp
 using (ISession session = NinjectKernelObject.Get<ISession>())
