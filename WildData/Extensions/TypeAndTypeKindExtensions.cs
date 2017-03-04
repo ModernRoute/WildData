@@ -196,6 +196,18 @@ namespace ModernRoute.WildData.Extensions
             }
         }
 
+        public static bool TryGetTypeKind(this Type type, out TypeKind typeKind)
+        {   
+            if (_Map.ContainsKey(type))
+            {
+                typeKind = _Map[type];
+                return true;
+            }
+
+            typeKind = TypeKind.Null;
+            return false;
+        }
+
         public static TypeKind GetTypeKind(this Type type)
         {
             if (type == null)

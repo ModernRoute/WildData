@@ -144,7 +144,7 @@ namespace ModernRoute.WildData.Helpers
                 Type fieldType = field.FieldType;
                 TypeKind typeKind;
 
-                if (!TryGetTypeKind(fieldType, out typeKind))
+                if (!fieldType.TryGetTypeKind(out typeKind))
                 {
                     continue;
                 }
@@ -182,7 +182,7 @@ namespace ModernRoute.WildData.Helpers
                 Type propertyType = property.PropertyType;
                 TypeKind typeKind;
 
-                if (!TryGetTypeKind(propertyType, out typeKind))
+                if (!propertyType.TryGetTypeKind(out typeKind))
                 {
                     continue;
                 }
@@ -197,20 +197,6 @@ namespace ModernRoute.WildData.Helpers
                 GetColumnNameAndSize(property, out columnName, out columnSize);
 
                 columnInfoMap.Add(property.Name, new PropertyColumnInfo(columnName, columnSize, notNull, typeKind, propertyType, volatileKindOnStore, volatileKindOnUpdate, property));
-            }
-        }
-
-        private static bool TryGetTypeKind(Type type, out TypeKind typeKind)
-        {
-            try
-            {
-                typeKind = type.GetTypeKind();
-                return true;
-            }
-            catch (NotSupportedException)
-            {
-                typeKind = TypeKind.Null;
-                return false;
             }
         }
 
