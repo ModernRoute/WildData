@@ -58,6 +58,7 @@
     <Compile Include="Core\BaseSession.cs" />
     <Compile Include="Core\DbParameterCollectionWrapper.cs" />
     <Compile Include="Core\Transaction.cs" />
+    <Compile Include="Core\TypeKindInfo.cs" />
     <Compile Include="Extensions\GenericExtensions.cs" />
     <Compile Include="Extensions\NpgsqlExceptionExtensions.cs" />
     <Compile Include="Helpers\EscapeHelper.cs" />

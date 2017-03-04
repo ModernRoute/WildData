@@ -65,7 +65,7 @@ namespace ModernRoute.WildData.Test.Core
 
         public TestRepository()
         {
-            _RepositoryHelper = new ReadWriteRepositoryHelper<Model, int>();
+            _RepositoryHelper = new ReadWriteRepositoryHelper<Model, int>(new SupportEverythingTypeKindInfo());
             _Wrapper = new Wrapper();
         }
 
@@ -89,6 +89,14 @@ namespace ModernRoute.WildData.Test.Core
         public Model GetModel()
         {
             return _RepositoryHelper.ReadSingleObject(_Wrapper);
+        }
+    }
+
+    class SupportEverythingTypeKindInfo : ITypeKindInfo
+    {
+        public bool IsSupported(TypeKind typeKind)
+        {
+            return true;
         }
     }
 

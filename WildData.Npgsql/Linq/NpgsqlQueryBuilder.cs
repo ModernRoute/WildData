@@ -486,7 +486,7 @@ namespace ModernRoute.WildData.Npgsql.Linq
             _QueryString.Append(_RightBracketToken);            
         }
 
-        private string GetBinaryOperator(BinaryOperationType binaryOperationType, ReturnType returnType)
+        private string GetBinaryOperator(BinaryOperationType binaryOperationType, TypeKind typeKind)
         {
             switch (binaryOperationType)
             {
@@ -741,58 +741,58 @@ namespace ModernRoute.WildData.Npgsql.Linq
             _QueryString.Append(_RightBracketToken);
         }
 
-        private bool IsRelatedTypes(ReturnType targetType, ReturnType originType)
+        private bool IsRelatedTypes(TypeKind targetType, TypeKind originType)
         {
             switch (targetType)
             {
-                case ReturnType.Binary:
-                    return originType == ReturnType.Binary;
-                case ReturnType.Boolean:
-                case ReturnType.BooleanNullable:
-                    return originType == ReturnType.Boolean || originType == ReturnType.BooleanNullable;
-                case ReturnType.Int64:
-                case ReturnType.Int64Nullable:
-                    return originType == ReturnType.Int64 || originType == ReturnType.Int64Nullable ||
-                           originType == ReturnType.Int32 || originType == ReturnType.Int32Nullable ||
-                           originType == ReturnType.Int16 || originType == ReturnType.Int16Nullable;
-                case ReturnType.Int32:
-                case ReturnType.Int32Nullable:
-                    return originType == ReturnType.Int32 || originType == ReturnType.Int32Nullable ||
-                           originType == ReturnType.Int16 || originType == ReturnType.Int16Nullable;
-                case ReturnType.Int16:
-                case ReturnType.Int16Nullable:
-                    return originType == ReturnType.Int16 || originType == ReturnType.Int16Nullable;
-                case ReturnType.String:
-                    return originType == ReturnType.String;
-                case ReturnType.Guid:
-                case ReturnType.GuidNullable:
-                    return originType == ReturnType.Guid || originType == ReturnType.GuidNullable;
-                case ReturnType.DateTime:
-                case ReturnType.DateTimeNullable:
-                case ReturnType.DateTimeOffset:
-                case ReturnType.DateTimeOffsetNullable:
-                    return originType == ReturnType.DateTime || originType == ReturnType.DateTimeNullable ||
-                           originType == ReturnType.DateTimeOffset || originType == ReturnType.DateTimeOffsetNullable;
-                case ReturnType.Double:
-                case ReturnType.DoubleNullable:
-                    return originType == ReturnType.Double || originType == ReturnType.DoubleNullable ||
-                           originType == ReturnType.Float || originType == ReturnType.FloatNullable;
-                case ReturnType.Float:
-                case ReturnType.FloatNullable:
-                    return originType == ReturnType.Float || originType == ReturnType.FloatNullable;
-                case ReturnType.Decimal:
-                case ReturnType.DecimalNullable:
-                    return originType == ReturnType.Decimal || originType == ReturnType.DecimalNullable;
-                case ReturnType.Null:
+                case TypeKind.Binary:
+                    return originType == TypeKind.Binary;
+                case TypeKind.Boolean:
+                case TypeKind.BooleanNullable:
+                    return originType == TypeKind.Boolean || originType == TypeKind.BooleanNullable;
+                case TypeKind.Int64:
+                case TypeKind.Int64Nullable:
+                    return originType == TypeKind.Int64 || originType == TypeKind.Int64Nullable ||
+                           originType == TypeKind.Int32 || originType == TypeKind.Int32Nullable ||
+                           originType == TypeKind.Int16 || originType == TypeKind.Int16Nullable;
+                case TypeKind.Int32:
+                case TypeKind.Int32Nullable:
+                    return originType == TypeKind.Int32 || originType == TypeKind.Int32Nullable ||
+                           originType == TypeKind.Int16 || originType == TypeKind.Int16Nullable;
+                case TypeKind.Int16:
+                case TypeKind.Int16Nullable:
+                    return originType == TypeKind.Int16 || originType == TypeKind.Int16Nullable;
+                case TypeKind.String:
+                    return originType == TypeKind.String;
+                case TypeKind.Guid:
+                case TypeKind.GuidNullable:
+                    return originType == TypeKind.Guid || originType == TypeKind.GuidNullable;
+                case TypeKind.DateTime:
+                case TypeKind.DateTimeNullable:
+                case TypeKind.DateTimeOffset:
+                case TypeKind.DateTimeOffsetNullable:
+                    return originType == TypeKind.DateTime || originType == TypeKind.DateTimeNullable ||
+                           originType == TypeKind.DateTimeOffset || originType == TypeKind.DateTimeOffsetNullable;
+                case TypeKind.Double:
+                case TypeKind.DoubleNullable:
+                    return originType == TypeKind.Double || originType == TypeKind.DoubleNullable ||
+                           originType == TypeKind.Float || originType == TypeKind.FloatNullable;
+                case TypeKind.Float:
+                case TypeKind.FloatNullable:
+                    return originType == TypeKind.Float || originType == TypeKind.FloatNullable;
+                case TypeKind.Decimal:
+                case TypeKind.DecimalNullable:
+                    return originType == TypeKind.Decimal || originType == TypeKind.DecimalNullable;
+                case TypeKind.Null:
                     return true;
                 default:
                     return false;
             }
         }
 
-        private void VisitConvertFunction(QueryExpression queryExpression, ReturnType returnType)
+        private void VisitConvertFunction(QueryExpression queryExpression, TypeKind typeKind)
         {
-            if (IsRelatedTypes(returnType, queryExpression.Type))
+            if (IsRelatedTypes(typeKind, queryExpression.Type))
             {
                 VisitQueryExpression(queryExpression);
                 return;
@@ -804,48 +804,48 @@ namespace ModernRoute.WildData.Npgsql.Linq
             _QueryString.Append(_SpaceToken);
             _QueryString.Append(_AsToken);
             _QueryString.Append(_SpaceToken);
-            _QueryString.Append(GetNpgsqlType(returnType));
+            _QueryString.Append(GetNpgsqlType(typeKind));
             _QueryString.Append(_RightBracketToken);
         }
 
-        private string GetNpgsqlType(ReturnType returnType)
+        private string GetNpgsqlType(TypeKind typeKind)
         {
-            switch (returnType)
+            switch (typeKind)
             {
-                case ReturnType.Boolean:
-                case ReturnType.BooleanNullable:
+                case TypeKind.Boolean:
+                case TypeKind.BooleanNullable:
                     return _BooleanTypeToken;
-                case ReturnType.Int64:
-                case ReturnType.Int64Nullable:
+                case TypeKind.Int64:
+                case TypeKind.Int64Nullable:
                     return _BigIntTypeToken;
-                case ReturnType.Int32:
-                case ReturnType.Int32Nullable:
+                case TypeKind.Int32:
+                case TypeKind.Int32Nullable:
                     return _IntegerTypeToken;
-                case ReturnType.Int16:
-                case ReturnType.Int16Nullable:
+                case TypeKind.Int16:
+                case TypeKind.Int16Nullable:
                     return _SmallIntTypeToken;
-                case ReturnType.String:
+                case TypeKind.String:
                     return _TextTypeToken;
-                case ReturnType.DateTime:
-                case ReturnType.DateTimeNullable:
+                case TypeKind.DateTime:
+                case TypeKind.DateTimeNullable:
                     return _TimestampTypeToken;
-                case ReturnType.DateTimeOffset:
-                case ReturnType.DateTimeOffsetNullable:
+                case TypeKind.DateTimeOffset:
+                case TypeKind.DateTimeOffsetNullable:
                     return _TimestampTzTypeToken;
-                case ReturnType.Double:
-                case ReturnType.DoubleNullable:
+                case TypeKind.Double:
+                case TypeKind.DoubleNullable:
                     return _DoubleTypeToken;
-                case ReturnType.Float:
-                case ReturnType.FloatNullable:
+                case TypeKind.Float:
+                case TypeKind.FloatNullable:
                     return _RealTypeToken;
-                case ReturnType.Decimal:
-                case ReturnType.DecimalNullable:
+                case TypeKind.Decimal:
+                case TypeKind.DecimalNullable:
                     return _NumericTypeToken;
-                case ReturnType.Guid:
-                case ReturnType.GuidNullable:
+                case TypeKind.Guid:
+                case TypeKind.GuidNullable:
                     return _UuidTypeToken;
                 default:
-                    throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture,Resources.Strings.ConvertingToTypeIsNotSupported, returnType));
+                    throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture,Resources.Strings.ConvertingToTypeIsNotSupported, typeKind));
             }
         }
 
@@ -975,7 +975,7 @@ namespace ModernRoute.WildData.Npgsql.Linq
 
         private void VisitConstant(QueryConstant queryConstant)
         {
-            if (queryConstant.Type == ReturnType.Null)
+            if (queryConstant.Type == TypeKind.Null)
             {
                 _QueryString.Append(_NullToken);
                 return;
@@ -987,112 +987,112 @@ namespace ModernRoute.WildData.Npgsql.Linq
 
             switch (queryConstant.Type)
             {
-                case ReturnType.Binary:
+                case TypeKind.Binary:
                     byte[] byteBinaryValue = queryConstant.GetBytes();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.Bytea, byteBinaryValue?.Length ?? 0);
                     parameter.Value = GetDbValue(byteBinaryValue);
                     break;
-                case ReturnType.Boolean:
+                case TypeKind.Boolean:
                     bool boolValue = queryConstant.GetBoolean();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.Boolean);
                     parameter.Value = boolValue;
                     break;
-                case ReturnType.BooleanNullable:
+                case TypeKind.BooleanNullable:
                     bool? boolNullableValue = queryConstant.GetBooleanNullable();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.Boolean);
                     parameter.Value = GetDbValue(boolNullableValue);
                     break;
-                case ReturnType.Int16:
+                case TypeKind.Int16:
                     short shortValue = queryConstant.GetShort();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.Smallint);
                     parameter.Value = shortValue;
                     break;
-                case ReturnType.Int16Nullable:
+                case TypeKind.Int16Nullable:
                     short? shortNullableValue = queryConstant.GetShortNullable();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.Smallint);
                     parameter.Value = GetDbValue(shortNullableValue);
                     break;
-                case ReturnType.Int32:
+                case TypeKind.Int32:
                     int intValue = queryConstant.GetInt();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.Integer);
                     parameter.Value = intValue;
                     break;
-                case ReturnType.Int32Nullable:
+                case TypeKind.Int32Nullable:
                     int? intNullableValue = queryConstant.GetIntNullable();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.Integer);
                     parameter.Value = GetDbValue(intNullableValue);
                     break;
-                case ReturnType.Int64:
+                case TypeKind.Int64:
                     long longValue = queryConstant.GetLong();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.Bigint);
                     parameter.Value = longValue;
                     break;
-                case ReturnType.Int64Nullable:
+                case TypeKind.Int64Nullable:
                     long? longNullableValue = queryConstant.GetLongNullable();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.Bigint);
                     parameter.Value = GetDbValue(longNullableValue);
                     break;
-                case ReturnType.Float:
+                case TypeKind.Float:
                     float floatValue = queryConstant.GetFloat();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.Real);
                     parameter.Value = floatValue;
                     break;
-                case ReturnType.FloatNullable:
+                case TypeKind.FloatNullable:
                     float? floatNullableValue = queryConstant.GetFloatNullable();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.Real);
                     parameter.Value = GetDbValue(floatNullableValue);
                     break;
-                case ReturnType.Double:
+                case TypeKind.Double:
                     double doubleValue = queryConstant.GetDouble();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.Double);
                     parameter.Value = doubleValue;
                     break;
-                case ReturnType.DoubleNullable:
+                case TypeKind.DoubleNullable:
                     double? doubleNullableValue = queryConstant.GetDoubleNullable();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.Double);
                     parameter.Value = GetDbValue(doubleNullableValue);
                     break;
-                case ReturnType.Decimal:
+                case TypeKind.Decimal:
                     decimal decimalValue = queryConstant.GetDecimal();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.Numeric);
                     parameter.Value = decimalValue;
                     break;
-                case ReturnType.DecimalNullable:
+                case TypeKind.DecimalNullable:
                     decimal? decimalNullableValue = queryConstant.GetDecimalNullable();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.Numeric);
                     parameter.Value = GetDbValue(decimalNullableValue);
                     break;
-                case ReturnType.DateTime:
+                case TypeKind.DateTime:
                     DateTime dateTimeValue = queryConstant.GetDateTime();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.Timestamp);
                     parameter.Value = dateTimeValue;
                     break;
-                case ReturnType.DateTimeNullable:
+                case TypeKind.DateTimeNullable:
                     DateTime? dateTimeNullableValue = queryConstant.GetDateTimeNullable();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.Timestamp);
                     parameter.Value = GetDbValue(dateTimeNullableValue);
                     break;
-                case ReturnType.DateTimeOffset:
+                case TypeKind.DateTimeOffset:
                     DateTimeOffset dateTimeOffsetValue = queryConstant.GetDateTimeOffset();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.TimestampTZ);
                     parameter.Value = dateTimeOffsetValue;
                     break;
-                case ReturnType.DateTimeOffsetNullable:
+                case TypeKind.DateTimeOffsetNullable:
                     DateTimeOffset? dateTimeOffsetNullableValue = queryConstant.GetDateTimeOffsetNullable();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.TimestampTZ);
                     parameter.Value = GetDbValue(dateTimeOffsetNullableValue);
                     break;
-                case ReturnType.Guid:
+                case TypeKind.Guid:
                     Guid guidValue = queryConstant.GetGuid();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.Uuid);
                     parameter.Value = guidValue;
                     break;
-                case ReturnType.GuidNullable:
+                case TypeKind.GuidNullable:
                     Guid? guidNullableValue = queryConstant.GetGuidNullable();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.Uuid);
                     parameter.Value = GetDbValue(guidNullableValue);
                     break;
-                case ReturnType.String:
+                case TypeKind.String:
                     string stringValue = queryConstant.GetString();
                     parameter = new NpgsqlParameter(parameterAlias, NpgsqlDbType.Varchar, stringValue == null ? 0 : stringValue.Length);
                     parameter.Value = GetDbValue(stringValue);

@@ -14,8 +14,8 @@ namespace ModernRoute.WildData.Helpers
             private set;
         }
 
-        public PropertyColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, VolatileKind volatileKindOnStore, VolatileKind volatileKindOnUpdate, PropertyInfo propertyInfo, int columnIndex = ColumnIndexDefaultValue)
-            : base(columnName, columnSize, notNull, returnType, memberType, volatileKindOnStore, volatileKindOnUpdate, columnIndex)
+        public PropertyColumnInfo(string columnName, int columnSize, bool notNull, TypeKind typeKind, Type memberType, VolatileKind volatileKindOnStore, VolatileKind volatileKindOnUpdate, PropertyInfo propertyInfo, int columnIndex = ColumnIndexDefaultValue)
+            : base(columnName, columnSize, notNull, typeKind, memberType, volatileKindOnStore, volatileKindOnUpdate, columnIndex)
         {
             PropertyInfo = propertyInfo;
         }
@@ -26,7 +26,7 @@ namespace ModernRoute.WildData.Helpers
                 PropertyInfo,
                 Expression.Call(
                     readerWrapperParameter,
-                    ReturnType.GetMethodByReturnType(),
+                    TypeKind.GetMethodByTypeKind(),
                     new Expression[] { Expression.Constant(ColumnIndex, typeof(int)) }
                 )
             );
@@ -39,7 +39,7 @@ namespace ModernRoute.WildData.Helpers
 
         internal override ColumnInfo Clone(int columnIndex)
         {
-            return new PropertyColumnInfo(ColumnName, ColumnSize, NotNull, ReturnType, MemberType, VolatileKindOnStore, VolatileKindOnUpdate, PropertyInfo, columnIndex);
+            return new PropertyColumnInfo(ColumnName, ColumnSize, NotNull, TypeKind, MemberType, VolatileKindOnStore, VolatileKindOnUpdate, PropertyInfo, columnIndex);
         }
     }
 }

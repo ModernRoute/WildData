@@ -11,8 +11,8 @@ namespace ModernRoute.WildData.Linq
             private set;
         }
 
-        public ColumnReference(string columnName, ReturnType returnType)
-            : base(returnType)
+        public ColumnReference(string columnName, TypeKind typeKind)
+            : base(typeKind)
         {
             if (columnName == null)
             {

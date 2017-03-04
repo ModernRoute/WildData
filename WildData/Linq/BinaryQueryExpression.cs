@@ -23,8 +23,8 @@ namespace ModernRoute.WildData.Linq
             private set;
         }
 
-        public BinaryQueryExpression(QueryExpression left, QueryExpression right, ReturnType returnType, BinaryOperationType binaryOperationType) 
-            : base(returnType)
+        public BinaryQueryExpression(QueryExpression left, QueryExpression right, TypeKind typeKind, BinaryOperationType binaryOperationType) 
+            : base(typeKind)
         {
             if (left == null)
             {

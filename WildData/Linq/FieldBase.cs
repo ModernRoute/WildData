@@ -17,7 +17,7 @@ namespace ModernRoute.WildData.Linq
             private set;
         }
 
-        public abstract ReturnType ColumnType
+        public abstract TypeKind ColumnType
         {
             get;
         }

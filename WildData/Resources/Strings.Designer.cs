@@ -430,15 +430,6 @@ namespace ModernRoute.WildData.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Return type {0} is not supported..
-        /// </summary>
-        internal static string ReturnTypeIsNotSupported {
-            get {
-                return ResourceManager.GetString("ReturnTypeIsNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to RuntimeVariables are not supported..
         /// </summary>
         internal static string RuntimeVariablesAreNotSupported {
@@ -507,6 +498,15 @@ namespace ModernRoute.WildData.Resources {
         internal static string TypeIsNotSupported {
             get {
                 return ResourceManager.GetString("TypeIsNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type {0} is not supported..
+        /// </summary>
+        internal static string TypeKindIsNotSupported {
+            get {
+                return ResourceManager.GetString("TypeKindIsNotSupported", resourceCulture);
             }
         }
         

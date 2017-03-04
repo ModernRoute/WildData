@@ -14,8 +14,8 @@ namespace ModernRoute.WildData.Helpers
             private set;
         }
 
-        public FieldColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, VolatileKind volatileKindOnStore, VolatileKind volatileKindOnUpdate, FieldInfo field, int columnIndex = ColumnIndexDefaultValue)
-            : base(columnName, columnSize, notNull, returnType, memberType, volatileKindOnStore, volatileKindOnUpdate)
+        public FieldColumnInfo(string columnName, int columnSize, bool notNull, TypeKind typeKind, Type memberType, VolatileKind volatileKindOnStore, VolatileKind volatileKindOnUpdate, FieldInfo field, int columnIndex = ColumnIndexDefaultValue)
+            : base(columnName, columnSize, notNull, typeKind, memberType, volatileKindOnStore, volatileKindOnUpdate)
         {
             Field = field;
         }
@@ -26,7 +26,7 @@ namespace ModernRoute.WildData.Helpers
                 Field,
                 Expression.Call(
                     readerWrapperParameter,
-                    ReturnType.GetMethodByReturnType(),
+                    TypeKind.GetMethodByTypeKind(),
                     new Expression[] { Expression.Constant(ColumnIndex, typeof(int)) }
                 )
             );
@@ -39,7 +39,7 @@ namespace ModernRoute.WildData.Helpers
 
         internal override ColumnInfo Clone(int columnIndex)
         {
-            return new FieldColumnInfo(ColumnName, ColumnSize, NotNull, ReturnType, MemberType, VolatileKindOnStore, VolatileKindOnUpdate, Field, columnIndex);
+            return new FieldColumnInfo(ColumnName, ColumnSize, NotNull, TypeKind, MemberType, VolatileKindOnStore, VolatileKindOnUpdate, Field, columnIndex);
         }
     }
 }

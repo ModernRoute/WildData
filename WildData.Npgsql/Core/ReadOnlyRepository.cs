@@ -20,7 +20,7 @@ namespace ModernRoute.WildData.Npgsql.Core
             private set;
         }
 
-        public ReadOnlyRepository(BaseSession session) : this(session, new ReadOnlyRepositoryHelper<T>())
+        public ReadOnlyRepository(BaseSession session) : this(session, new ReadOnlyRepositoryHelper<T>(new TypeKindInfo()))
         {
 
         }
@@ -148,7 +148,7 @@ namespace ModernRoute.WildData.Npgsql.Core
         }
 
         public ReadOnlyRepository(BaseSession session)
-            : this(session, new ReadOnlyRepositoryHelper<T, TKey>())
+            : this(session, new ReadOnlyRepositoryHelper<T, TKey>(new TypeKindInfo()))
         {
 
         }

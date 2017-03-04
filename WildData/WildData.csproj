@@ -60,6 +60,8 @@
     <Compile Include="Configuration\ProviderDataImplElement.cs" />
     <Compile Include="Configuration\ProviderDataImplMapConfigSection.cs" />
     <Compile Include="Core\BaseDbParameterCollectionWrapper.cs" />
+    <Compile Include="Core\ITypeKindInfo.cs" />
+    <Compile Include="Core\TypeKindNotSupported.cs" />
     <Compile Include="Core\VolatileKind.cs" />
     <Compile Include="Helpers\ReadOnlyRepositoryHelper.cs" />
     <Compile Include="Helpers\ReadWriteRepositoryHelper.cs" />
@@ -75,7 +77,7 @@
     <Compile Include="Core\WriteResultType.cs" />
     <Compile Include="Extensions\IDictionaryExtensions.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
-    <Compile Include="Extensions\TypeAndReturnTypeExtensions.cs" />
+    <Compile Include="Extensions\TypeAndTypeKindExtensions.cs" />
     <Compile Include="Helpers\EnumerateHelper.cs" />
     <Compile Include="Core\IAliasGenerator.cs" />
     <Compile Include="Core\IReaderWrapper.cs" />
@@ -95,7 +97,7 @@
     <Compile Include="Linq\QueryConstant.cs" />
     <Compile Include="Linq\QueryExpression.cs" />
     <Compile Include="Linq\QueryExpressionType.cs" />
-    <Compile Include="Core\ReturnType.cs" />
+    <Compile Include="Core\TypeKind.cs" />
     <Compile Include="Linq\SourceReference.cs" />
     <Compile Include="Linq\UnaryOperationType.cs" />
     <Compile Include="Linq\UnaryQueryExpression.cs" />
@@ -125,6 +127,7 @@
     <EmbeddedResource Include="Resources\Strings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -9,7 +9,7 @@ namespace ModernRoute.WildData.Linq
 
         }
 
-        public override ReturnType ColumnType
+        public override TypeKind ColumnType
         {
             get 
             {

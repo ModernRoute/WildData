@@ -19,14 +19,14 @@ namespace ModernRoute.WildData.Linq
             private set;
         }
 
-        public FunctionCall(FunctionType functionType, ReturnType returnType, params QueryExpression[] args)
-            : this(functionType, returnType, (IEnumerable<QueryExpression>)args) 
+        public FunctionCall(FunctionType functionType, TypeKind typeKind, params QueryExpression[] args)
+            : this(functionType, typeKind, (IEnumerable<QueryExpression>)args) 
         {
 
         }
 
-        public FunctionCall(FunctionType functionType, ReturnType returnType, IEnumerable<QueryExpression> arguments = null)
-            : base(returnType)
+        public FunctionCall(FunctionType functionType, TypeKind typeKind, IEnumerable<QueryExpression> arguments = null)
+            : base(typeKind)
         {
             FunctionType = functionType;
             

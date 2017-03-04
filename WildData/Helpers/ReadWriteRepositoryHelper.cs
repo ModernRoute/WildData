@@ -83,8 +83,8 @@ namespace ModernRoute.WildData.Helpers
 
         private Func<IReaderWrapper, T> _OldReadSingleObject;
 
-        public ReadWriteRepositoryHelper()
-            : base()
+        public ReadWriteRepositoryHelper(ITypeKindInfo typeKindInfo)
+            : base(typeKindInfo)
         {
             IList<MethodCallExpression> methodCallsForUpdate = new List<MethodCallExpression>();
             IList<MethodCallExpression> methodCallsForStore = new List<MethodCallExpression>();

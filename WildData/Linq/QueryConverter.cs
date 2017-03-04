@@ -67,16 +67,16 @@ namespace ModernRoute.WildData.Linq
             }
         }
 
-        private static void CheckQueryExpressionReturnType(QueryExpression queryExpression, ReturnType returnType)
+        private static void CheckQueryExpressionTypeKind(QueryExpression queryExpression, TypeKind typeKind)
         {
-            CheckReturnType(queryExpression.Type, returnType);
+            CheckTypeKind(queryExpression.Type, typeKind);
         }
 
-        private static void CheckReturnType(ReturnType returnType,  ReturnType expectedReturnType)
+        private static void CheckTypeKind(TypeKind typeKind,  TypeKind expectedTypeKind)
         {   
-            if (expectedReturnType != returnType)
+            if (expectedTypeKind != typeKind)
             {
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Resources.Strings.UnexpectedTreeElementTypeWith1Expected, returnType, expectedReturnType));
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Resources.Strings.UnexpectedTreeElementTypeWith1Expected, typeKind, expectedTypeKind));
             }
         }
 
@@ -150,8 +150,8 @@ namespace ModernRoute.WildData.Linq
                     binaryOperationType = BinaryOperationType.Remainder;
                     break;
                 case ExpressionType.And:
-                    if ((left.Type == ReturnType.Boolean || left.Type == ReturnType.BooleanNullable) &&
-                        (right.Type == ReturnType.Boolean || right.Type == ReturnType.BooleanNullable))
+                    if ((left.Type == TypeKind.Boolean || left.Type == TypeKind.BooleanNullable) &&
+                        (right.Type == TypeKind.Boolean || right.Type == TypeKind.BooleanNullable))
                     {
                         binaryOperationType = BinaryOperationType.And;
                     }
@@ -164,8 +164,8 @@ namespace ModernRoute.WildData.Linq
                     binaryOperationType = BinaryOperationType.And;
                     break;
                 case ExpressionType.Or:
-                    if ((left.Type == ReturnType.Boolean || left.Type == ReturnType.BooleanNullable) &&
-                        (right.Type == ReturnType.Boolean || right.Type == ReturnType.BooleanNullable))
+                    if ((left.Type == TypeKind.Boolean || left.Type == TypeKind.BooleanNullable) &&
+                        (right.Type == TypeKind.Boolean || right.Type == TypeKind.BooleanNullable))
                     {
                         binaryOperationType = BinaryOperationType.Or;
                     }
@@ -178,8 +178,8 @@ namespace ModernRoute.WildData.Linq
                     binaryOperationType = BinaryOperationType.Or;
                     break;
                 case ExpressionType.ExclusiveOr:
-                    if ((left.Type == ReturnType.Boolean || left.Type == ReturnType.BooleanNullable) &&
-                        (right.Type == ReturnType.Boolean || right.Type == ReturnType.BooleanNullable))
+                    if ((left.Type == TypeKind.Boolean || left.Type == TypeKind.BooleanNullable) &&
+                        (right.Type == TypeKind.Boolean || right.Type == TypeKind.BooleanNullable))
                     {
                         binaryOperationType = BinaryOperationType.ExclusiveOr;
                     }
@@ -213,19 +213,19 @@ namespace ModernRoute.WildData.Linq
                     throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture,Resources.Strings.BinaryOperationIsNotSupported, node.NodeType));
             }
 
-            ReturnType binaryExpressionReturnType = node.Type.GetReturnType();
+            TypeKind binaryExpressionTypeKind = node.Type.GetTypeKind();
 
             QueryExpression queryExpression;
 
-            if (left.Type == ReturnType.String && right.Type == ReturnType.String && binaryOperationType == BinaryOperationType.Add)
+            if (left.Type == TypeKind.String && right.Type == TypeKind.String && binaryOperationType == BinaryOperationType.Add)
             {
                 IEnumerable<QueryExpression> arguments = GetConcatArguments(left, right);
 
-                queryExpression = new FunctionCall(FunctionType.Concat, binaryExpressionReturnType, arguments);
+                queryExpression = new FunctionCall(FunctionType.Concat, binaryExpressionTypeKind, arguments);
             }
             else
             {
-                queryExpression = new BinaryQueryExpression(left, right, binaryExpressionReturnType, binaryOperationType);
+                queryExpression = new BinaryQueryExpression(left, right, binaryExpressionTypeKind, binaryOperationType);
             }
 
             _ElementsStack.Push(queryExpression);
@@ -401,11 +401,11 @@ namespace ModernRoute.WildData.Linq
                 {
                     case nameof(Nullable<int>.HasValue):
                         BinaryQueryExpression binaryExpression =
-                            new BinaryQueryExpression(source, QueryConstant.CreateNull(), ReturnType.Boolean, BinaryOperationType.Equal);
+                            new BinaryQueryExpression(source, QueryConstant.CreateNull(), TypeKind.Boolean, BinaryOperationType.Equal);
                         _ElementsStack.Push(binaryExpression);
                         return;
                     case nameof(Nullable<int>.Value):
-                        ReturnType typeToConvertTo = node.Expression.Type.GetGenericArguments()[0].GetReturnType();
+                        TypeKind typeToConvertTo = node.Expression.Type.GetGenericArguments()[0].GetTypeKind();
                         FunctionCall functionCall = new FunctionCall(FunctionType.Convert, typeToConvertTo, source);
                         _ElementsStack.Push(functionCall);
                         return;
@@ -416,7 +416,7 @@ namespace ModernRoute.WildData.Linq
                 switch (node.Member.Name)
                 {
                     case nameof(string.Length):
-                        FunctionCall functionCall = new FunctionCall(FunctionType.Length, ReturnType.Int32, source);
+                        FunctionCall functionCall = new FunctionCall(FunctionType.Length, TypeKind.Int32, source);
                         _ElementsStack.Push(functionCall);
                         return;
                 }
@@ -436,7 +436,7 @@ namespace ModernRoute.WildData.Linq
 
                 if (functionType.HasValue)
                 {
-                    FunctionCall functionCall = new FunctionCall(functionType.Value, ReturnType.Int32, source);
+                    FunctionCall functionCall = new FunctionCall(functionType.Value, TypeKind.Int32, source);
                     _ElementsStack.Push(functionCall);
                     return;
                 }
@@ -672,7 +672,7 @@ namespace ModernRoute.WildData.Linq
             return node;
         }
 
-        private void ConvertIsNullOrEmpty(IReadOnlyList<Expression> args, Type returnType, FunctionType functionType)
+        private void ConvertIsNullOrEmpty(IReadOnlyList<Expression> args, Type type, FunctionType functionType)
         {
             if (args.Count != 1)
             {
@@ -681,18 +681,18 @@ namespace ModernRoute.WildData.Linq
 
             Visit(args[0]);
             QueryExpression value = PopQueryExpression();
-            CheckQueryExpressionReturnType(value, ReturnType.String);
+            CheckQueryExpressionTypeKind(value, TypeKind.String);
 
-            ReturnType functionReturnType = returnType.GetReturnType();
+            TypeKind functionTypeKind = type.GetTypeKind();
 
-            CheckReturnType(functionReturnType, ReturnType.Boolean);
+            CheckTypeKind(functionTypeKind, TypeKind.Boolean);
 
-            FunctionCall functionCall = new FunctionCall(functionType, functionReturnType, value);
+            FunctionCall functionCall = new FunctionCall(functionType, functionTypeKind, value);
 
             _ElementsStack.Push(functionCall);
         }
 
-        private void ConvertConcat(IReadOnlyList<Expression> args, Type returnType, FunctionType functionType)
+        private void ConvertConcat(IReadOnlyList<Expression> args, Type type, FunctionType functionType)
         {
             if (args.Count < 1)
             {
@@ -718,24 +718,24 @@ namespace ModernRoute.WildData.Linq
                 Visit(expression);
 
                 QueryExpression arg = PopQueryExpression();
-                CheckQueryExpressionReturnType(arg, ReturnType.String);
+                CheckQueryExpressionTypeKind(arg, TypeKind.String);
 
                 arguments.Add(arg);
             }
 
-            ReturnType functionReturnType = returnType.GetReturnType();
+            TypeKind functionTypeKind = type.GetTypeKind();
 
-            FunctionCall functionCall = new FunctionCall(functionType, functionReturnType, GetConcatArguments(arguments.ToArray()));
+            FunctionCall functionCall = new FunctionCall(functionType, functionTypeKind, GetConcatArguments(arguments.ToArray()));
 
             _ElementsStack.Push(functionCall);
         }
 
-        private void ConvertIndexOf(IReadOnlyList<Expression> args, Expression source, Type returnType, FunctionType functionType)
+        private void ConvertIndexOf(IReadOnlyList<Expression> args, Expression source, Type type, FunctionType functionType)
         {
             Visit(source);
 
             QueryExpression value = PopQueryExpression();
-            CheckQueryExpressionReturnType(value, ReturnType.String);
+            CheckQueryExpressionTypeKind(value, TypeKind.String);
 
             if (args.Count < 1 || args.Count > 3)
             {
@@ -744,9 +744,9 @@ namespace ModernRoute.WildData.Linq
 
             Visit(args[0]);
             QueryExpression arg0 = PopQueryExpression();
-            CheckQueryExpressionReturnType(arg0, ReturnType.String);
+            CheckQueryExpressionTypeKind(arg0, TypeKind.String);
 
-            ReturnType functionReturnType = returnType.GetReturnType();
+            TypeKind functionTypeKind = type.GetTypeKind();
 
             QueryExpression arg1 = null;
 
@@ -754,7 +754,7 @@ namespace ModernRoute.WildData.Linq
             {
                 Visit(args[1]);
                 arg1 = PopQueryExpression();
-                CheckQueryExpressionReturnType(arg1, ReturnType.Int32);
+                CheckQueryExpressionTypeKind(arg1, TypeKind.Int32);
             }
 
             QueryExpression arg2 = null;
@@ -763,13 +763,13 @@ namespace ModernRoute.WildData.Linq
             {
                 Visit(args[2]);
                 arg2 = PopQueryExpression();
-                CheckQueryExpressionReturnType(arg2, ReturnType.Int32);
+                CheckQueryExpressionTypeKind(arg2, TypeKind.Int32);
             }
 
             FunctionCall functionCall = 
                 new FunctionCall(
                     functionType, 
-                    functionReturnType, 
+                    functionTypeKind, 
                     Enumerate.Sequence<QueryExpression>(value,arg0,arg1,arg2).Where(arg => arg != null)
                 );
             
@@ -781,59 +781,59 @@ namespace ModernRoute.WildData.Linq
             throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Resources.Strings.FunctionDoesntTakeArguments, argumentCount, functionType));
         }
 
-        private void ConvertReplace(IReadOnlyList<Expression> args, Expression source, Type returnType, FunctionType functionType)
+        private void ConvertReplace(IReadOnlyList<Expression> args, Expression source, Type type, FunctionType functionType)
         {
             Visit(source);
 
             QueryExpression value = PopQueryExpression();
-            CheckQueryExpressionReturnType(value, ReturnType.String);
+            CheckQueryExpressionTypeKind(value, TypeKind.String);
 
             Visit(args[0]);
 
             QueryExpression arg0 = PopQueryExpression();
-            CheckQueryExpressionReturnType(arg0, ReturnType.String);
+            CheckQueryExpressionTypeKind(arg0, TypeKind.String);
 
             QueryExpression arg1 = PopQueryExpression();
-            CheckQueryExpressionReturnType(arg1, ReturnType.String);
+            CheckQueryExpressionTypeKind(arg1, TypeKind.String);
 
-            ReturnType functionReturnType = returnType.GetReturnType();
+            TypeKind functionTypeKind = type.GetTypeKind();
 
-            FunctionCall functionCall = new FunctionCall(functionType, functionReturnType, value, arg0, arg1);
+            FunctionCall functionCall = new FunctionCall(functionType, functionTypeKind, value, arg0, arg1);
 
             _ElementsStack.Push(functionCall);
         }
 
-        private void ConvertStringFunction(Expression source, Type returnType, FunctionType functionType)
+        private void ConvertStringFunction(Expression source, Type type, FunctionType functionType)
         {
             Visit(source);
 
             QueryExpression valueToTrim = PopQueryExpression();
-            CheckQueryExpressionReturnType(valueToTrim, ReturnType.String);
+            CheckQueryExpressionTypeKind(valueToTrim, TypeKind.String);
 
-            ReturnType functionReturnType = returnType.GetReturnType();
+            TypeKind functionTypeKind = type.GetTypeKind();
 
-            CheckReturnType(functionReturnType, ReturnType.String);
+            CheckTypeKind(functionTypeKind, TypeKind.String);
 
-            FunctionCall functionCall = new FunctionCall(functionType, functionReturnType, valueToTrim);
+            FunctionCall functionCall = new FunctionCall(functionType, functionTypeKind, valueToTrim);
 
             _ElementsStack.Push(functionCall);
         }
 
-        private void ConvertStringStringFunction(IReadOnlyList<Expression> args, Expression source, Type returnType, FunctionType functionType)
+        private void ConvertStringStringFunction(IReadOnlyList<Expression> args, Expression source, Type type, FunctionType functionType)
         {
             Visit(source);
             Visit(args[0]);
 
             QueryExpression valueToSearch = PopQueryExpression();
-            CheckQueryExpressionReturnType(valueToSearch, ReturnType.String);
+            CheckQueryExpressionTypeKind(valueToSearch, TypeKind.String);
             QueryExpression stringToSearch = PopQueryExpression();
-            CheckQueryExpressionReturnType(stringToSearch, ReturnType.String);
+            CheckQueryExpressionTypeKind(stringToSearch, TypeKind.String);
 
-            ReturnType functionReturnType = returnType.GetReturnType();
+            TypeKind functionTypeKind = type.GetTypeKind();
 
-            CheckReturnType(functionReturnType, ReturnType.Boolean);
+            CheckTypeKind(functionTypeKind, TypeKind.Boolean);
 
-            FunctionCall functionCall = new FunctionCall(functionType, functionReturnType, stringToSearch, valueToSearch);
+            FunctionCall functionCall = new FunctionCall(functionType, functionTypeKind, stringToSearch, valueToSearch);
 
             _ElementsStack.Push(functionCall);
         }
@@ -880,7 +880,7 @@ namespace ModernRoute.WildData.Linq
 
                 ParameterExpression parameter = Expression.Parameter(typeof(IReaderWrapper));
 
-                MethodCallExpression methodCallExpression = Expression.Call(parameter, queryExpression.Type.GetMethodByReturnType(), Expression.Constant(0));
+                MethodCallExpression methodCallExpression = Expression.Call(parameter, queryExpression.Type.GetMethodByTypeKind(), Expression.Constant(0));
 
                 LambdaExpression lambdaExpression = Expression.Lambda(methodCallExpression, parameter);
 
@@ -927,7 +927,7 @@ namespace ModernRoute.WildData.Linq
 
                 QueryExpression queryExpression = PopQueryExpression();
 
-                MethodCallExpression methodCallExpression = Expression.Call(parameter, queryExpression.Type.GetMethodByReturnType(), Expression.Constant(i));
+                MethodCallExpression methodCallExpression = Expression.Call(parameter, queryExpression.Type.GetMethodByTypeKind(), Expression.Constant(i));
                 columnRetrievers.Add(methodCallExpression);
 
                 memberBindings.Add(assignment.Update(methodCallExpression));
@@ -994,7 +994,7 @@ namespace ModernRoute.WildData.Linq
                         Visit(expression);
                         QueryExpression queryExpression = PopQueryExpression();
 
-                        MethodCallExpression methodCallExpression = Expression.Call(parameter, queryExpression.Type.GetMethodByReturnType(), Expression.Constant(i));
+                        MethodCallExpression methodCallExpression = Expression.Call(parameter, queryExpression.Type.GetMethodByTypeKind(), Expression.Constant(i));
                         columnRetrievers.Add(methodCallExpression);
 
                         Column column = new Column(_AliasGenerator.GenerateAlias(), queryExpression);
@@ -1021,7 +1021,7 @@ namespace ModernRoute.WildData.Linq
             return Expression.New(newExpression.Constructor, columnRetrievers, newExpression.Members);
         }
 
-        private void ConvertAggregate(IReadOnlyList<Expression> args, ProjectionType projectionType, Type returnType)
+        private void ConvertAggregate(IReadOnlyList<Expression> args, ProjectionType projectionType, Type type)
         {
             if (projectionType == ProjectionType.Count || projectionType == ProjectionType.LongCount)
             {
@@ -1038,14 +1038,14 @@ namespace ModernRoute.WildData.Linq
                 SourceBase sourceQuery = PopSourceBase();
 
                 string columnAlias = _AliasGenerator.GenerateAlias();
-                ReturnType columnType = returnType.GetReturnType();
+                TypeKind columnType = type.GetTypeKind();
 
                 IDictionary<string, ColumnReference> map = new Dictionary<string, ColumnReference>(StringComparer.Ordinal);
                 map.Add(string.Empty, new ColumnReference(columnAlias, columnType));
 
                 ParameterExpression parameter = Expression.Parameter(typeof(IReaderWrapper));
 
-                MethodCallExpression methodCallExpression = Expression.Call(parameter, columnType.GetMethodByReturnType(), Expression.Constant(0));
+                MethodCallExpression methodCallExpression = Expression.Call(parameter, columnType.GetMethodByTypeKind(), Expression.Constant(0));
 
                 LambdaExpression lambdaExpression = Expression.Lambda(methodCallExpression, parameter);
 
@@ -1084,14 +1084,14 @@ namespace ModernRoute.WildData.Linq
                 ColumnReference singleColumnReference = sourceQuery.Fields.Single().GetColumnReference();
 
                 string columnAlias = _AliasGenerator.GenerateAlias();
-                ReturnType columnType = returnType.GetReturnType();
+                TypeKind columnType = type.GetTypeKind();
 
                 IDictionary<string, ColumnReference> map = new Dictionary<string, ColumnReference>(StringComparer.Ordinal);
                 map.Add(string.Empty, new ColumnReference(columnAlias, columnType));
 
                 ParameterExpression parameter = Expression.Parameter(typeof(IReaderWrapper));
 
-                MethodCallExpression methodCallExpression = Expression.Call(parameter, columnType.GetMethodByReturnType(), Expression.Constant(0));
+                MethodCallExpression methodCallExpression = Expression.Call(parameter, columnType.GetMethodByTypeKind(), Expression.Constant(0));
 
                 LambdaExpression lambdaExpression = Expression.Lambda(methodCallExpression, parameter);
 
@@ -1275,13 +1275,13 @@ namespace ModernRoute.WildData.Linq
 
             QueryExpression queryExpression = PopQueryExpression();
 
-            ReturnType unaryExpressionReturnType = node.Type.GetReturnType();
+            TypeKind unaryExpressionTypeKind = node.Type.GetTypeKind();
 
             switch (node.NodeType)
             {
                 case ExpressionType.Convert:
                 case ExpressionType.ConvertChecked:                    
-                    FunctionCall functionCall = new FunctionCall(FunctionType.Convert, unaryExpressionReturnType, queryExpression);
+                    FunctionCall functionCall = new FunctionCall(FunctionType.Convert, unaryExpressionTypeKind, queryExpression);
                     _ElementsStack.Push(functionCall);
                     return node;
                 case ExpressionType.UnaryPlus:
@@ -1294,7 +1294,7 @@ namespace ModernRoute.WildData.Linq
             switch (node.NodeType)
             {
                 case ExpressionType.Not:
-                    if (queryExpression.Type == ReturnType.Boolean || queryExpression.Type == ReturnType.BooleanNullable)
+                    if (queryExpression.Type == TypeKind.Boolean || queryExpression.Type == TypeKind.BooleanNullable)
                     {
                         unaryOperationType = UnaryOperationType.Not;
                     }
@@ -1311,7 +1311,7 @@ namespace ModernRoute.WildData.Linq
                     throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture,Resources.Strings.UnaryOperationIsNotSupported, node.NodeType));
             }
 
-            UnaryQueryExpression unaryQueryExpression = new UnaryQueryExpression(queryExpression, unaryExpressionReturnType, unaryOperationType);
+            UnaryQueryExpression unaryQueryExpression = new UnaryQueryExpression(queryExpression, unaryExpressionTypeKind, unaryOperationType);
 
             _ElementsStack.Push(unaryQueryExpression);
 

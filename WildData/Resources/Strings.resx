@@ -234,8 +234,8 @@
   <data name="PredicateDoesntReturnBoolValue" xml:space="preserve">
     <value>Predicate {0} does not return boolean value.</value>
   </data>
-  <data name="ReturnTypeIsNotSupported" xml:space="preserve">
-    <value>Return type {0} is not supported.</value>
+  <data name="TypeKindIsNotSupported" xml:space="preserve">
+    <value>Type {0} is not supported.</value>
   </data>
   <data name="RuntimeVariablesAreNotSupported" xml:space="preserve">
     <value>RuntimeVariables are not supported.</value>

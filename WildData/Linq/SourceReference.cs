@@ -4,7 +4,7 @@ namespace ModernRoute.WildData.Linq
 {
     public class SourceReference : QueryExpression
     {
-        public SourceReference() : base(ReturnType.Null)
+        public SourceReference() : base(TypeKind.Null)
         {
 
         }

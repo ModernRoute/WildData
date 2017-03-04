@@ -151,15 +151,6 @@ namespace ModernRoute.WildData.Npgsql.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Return type {0} is not supported..
-        /// </summary>
-        internal static string ReturnTypeIsNotSupported {
-            get {
-                return ResourceManager.GetString("ReturnTypeIsNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Select type {0} is not supported..
         /// </summary>
         internal static string SelectTypeIsNotSupported {
@@ -192,6 +183,15 @@ namespace ModernRoute.WildData.Npgsql.Resources {
         internal static string TransactionHasBeenCreatedInAnotherSession {
             get {
                 return ResourceManager.GetString("TransactionHasBeenCreatedInAnotherSession", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Return type {0} is not supported..
+        /// </summary>
+        internal static string TypeKindIsNotSupported {
+            get {
+                return ResourceManager.GetString("TypeKindIsNotSupported", resourceCulture);
             }
         }
         

@@ -34,18 +34,18 @@ namespace ModernRoute.WildData.Linq
             }
         }
 
-        public override ReturnType ColumnType
+        public override TypeKind ColumnType
         {
             get 
             {
                 if (ProjectionType == ProjectionType.Count)
                 {
-                    return ReturnType.Int32;
+                    return TypeKind.Int32;
                 }
 
                 if (ProjectionType == ProjectionType.LongCount)
                 {
-                    return ReturnType.Int64;
+                    return TypeKind.Int64;
                 }
 
                 if (ProjectionType != ProjectionType.Average)
@@ -55,22 +55,22 @@ namespace ModernRoute.WildData.Linq
 
                 switch (Definition.Type)
                 {
-                    case ReturnType.Byte:
-                    case ReturnType.Int16:
-                    case ReturnType.Int32:
-                    case ReturnType.Int64:
-                        return ReturnType.Double;
-                    case ReturnType.ByteNullable:
-                    case ReturnType.Int16Nullable:
-                    case ReturnType.Int32Nullable:
-                    case ReturnType.Int64Nullable:
-                        return ReturnType.DoubleNullable;
-                    case ReturnType.Float:
-                    case ReturnType.FloatNullable:
-                    case ReturnType.Decimal:
-                    case ReturnType.DecimalNullable:
-                    case ReturnType.Double:
-                    case ReturnType.DoubleNullable:
+                    case TypeKind.Byte:
+                    case TypeKind.Int16:
+                    case TypeKind.Int32:
+                    case TypeKind.Int64:
+                        return TypeKind.Double;
+                    case TypeKind.ByteNullable:
+                    case TypeKind.Int16Nullable:
+                    case TypeKind.Int32Nullable:
+                    case TypeKind.Int64Nullable:
+                        return TypeKind.DoubleNullable;
+                    case TypeKind.Float:
+                    case TypeKind.FloatNullable:
+                    case TypeKind.Decimal:
+                    case TypeKind.DecimalNullable:
+                    case TypeKind.Double:
+                    case TypeKind.DoubleNullable:
                         return Definition.Type;
                     default:
                         throw new InvalidOperationException(

@@ -104,7 +104,7 @@ namespace ModernRoute.WildData.Linq
                     Resources.Strings.ParameterIsLessThanZero, nameof(limit)));
             }
 
-            if (predicate != null && predicate.Type != ReturnType.Boolean)
+            if (predicate != null && predicate.Type != TypeKind.Boolean)
             {
                 throw new ArgumentException(
                     string.Format(CultureInfo.CurrentCulture, 
@@ -135,14 +135,14 @@ namespace ModernRoute.WildData.Linq
             }
             else
             {
-                if (expression.Type != ReturnType.Boolean)
+                if (expression.Type != TypeKind.Boolean)
                 {
                     throw new ArgumentException(
                         string.Format(CultureInfo.CurrentCulture,
                         Resources.Strings.PredicateDoesntReturnBoolValue, nameof(expression)));
                 }
 
-                newPredicate = new BinaryQueryExpression(Predicate, expression, ReturnType.Boolean, BinaryOperationType.And);
+                newPredicate = new BinaryQueryExpression(Predicate, expression, TypeKind.Boolean, BinaryOperationType.And);
             }
 
             if (Offset == 0 && Limit == null)

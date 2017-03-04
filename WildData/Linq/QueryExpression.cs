@@ -9,13 +9,13 @@ namespace ModernRoute.WildData.Linq
             get;
         }
 
-        public ReturnType Type
+        public TypeKind Type
         {
             get;
             private set;
         }
 
-        public QueryExpression(ReturnType type)
+        public QueryExpression(TypeKind type)
         {
             Type = type;
         }

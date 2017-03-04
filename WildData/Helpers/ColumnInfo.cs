@@ -37,7 +37,7 @@ namespace ModernRoute.WildData.Helpers
             private set;
         }
 
-        public ReturnType ReturnType
+        public TypeKind TypeKind
         {
             get;
             private set;
@@ -82,7 +82,7 @@ namespace ModernRoute.WildData.Helpers
                 GetMemberExpression(entityParameter),
                 Expression.Call(
                     readerWrapperParameter,
-                    ReturnType.GetMethodByReturnType(),
+                    TypeKind.GetMethodByTypeKind(),
                     new Expression[] { Expression.Constant(columnIndex, typeof(int)) }
                 ));
         }
@@ -95,9 +95,9 @@ namespace ModernRoute.WildData.Helpers
 
         internal MethodCallExpression GetMethodCall(ParameterExpression parametersParameter, ParameterExpression entityParameter)
         {
-            string methodName = NotNull || ReturnType.IsNotNullType() ? nameof(IDbParameterCollectionWrapper.AddParamNotNullBase) : nameof(IDbParameterCollectionWrapper.AddParamBase);
+            string methodName = NotNull || TypeKind.IsNotNullType() ? nameof(IDbParameterCollectionWrapper.AddParamNotNullBase) : nameof(IDbParameterCollectionWrapper.AddParamBase);
 
-            if (ReturnType.IsSizeableType())
+            if (TypeKind.IsSizeableType())
             {
                 MethodInfo methodInfo = typeof(IDbParameterCollectionWrapper).GetMethod(methodName, new Type[] { typeof(string), MemberType, typeof(int) });
 
@@ -120,17 +120,17 @@ namespace ModernRoute.WildData.Helpers
             }
         }
 
-        internal ColumnInfo(string columnName, int columnSize, bool notNull, ReturnType returnType, Type memberType, VolatileKind volatileKindOnStore, VolatileKind volatileKindOnUpdate, int columnIndex = ColumnIndexDefaultValue)
+        internal ColumnInfo(string columnName, int columnSize, bool notNull, TypeKind typeKind, Type memberType, VolatileKind volatileKindOnStore, VolatileKind volatileKindOnUpdate, int columnIndex = ColumnIndexDefaultValue)
         {
             ColumnName = columnName;
             ColumnSize = columnSize;
             NotNull = notNull;
-            ReturnType = returnType;
+            TypeKind = typeKind;
             MemberType = memberType;
             VolatileKindOnStore = volatileKindOnStore;
             VolatileKindOnUpdate = volatileKindOnUpdate;
             ColumnIndex = columnIndex;
-            ColumnReference = new ColumnReference(ColumnName, ReturnType);
+            ColumnReference = new ColumnReference(ColumnName, TypeKind);
         }
     }    
 }

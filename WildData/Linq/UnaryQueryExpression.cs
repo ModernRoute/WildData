@@ -17,8 +17,8 @@ namespace ModernRoute.WildData.Linq
             private set;
         }
 
-        public UnaryQueryExpression(QueryExpression expression, ReturnType returnType, UnaryOperationType unaryOperationType) 
-            : base(returnType)
+        public UnaryQueryExpression(QueryExpression expression, TypeKind typeKind, UnaryOperationType unaryOperationType) 
+            : base(typeKind)
         {
             if (expression == null)
             {

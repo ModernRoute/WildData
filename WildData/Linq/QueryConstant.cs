@@ -18,12 +18,12 @@ namespace ModernRoute.WildData.Linq
             private set;
         }
 
-        private static void ThrowCannotInterpretateAs(ReturnType type, Exception innerException = null)
+        private static void ThrowCannotInterpretateAs(TypeKind type, Exception innerException = null)
         {
             throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,Resources.Strings.UnableToInterpretateString, type), innerException);
         }
 
-        private byte GetByte(ReturnType interpretationType)
+        private byte GetByte(TypeKind interpretationType)
         {
             byte value;
 
@@ -39,24 +39,24 @@ namespace ModernRoute.WildData.Linq
         {
             CheckRepresentationNull();
 
-            CheckType(ReturnType.Byte, ReturnType.ByteNullable);
+            CheckType(TypeKind.Byte, TypeKind.ByteNullable);
 
-            return GetByte(ReturnType.Byte);
+            return GetByte(TypeKind.Byte);
         }
 
         public byte? GetByteNullable()
         {
-            CheckType(ReturnType.Byte, ReturnType.ByteNullable, ReturnType.Null);
+            CheckType(TypeKind.Byte, TypeKind.ByteNullable, TypeKind.Null);
 
             if (InvariantRepresentation == null)
             {
                 return null;
             }
 
-            return GetByte(ReturnType.ByteNullable);
+            return GetByte(TypeKind.ByteNullable);
         }
 
-        private DateTime GetDateTime(ReturnType interpretationType)
+        private DateTime GetDateTime(TypeKind interpretationType)
         {
             long value;
 
@@ -72,34 +72,34 @@ namespace ModernRoute.WildData.Linq
         {
             CheckRepresentationNull();
 
-            CheckType(ReturnType.DateTime, ReturnType.DateTimeNullable, ReturnType.DateTimeOffset, ReturnType.DateTimeOffsetNullable);
+            CheckType(TypeKind.DateTime, TypeKind.DateTimeNullable, TypeKind.DateTimeOffset, TypeKind.DateTimeOffsetNullable);
 
-            if (Type == ReturnType.DateTimeOffset || Type == ReturnType.DateTimeOffsetNullable)
+            if (Type == TypeKind.DateTimeOffset || Type == TypeKind.DateTimeOffsetNullable)
             {
-                return GetDateTimeOffset(ReturnType.DateTime).UtcDateTime;
+                return GetDateTimeOffset(TypeKind.DateTime).UtcDateTime;
             }
 
-            return GetDateTime(ReturnType.DateTime);
+            return GetDateTime(TypeKind.DateTime);
         }
 
         public DateTime? GetDateTimeNullable()
         {
-            CheckType(ReturnType.DateTime, ReturnType.DateTimeNullable, ReturnType.DateTimeOffset, ReturnType.DateTimeOffsetNullable, ReturnType.Null);
+            CheckType(TypeKind.DateTime, TypeKind.DateTimeNullable, TypeKind.DateTimeOffset, TypeKind.DateTimeOffsetNullable, TypeKind.Null);
 
             if (InvariantRepresentation == null)
             {
                 return null;
             }
 
-            if (Type == ReturnType.DateTimeOffset || Type == ReturnType.DateTimeOffsetNullable)
+            if (Type == TypeKind.DateTimeOffset || Type == TypeKind.DateTimeOffsetNullable)
             {
-                return GetDateTimeOffset(ReturnType.DateTimeNullable).UtcDateTime;
+                return GetDateTimeOffset(TypeKind.DateTimeNullable).UtcDateTime;
             }
 
-            return GetDateTime(ReturnType.DateTimeNullable);
+            return GetDateTime(TypeKind.DateTimeNullable);
         }
 
-        private DateTimeOffset GetDateTimeOffset(ReturnType interpretationType)
+        private DateTimeOffset GetDateTimeOffset(TypeKind interpretationType)
         {
             int halfLength = InvariantRepresentation.Length / 2;
 
@@ -124,34 +124,34 @@ namespace ModernRoute.WildData.Linq
         {
             CheckRepresentationNull();
 
-            CheckType(ReturnType.DateTime, ReturnType.DateTimeNullable, ReturnType.DateTimeOffset, ReturnType.DateTimeOffsetNullable);
+            CheckType(TypeKind.DateTime, TypeKind.DateTimeNullable, TypeKind.DateTimeOffset, TypeKind.DateTimeOffsetNullable);
 
-            if (Type == ReturnType.DateTime || Type == ReturnType.DateTimeNullable)
+            if (Type == TypeKind.DateTime || Type == TypeKind.DateTimeNullable)
             {
-                return GetDateTime(ReturnType.DateTimeOffset);
+                return GetDateTime(TypeKind.DateTimeOffset);
             }
 
-            return GetDateTimeOffset(ReturnType.DateTimeOffset);
+            return GetDateTimeOffset(TypeKind.DateTimeOffset);
         }
 
         public DateTimeOffset? GetDateTimeOffsetNullable()
         {
-            CheckType(ReturnType.DateTime, ReturnType.DateTimeNullable, ReturnType.DateTimeOffset, ReturnType.DateTimeOffsetNullable, ReturnType.Null);
+            CheckType(TypeKind.DateTime, TypeKind.DateTimeNullable, TypeKind.DateTimeOffset, TypeKind.DateTimeOffsetNullable, TypeKind.Null);
 
             if (InvariantRepresentation == null)
             {
                 return null;
             }
 
-            if (Type == ReturnType.DateTime || Type == ReturnType.DateTimeNullable)
+            if (Type == TypeKind.DateTime || Type == TypeKind.DateTimeNullable)
             {
-                return GetDateTime(ReturnType.DateTimeOffsetNullable);
+                return GetDateTime(TypeKind.DateTimeOffsetNullable);
             }
 
-            return GetDateTimeOffset(ReturnType.DateTimeOffsetNullable);
+            return GetDateTimeOffset(TypeKind.DateTimeOffsetNullable);
         }
 
-        private float GetFloat(ReturnType interpretationType)
+        private float GetFloat(TypeKind interpretationType)
         {
             int value;
 
@@ -167,24 +167,24 @@ namespace ModernRoute.WildData.Linq
         {
             CheckRepresentationNull();
 
-            CheckType(ReturnType.Float, ReturnType.FloatNullable);
+            CheckType(TypeKind.Float, TypeKind.FloatNullable);
 
-            return GetFloat(ReturnType.Float);
+            return GetFloat(TypeKind.Float);
         }
 
         public float? GetFloatNullable()
         {
-            CheckType(ReturnType.Float, ReturnType.FloatNullable, ReturnType.Null);
+            CheckType(TypeKind.Float, TypeKind.FloatNullable, TypeKind.Null);
 
             if (InvariantRepresentation == null)
             {
                 return null;
             }
 
-            return GetFloat(ReturnType.FloatNullable);
+            return GetFloat(TypeKind.FloatNullable);
         }
 
-        private double GetDouble(ReturnType interpretationType)
+        private double GetDouble(TypeKind interpretationType)
         {
             long value;
 
@@ -200,34 +200,34 @@ namespace ModernRoute.WildData.Linq
         {
             CheckRepresentationNull();
 
-            CheckType(ReturnType.Double, ReturnType.DoubleNullable, ReturnType.Float, ReturnType.FloatNullable);
+            CheckType(TypeKind.Double, TypeKind.DoubleNullable, TypeKind.Float, TypeKind.FloatNullable);
 
-            if (Type == ReturnType.Float || Type == ReturnType.FloatNullable)
+            if (Type == TypeKind.Float || Type == TypeKind.FloatNullable)
             {
-                return GetFloat(ReturnType.Double);
+                return GetFloat(TypeKind.Double);
             }
 
-            return GetDouble(ReturnType.Double);
+            return GetDouble(TypeKind.Double);
         }
 
         public double? GetDoubleNullable()
         {
-            CheckType(ReturnType.Double, ReturnType.DoubleNullable, ReturnType.Float, ReturnType.FloatNullable, ReturnType.Null);
+            CheckType(TypeKind.Double, TypeKind.DoubleNullable, TypeKind.Float, TypeKind.FloatNullable, TypeKind.Null);
 
             if (InvariantRepresentation == null)
             {
                 return null;
             }
 
-            if (Type == ReturnType.Float || Type == ReturnType.FloatNullable)
+            if (Type == TypeKind.Float || Type == TypeKind.FloatNullable)
             {
-                return GetFloat(ReturnType.DoubleNullable);
+                return GetFloat(TypeKind.DoubleNullable);
             }
 
-            return GetDouble(ReturnType.DoubleNullable);
+            return GetDouble(TypeKind.DoubleNullable);
         }
 
-        private short GetShort(ReturnType interpretationType)
+        private short GetShort(TypeKind interpretationType)
         {
             short value;
 
@@ -243,24 +243,24 @@ namespace ModernRoute.WildData.Linq
         {
             CheckRepresentationNull();
 
-            CheckType(ReturnType.Int16, ReturnType.Int16Nullable, ReturnType.Byte, ReturnType.ByteNullable);
+            CheckType(TypeKind.Int16, TypeKind.Int16Nullable, TypeKind.Byte, TypeKind.ByteNullable);
 
-            return GetShort(ReturnType.Int16);
+            return GetShort(TypeKind.Int16);
         }
 
         public short? GetShortNullable()
         {
-            CheckType(ReturnType.Int16, ReturnType.Int16Nullable, ReturnType.Byte, ReturnType.ByteNullable, ReturnType.Null);
+            CheckType(TypeKind.Int16, TypeKind.Int16Nullable, TypeKind.Byte, TypeKind.ByteNullable, TypeKind.Null);
 
             if (InvariantRepresentation == null)
             {
                 return null;
             }
 
-            return GetShort(ReturnType.Int16Nullable);
+            return GetShort(TypeKind.Int16Nullable);
         }
 
-        public int GetInt(ReturnType interpretationType)
+        public int GetInt(TypeKind interpretationType)
         {
             int value;
 
@@ -276,25 +276,25 @@ namespace ModernRoute.WildData.Linq
         {
             CheckRepresentationNull();
 
-            CheckType(ReturnType.Int16, ReturnType.Int16Nullable, ReturnType.Byte, ReturnType.ByteNullable, ReturnType.Int32, ReturnType.Int32Nullable);
+            CheckType(TypeKind.Int16, TypeKind.Int16Nullable, TypeKind.Byte, TypeKind.ByteNullable, TypeKind.Int32, TypeKind.Int32Nullable);
 
-            return GetInt(ReturnType.Int32);
+            return GetInt(TypeKind.Int32);
         }
 
         public int? GetIntNullable()
         {
-            CheckType(ReturnType.Int16, ReturnType.Int16Nullable, ReturnType.Byte, 
-                ReturnType.ByteNullable, ReturnType.Int32, ReturnType.Int32Nullable, ReturnType.Null);
+            CheckType(TypeKind.Int16, TypeKind.Int16Nullable, TypeKind.Byte, 
+                TypeKind.ByteNullable, TypeKind.Int32, TypeKind.Int32Nullable, TypeKind.Null);
 
             if (InvariantRepresentation == null)
             {
                 return null;
             }
 
-            return GetInt(ReturnType.Int32Nullable);
+            return GetInt(TypeKind.Int32Nullable);
         }
 
-        private long GetLong(ReturnType interpretationType)
+        private long GetLong(TypeKind interpretationType)
         {
             long value;
 
@@ -310,39 +310,39 @@ namespace ModernRoute.WildData.Linq
         {
             CheckRepresentationNull();
 
-            CheckType(ReturnType.Int16, ReturnType.Int16Nullable, ReturnType.Byte, ReturnType.ByteNullable, 
-                ReturnType.Int32, ReturnType.Int32Nullable, ReturnType.Int64, ReturnType.Int64Nullable);
+            CheckType(TypeKind.Int16, TypeKind.Int16Nullable, TypeKind.Byte, TypeKind.ByteNullable, 
+                TypeKind.Int32, TypeKind.Int32Nullable, TypeKind.Int64, TypeKind.Int64Nullable);
 
-            return GetLong(ReturnType.Int64);
+            return GetLong(TypeKind.Int64);
         }
 
         public long? GetLongNullable()
         {
-            CheckType(ReturnType.Int16, ReturnType.Int16Nullable, ReturnType.Byte, ReturnType.ByteNullable,
-                ReturnType.Int32, ReturnType.Int32Nullable, ReturnType.Int64, ReturnType.Int64Nullable, ReturnType.Null);
+            CheckType(TypeKind.Int16, TypeKind.Int16Nullable, TypeKind.Byte, TypeKind.ByteNullable,
+                TypeKind.Int32, TypeKind.Int32Nullable, TypeKind.Int64, TypeKind.Int64Nullable, TypeKind.Null);
 
             if (InvariantRepresentation == null)
             {
                 return null;
             }
 
-            return GetLong(ReturnType.Int64);
+            return GetLong(TypeKind.Int64);
         }
 
         public string GetString()
         {
-            CheckType(ReturnType.String, ReturnType.Null);
+            CheckType(TypeKind.String, TypeKind.Null);
 
             return InvariantRepresentation;
         }
 
-        private Guid GetGuid(ReturnType interpretationType)
+        private Guid GetGuid(TypeKind interpretationType)
         {
             Guid value;
 
             if (!Guid.TryParse(InvariantRepresentation, out value))
             {
-                ThrowCannotInterpretateAs(ReturnType.Guid);
+                ThrowCannotInterpretateAs(TypeKind.Guid);
             }
 
             return value;
@@ -352,26 +352,26 @@ namespace ModernRoute.WildData.Linq
         {
             CheckRepresentationNull();
 
-            CheckType(ReturnType.Guid, ReturnType.GuidNullable);
+            CheckType(TypeKind.Guid, TypeKind.GuidNullable);
 
-            return GetGuid(ReturnType.Guid);
+            return GetGuid(TypeKind.Guid);
         }
 
         public Guid? GetGuidNullable()
         {
-            CheckType(ReturnType.Guid, ReturnType.GuidNullable, ReturnType.Null);
+            CheckType(TypeKind.Guid, TypeKind.GuidNullable, TypeKind.Null);
 
             if (InvariantRepresentation == null)
             {
                 return null;
             }
 
-            return GetGuid(ReturnType.GuidNullable);
+            return GetGuid(TypeKind.GuidNullable);
         }
 
         public byte[] GetBytes()
         {
-            CheckType(ReturnType.Binary, ReturnType.Null);
+            CheckType(TypeKind.Binary, TypeKind.Null);
 
             if (InvariantRepresentation == null)
             {
@@ -386,13 +386,13 @@ namespace ModernRoute.WildData.Linq
             }
             catch (FormatException ex)
             {
-                ThrowCannotInterpretateAs(ReturnType.Binary, ex);
+                ThrowCannotInterpretateAs(TypeKind.Binary, ex);
             }
 
             return value;
         }
 
-        private bool GetBoolean(ReturnType interpretationType)
+        private bool GetBoolean(TypeKind interpretationType)
         {
             bool value;
 
@@ -408,24 +408,24 @@ namespace ModernRoute.WildData.Linq
         {
             CheckRepresentationNull();
 
-            CheckType(ReturnType.Boolean, ReturnType.BooleanNullable);
+            CheckType(TypeKind.Boolean, TypeKind.BooleanNullable);
 
-            return GetBoolean(ReturnType.Boolean);
+            return GetBoolean(TypeKind.Boolean);
         }
 
         public bool? GetBooleanNullable()
         {
-            CheckType(ReturnType.Boolean, ReturnType.BooleanNullable, ReturnType.Null);
+            CheckType(TypeKind.Boolean, TypeKind.BooleanNullable, TypeKind.Null);
 
             if (InvariantRepresentation == null)
             {
                 return null;
             }
 
-            return GetBoolean(ReturnType.BooleanNullable);
+            return GetBoolean(TypeKind.BooleanNullable);
         }
 
-        private decimal GetDecimal(ReturnType interpretationType)
+        private decimal GetDecimal(TypeKind interpretationType)
         {
             decimal value;
 
@@ -441,21 +441,21 @@ namespace ModernRoute.WildData.Linq
         {
             CheckRepresentationNull();
 
-            CheckType(ReturnType.Decimal, ReturnType.DecimalNullable);
+            CheckType(TypeKind.Decimal, TypeKind.DecimalNullable);
 
-            return GetDecimal(ReturnType.Decimal);
+            return GetDecimal(TypeKind.Decimal);
         }
 
         public decimal? GetDecimalNullable()
         {
-            CheckType(ReturnType.Decimal, ReturnType.DecimalNullable, ReturnType.Null);
+            CheckType(TypeKind.Decimal, TypeKind.DecimalNullable, TypeKind.Null);
 
             if (InvariantRepresentation == null)
             {
                 return null;
             }
 
-            return GetDecimal(ReturnType.DecimalNullable);
+            return GetDecimal(TypeKind.DecimalNullable);
         }
 
         private void CheckRepresentationNull()
@@ -466,14 +466,14 @@ namespace ModernRoute.WildData.Linq
             }
         }
 
-        private void CheckType(params ReturnType[] returnTypes)
+        private void CheckType(params TypeKind[] typeKinds)
         {
-            if (!returnTypes.Any(t => t == Type))
+            if (!typeKinds.Any(t => t == Type))
             {
                 throw new InvalidOperationException(
                     string.Format(
                     Resources.Strings.ConstantTypeIsNotExpected, 
-                    Type, string.Join(_Separator, returnTypes.Select(rt => rt.ToString()).ToArray())));
+                    Type, string.Join(_Separator, typeKinds.Select(rt => rt.ToString()).ToArray())));
             }
         }
 
@@ -484,65 +484,65 @@ namespace ModernRoute.WildData.Linq
                 return CreateNull();
             }
 
-            ReturnType returnType = value.GetType().GetReturnType();
+            TypeKind typeKind = value.GetType().GetTypeKind();
 
-            switch (returnType)
+            switch (typeKind)
             {
-                case ReturnType.Binary:
+                case TypeKind.Binary:
                     return CreateBinary((byte[])value);
-                case ReturnType.Boolean:
+                case TypeKind.Boolean:
                     return CreateBoolean((bool)value);
-                case ReturnType.BooleanNullable:
+                case TypeKind.BooleanNullable:
                     return CreateBooleanNullable((bool?)value);
-                case ReturnType.Float:
+                case TypeKind.Float:
                     return CreateFloat((float)value);
-                case ReturnType.FloatNullable:
+                case TypeKind.FloatNullable:
                     return CreateFloatNullable((float?)value);
-                case ReturnType.Double:
+                case TypeKind.Double:
                     return CreateDouble((double)value);
-                case ReturnType.DoubleNullable:
+                case TypeKind.DoubleNullable:
                     return CreateDoubleNullable((double?)value);
-                case ReturnType.Decimal:
+                case TypeKind.Decimal:
                     return CreateDecimal((decimal)value);
-                case ReturnType.DecimalNullable:
+                case TypeKind.DecimalNullable:
                     return CreateDecimalNullable((decimal?)value);
-                case ReturnType.Int16:
+                case TypeKind.Int16:
                     return CreateShort((short)value);
-                case ReturnType.Int16Nullable:
+                case TypeKind.Int16Nullable:
                     return CreateShortNullable((short?)value);
-                case ReturnType.Int32:
+                case TypeKind.Int32:
                     return CreateInt((int)value);
-                case ReturnType.Int32Nullable:
+                case TypeKind.Int32Nullable:
                     return CreateIntNullable((int?)value);
-                case ReturnType.Int64:
+                case TypeKind.Int64:
                     return CreateLong((long)value);
-                case ReturnType.Int64Nullable:
+                case TypeKind.Int64Nullable:
                     return CreateLongNullable((long?)value);
-                case ReturnType.Byte:
+                case TypeKind.Byte:
                     return CreateByte((byte)value);
-                case ReturnType.ByteNullable:
+                case TypeKind.ByteNullable:
                     return CreateByteNullable((byte?)value);
-                case ReturnType.String:
+                case TypeKind.String:
                     return CreateString((string)value);
-                case ReturnType.DateTime:
+                case TypeKind.DateTime:
                     return CreateDateTime((DateTime)value);
-                case ReturnType.DateTimeNullable:
+                case TypeKind.DateTimeNullable:
                     return CreateDateTimeNullable((DateTime?)value);
-                case ReturnType.DateTimeOffset:
+                case TypeKind.DateTimeOffset:
                     return CreateDateTimeOffset((DateTimeOffset)value);
-                case ReturnType.DateTimeOffsetNullable:
+                case TypeKind.DateTimeOffsetNullable:
                     return CreateDateTimeOffsetNullable((DateTimeOffset?)value);
                 default:
-                    throw new NotSupportedException(string.Format(Resources.Strings.TypeIsNotSupported, returnType));
+                    throw new NotSupportedException(string.Format(Resources.Strings.TypeIsNotSupported, typeKind));
             }
         }
 
         public static QueryConstant CreateNull()
         {
-            return new QueryConstant(null,ReturnType.Null);
+            return new QueryConstant(null,TypeKind.Null);
         }
 
-        private static QueryConstant CreateFloat(float value, ReturnType interpretationType)
+        private static QueryConstant CreateFloat(float value, TypeKind interpretationType)
         {
             string stringValue = BitConverter.ToInt32(BitConverter.GetBytes(value), 0).ToString(CultureInfo.InvariantCulture);
             return new QueryConstant(stringValue, interpretationType);
@@ -550,20 +550,20 @@ namespace ModernRoute.WildData.Linq
 
         public static QueryConstant CreateFloat(float value)
         {
-            return CreateFloat(value, ReturnType.Float);
+            return CreateFloat(value, TypeKind.Float);
         }
 
         public static QueryConstant CreateFloatNullable(float? value)
         {
             if (value == null)
             {
-                return new QueryConstant(null, ReturnType.FloatNullable);
+                return new QueryConstant(null, TypeKind.FloatNullable);
             }
 
-            return CreateFloat(value.Value, ReturnType.FloatNullable);
+            return CreateFloat(value.Value, TypeKind.FloatNullable);
         }
 
-        private static QueryConstant CreateDouble(double value, ReturnType interpretationType)
+        private static QueryConstant CreateDouble(double value, TypeKind interpretationType)
         {
             string stringValue = BitConverter.DoubleToInt64Bits(value).ToString(CultureInfo.InvariantCulture);
             return new QueryConstant(stringValue, interpretationType);
@@ -571,140 +571,140 @@ namespace ModernRoute.WildData.Linq
 
         public static QueryConstant CreateDouble(double value)
         {
-            return CreateDouble(value, ReturnType.Double);
+            return CreateDouble(value, TypeKind.Double);
         }
 
         public static QueryConstant CreateDoubleNullable(double? value)
         {
             if (value == null)
             {
-                return new QueryConstant(null, ReturnType.DoubleNullable);
+                return new QueryConstant(null, TypeKind.DoubleNullable);
             }
 
-            return CreateDouble(value.Value, ReturnType.DoubleNullable);
+            return CreateDouble(value.Value, TypeKind.DoubleNullable);
         }
 
-        private static QueryConstant CreateInt(int value, ReturnType interpretationType)
+        private static QueryConstant CreateInt(int value, TypeKind interpretationType)
         {
             return new QueryConstant(value.ToString(CultureInfo.InvariantCulture), interpretationType);
         }
 
         public static QueryConstant CreateInt(int value)
         {
-            return CreateInt(value, ReturnType.Int32);
+            return CreateInt(value, TypeKind.Int32);
         }
 
         public static QueryConstant CreateIntNullable(int? value)
         {
             if (value == null)
             {
-                return new QueryConstant(null, ReturnType.Int32Nullable);
+                return new QueryConstant(null, TypeKind.Int32Nullable);
             }
 
-            return CreateInt(value.Value, ReturnType.Int32Nullable);
+            return CreateInt(value.Value, TypeKind.Int32Nullable);
         }
 
-        private static QueryConstant CreateLong(long value, ReturnType interpretationType)
+        private static QueryConstant CreateLong(long value, TypeKind interpretationType)
         {
             return new QueryConstant(value.ToString(CultureInfo.InvariantCulture), interpretationType);
         }
 
         public static QueryConstant CreateLong(long value)
         {
-            return CreateLong(value, ReturnType.Int64);
+            return CreateLong(value, TypeKind.Int64);
         }
 
         public static QueryConstant CreateLongNullable(long? value)
         {
             if (value == null)
             {
-                return new QueryConstant(null, ReturnType.Int64Nullable);
+                return new QueryConstant(null, TypeKind.Int64Nullable);
             }
 
-            return CreateLong(value.Value, ReturnType.Int64Nullable);
+            return CreateLong(value.Value, TypeKind.Int64Nullable);
         }
 
-        private static QueryConstant CreateShort(short value, ReturnType interpretationType)
+        private static QueryConstant CreateShort(short value, TypeKind interpretationType)
         {
             return new QueryConstant(value.ToString(CultureInfo.InvariantCulture), interpretationType);
         }
 
         public static QueryConstant CreateShort(short value)
         {
-            return CreateShort(value, ReturnType.Int16);
+            return CreateShort(value, TypeKind.Int16);
         }
 
         public static QueryConstant CreateShortNullable(short? value)
         {
             if (value == null)
             {
-                return new QueryConstant(null, ReturnType.Int16Nullable);
+                return new QueryConstant(null, TypeKind.Int16Nullable);
             }
 
-            return CreateShort(value.Value, ReturnType.Int16Nullable);
+            return CreateShort(value.Value, TypeKind.Int16Nullable);
         }
 
-        private static QueryConstant CreateByte(byte value, ReturnType interpretationType)
+        private static QueryConstant CreateByte(byte value, TypeKind interpretationType)
         {
             return new QueryConstant(value.ToString(CultureInfo.InvariantCulture), interpretationType);
         }
 
         public static QueryConstant CreateByte(byte value)
         {
-            return CreateByte(value, ReturnType.Byte);
+            return CreateByte(value, TypeKind.Byte);
         }
 
         public static QueryConstant CreateByteNullable(byte? value)
         {
             if (value == null)
             {
-                return new QueryConstant(null, ReturnType.ByteNullable);
+                return new QueryConstant(null, TypeKind.ByteNullable);
             }
 
-            return CreateByte(value.Value, ReturnType.ByteNullable);
+            return CreateByte(value.Value, TypeKind.ByteNullable);
         }
 
-        private static QueryConstant CreateBoolean(bool value, ReturnType interpretationType)
+        private static QueryConstant CreateBoolean(bool value, TypeKind interpretationType)
         {
             return new QueryConstant(value.ToString(CultureInfo.InvariantCulture), interpretationType);
         }
 
         public static QueryConstant CreateBoolean(bool value)
         {
-            return CreateBoolean(value, ReturnType.Boolean);
+            return CreateBoolean(value, TypeKind.Boolean);
         }
 
         public static QueryConstant CreateBooleanNullable(bool? value)
         {
             if (value == null)
             {
-                return new QueryConstant(null, ReturnType.BooleanNullable);
+                return new QueryConstant(null, TypeKind.BooleanNullable);
             }
 
-            return CreateBoolean(value.Value, ReturnType.BooleanNullable);
+            return CreateBoolean(value.Value, TypeKind.BooleanNullable);
         }
 
-        private static QueryConstant CreateDateTime(DateTime value, ReturnType interpretationType)
+        private static QueryConstant CreateDateTime(DateTime value, TypeKind interpretationType)
         {
             return new QueryConstant(value.Ticks.ToString(CultureInfo.InvariantCulture), interpretationType);
         }
 
         public static QueryConstant CreateDateTime(DateTime value)
         {
-            return CreateDateTime(value, ReturnType.DateTime);
+            return CreateDateTime(value, TypeKind.DateTime);
         }
 
         public static QueryConstant CreateDateTimeNullable(DateTime? value)
         {
             if (value == null)
             {
-                return new QueryConstant(null, ReturnType.DateTimeNullable);
+                return new QueryConstant(null, TypeKind.DateTimeNullable);
             }
 
-            return CreateDateTime(value.Value, ReturnType.DateTimeNullable);
+            return CreateDateTime(value.Value, TypeKind.DateTimeNullable);
         }
 
-        private static QueryConstant CreateDateTimeOffset(DateTimeOffset value, ReturnType interpretationType)
+        private static QueryConstant CreateDateTimeOffset(DateTimeOffset value, TypeKind interpretationType)
         {
             string ticks = value.Ticks.ToString(_LongFormatForDateTime, CultureInfo.InvariantCulture);
             string span = value.Offset.Ticks.ToString(_LongFormatForDateTime, CultureInfo.InvariantCulture);
@@ -714,76 +714,76 @@ namespace ModernRoute.WildData.Linq
 
         public static QueryConstant CreateDateTimeOffset(DateTimeOffset value)
         {
-            return CreateDateTimeOffset(value, ReturnType.DateTimeOffset);
+            return CreateDateTimeOffset(value, TypeKind.DateTimeOffset);
         }
 
         public static QueryConstant CreateDateTimeOffsetNullable(DateTimeOffset? value)
         {
             if (value == null)
             {
-                return new QueryConstant(null, ReturnType.DateTimeOffsetNullable);
+                return new QueryConstant(null, TypeKind.DateTimeOffsetNullable);
             }
 
-            return CreateDateTimeOffset(value.Value, ReturnType.DateTimeOffsetNullable);
+            return CreateDateTimeOffset(value.Value, TypeKind.DateTimeOffsetNullable);
         }
 
-        private static QueryConstant CreateGuid(Guid value, ReturnType interpretationType)
+        private static QueryConstant CreateGuid(Guid value, TypeKind interpretationType)
         {
             return new QueryConstant(value.ToString(_GuidFormat, CultureInfo.InvariantCulture), interpretationType);  
         }
 
         public static QueryConstant CreateGuid(Guid value)
         {
-            return CreateGuid(value, ReturnType.Guid);
+            return CreateGuid(value, TypeKind.Guid);
         }
 
         public static QueryConstant CreateGuidNullable(Guid? value)
         {
             if (value == null)
             {
-                return new QueryConstant(null, ReturnType.GuidNullable);
+                return new QueryConstant(null, TypeKind.GuidNullable);
             }
 
-            return CreateGuid(value.Value, ReturnType.GuidNullable);
+            return CreateGuid(value.Value, TypeKind.GuidNullable);
         }
 
-        private static QueryConstant CreateDecimal(decimal value, ReturnType interpretationType)
+        private static QueryConstant CreateDecimal(decimal value, TypeKind interpretationType)
         {
             return new QueryConstant(value.ToString(CultureInfo.InvariantCulture), interpretationType);
         }
 
         public static QueryConstant CreateDecimal(decimal value)
         {
-            return CreateDecimal(value, ReturnType.Decimal);
+            return CreateDecimal(value, TypeKind.Decimal);
         }
 
         public static QueryConstant CreateDecimalNullable(decimal? value)
         {
             if (value == null)
             {
-                return new QueryConstant(null, ReturnType.DecimalNullable);
+                return new QueryConstant(null, TypeKind.DecimalNullable);
             }
 
-            return CreateDecimal(value.Value, ReturnType.DecimalNullable);
+            return CreateDecimal(value.Value, TypeKind.DecimalNullable);
         }
 
         public static QueryConstant CreateString(string value)
         {
-            return new QueryConstant(value, ReturnType.String);
+            return new QueryConstant(value, TypeKind.String);
         }
 
         public static QueryConstant CreateBinary(byte[] value)
         {
             if (value == null)
             {
-                return new QueryConstant(null, ReturnType.Binary);
+                return new QueryConstant(null, TypeKind.Binary);
             }
 
-            return new QueryConstant(Convert.ToBase64String(value), ReturnType.Binary);
+            return new QueryConstant(Convert.ToBase64String(value), TypeKind.Binary);
         }
 
-        private QueryConstant(string invariantRepresentation, ReturnType returnType) 
-            : base(returnType)
+        private QueryConstant(string invariantRepresentation, TypeKind typeKind) 
+            : base(typeKind)
         {
             InvariantRepresentation = invariantRepresentation;
         }

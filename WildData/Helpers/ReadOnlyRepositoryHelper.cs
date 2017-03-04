@@ -13,7 +13,7 @@ namespace ModernRoute.WildData.Helpers
 {
     public class ReadOnlyRepositoryHelper<T> where T : IReadOnlyModel, new()
     {
-        private const string _IReaderWrapperParameterName = "reader";        
+        private const string _IReaderWrapperParameterName = "reader";
 
         public IReadOnlyDictionary<string, ColumnInfo> MemberColumnMap
         {
@@ -65,8 +65,13 @@ namespace ModernRoute.WildData.Helpers
             return result.AsReadOnly();
         }
 
-        public ReadOnlyRepositoryHelper()
+        public ReadOnlyRepositoryHelper(ITypeKindInfo typeKindInfo)
         {
+            if (typeKindInfo == null)
+            {
+                throw new ArgumentNullException(nameof(typeKindInfo));
+            }
+            
             Type itemType = typeof(T);
 
             StorageAttribute storageAttribute = Attribute.GetCustomAttribute(itemType, typeof(StorageAttribute)) as StorageAttribute;
@@ -89,6 +94,11 @@ namespace ModernRoute.WildData.Helpers
 
             foreach (KeyValuePair<string,ColumnInfo> columnMemberInfo in MemberColumnMap)
             {
+                if (!typeKindInfo.IsSupported(columnMemberInfo.Value.TypeKind))
+                {
+                    throw new TypeKindNotSupported(columnMemberInfo.Value.TypeKind);
+                }
+
                 memberAssignments.Add(columnMemberInfo.Value.GetMemberAssignment(readerWrapperParameter));
             }
 
@@ -132,9 +142,9 @@ namespace ModernRoute.WildData.Helpers
                 }
 
                 Type fieldType = field.FieldType;
-                ReturnType returnType;
+                TypeKind typeKind;
 
-                if (!TryGetReturnType(fieldType, out returnType))
+                if (!TryGetTypeKind(fieldType, out typeKind))
                 {
                     continue;
                 }
@@ -148,7 +158,7 @@ namespace ModernRoute.WildData.Helpers
 
                 GetColumnNameAndSize(field, out columnName, out columnSize);
 
-                columnInfoMap.Add(field.Name, new FieldColumnInfo(columnName, columnSize, notNull, returnType, fieldType, volatileKindOnStore, volatileKindOnUpdate, field));
+                columnInfoMap.Add(field.Name, new FieldColumnInfo(columnName, columnSize, notNull, typeKind, fieldType, volatileKindOnStore, volatileKindOnUpdate, field));
             }
         }
 
@@ -170,9 +180,9 @@ namespace ModernRoute.WildData.Helpers
                 }
 
                 Type propertyType = property.PropertyType;
-                ReturnType returnType;
+                TypeKind typeKind;
 
-                if (!TryGetReturnType(propertyType, out returnType))
+                if (!TryGetTypeKind(propertyType, out typeKind))
                 {
                     continue;
                 }
@@ -186,20 +196,20 @@ namespace ModernRoute.WildData.Helpers
 
                 GetColumnNameAndSize(property, out columnName, out columnSize);
 
-                columnInfoMap.Add(property.Name, new PropertyColumnInfo(columnName, columnSize, notNull, returnType, propertyType, volatileKindOnStore, volatileKindOnUpdate, property));
+                columnInfoMap.Add(property.Name, new PropertyColumnInfo(columnName, columnSize, notNull, typeKind, propertyType, volatileKindOnStore, volatileKindOnUpdate, property));
             }
         }
 
-        private static bool TryGetReturnType(Type type, out ReturnType returnType)
+        private static bool TryGetTypeKind(Type type, out TypeKind typeKind)
         {
             try
             {
-                returnType = type.GetReturnType();
+                typeKind = type.GetTypeKind();
                 return true;
             }
             catch (NotSupportedException)
             {
-                returnType = ReturnType.Null;
+                typeKind = TypeKind.Null;
                 return false;
             }
         }
@@ -261,8 +271,8 @@ namespace ModernRoute.WildData.Helpers
         private const string _CollectionParameterName = "collectionWrapper";
         private const string _ValueParameterName = "value";
 
-        public ReadOnlyRepositoryHelper()
-            : base()
+        public ReadOnlyRepositoryHelper(ITypeKindInfo typeKindInfo)
+            : base(typeKindInfo)
         {
             if (!MemberColumnMap.ContainsKey(nameof(IReadOnlyModel<TKey>.Id)))
             {
@@ -279,11 +289,11 @@ namespace ModernRoute.WildData.Helpers
 
             ColumnInfo columnInfo = MemberColumnMap[nameof(IReadOnlyModel<TKey>.Id)];
 
-            string methodName = columnInfo.NotNull || columnInfo.ReturnType.IsNotNullType() ? nameof(IDbParameterCollectionWrapper.AddParamNotNull) : nameof(IDbParameterCollectionWrapper.AddParam);
+            string methodName = columnInfo.NotNull || columnInfo.TypeKind.IsNotNullType() ? nameof(IDbParameterCollectionWrapper.AddParamNotNull) : nameof(IDbParameterCollectionWrapper.AddParam);
 
             MethodCallExpression methodCallExpression;
 
-            if (columnInfo.ReturnType.IsSizeableType())
+            if (columnInfo.TypeKind.IsSizeableType())
             {
                 MethodInfo methodInfo = typeof(IDbParameterCollectionWrapper).GetMethod(methodName, new Type[] { typeof(string), columnInfo.MemberType, typeof(int) });
 

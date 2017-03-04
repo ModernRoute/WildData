@@ -1,6 +1,6 @@
 ﻿namespace ModernRoute.WildData.Core
 {
-    public enum ReturnType
+    public enum TypeKind
     {
         DateTime,
         DateTimeNullable,

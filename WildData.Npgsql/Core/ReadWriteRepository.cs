@@ -19,7 +19,7 @@ namespace ModernRoute.WildData.Npgsql.Core
         }
 
         public ReadWriteRepository(BaseSession session) 
-            : this(session, new ReadWriteRepositoryHelper<T,TKey>())
+            : this(session, new ReadWriteRepositoryHelper<T,TKey>(new TypeKindInfo()))
         {
 
         }
