@@ -166,17 +166,17 @@ namespace ModernRoute.WildData.Npgsql.Core
 
         public byte[] GetBytes(int columnIndex)
         {
-            MemoryStream stream = null;
-
-            using (stream = new MemoryStream())
+            using (MemoryStream stream = new MemoryStream())
             {
                 using (Stream streamToRead = _Reader.GetStream(columnIndex))
                 {
                     streamToRead.CopyTo(stream);
                 }
-            }
 
-            return stream.ToArray();
+                stream.Close();
+
+                return stream.ToArray();
+            }
         }
 
         public byte[] GetBytesNullable(int columnIndex)
