@@ -72,9 +72,9 @@ namespace ModernRoute.WildData.Test.Core
         public void StoreModel(Model model)
         {
             _RepositoryHelper.SetParametersFromObjectForStore(_Wrapper, model);
-            _Wrapper.AddParamNotNullBase(_RepositoryHelper.MemberColumnMap[nameof(model.Id)].ParamNameBase, RandomId);
+            _Wrapper.AddParamNotNull(_RepositoryHelper.MemberColumnMap[nameof(model.Id)].ParamNameBase, RandomId);
             string value = RandomStringValue;
-            _Wrapper.AddParamBase(_RepositoryHelper.MemberColumnMap[nameof(model.Field18)].ParamNameBase, value, value.Length);
+            _Wrapper.AddParam(_RepositoryHelper.MemberColumnMap[nameof(model.Field18)].ParamNameBase, value, value.Length);
             _RepositoryHelper.UpdateVolatileColumnsOnStore(_Wrapper, model);
         }
 
@@ -82,7 +82,7 @@ namespace ModernRoute.WildData.Test.Core
         {
             _RepositoryHelper.SetParametersFromObjectForUpdate(_Wrapper, model);
             string value = RandomStringValue;
-            _Wrapper.AddParamBase(_RepositoryHelper.MemberColumnMap[nameof(model.Field18)].ParamNameBase, value, value.Length);
+            _Wrapper.AddParam(_RepositoryHelper.MemberColumnMap[nameof(model.Field18)].ParamNameBase, value, value.Length);
             _RepositoryHelper.UpdateVolatileColumnsOnUpdate(_Wrapper, model);
         }
 
@@ -100,7 +100,7 @@ namespace ModernRoute.WildData.Test.Core
         }
     }
 
-    class Wrapper : BaseDbParameterCollectionWrapper, IReaderWrapper
+    class Wrapper : IDbParameterCollectionWrapper, IReaderWrapper
     {
         private Regex regex = new Regex("@__p_([0-9]+)", RegexOptions.Compiled);
         private IDictionary<int, object> _Values;
@@ -122,132 +122,132 @@ namespace ModernRoute.WildData.Test.Core
             return -1;
         }
 
-        public override void AddParam(string name, DateTimeOffset? value)
+        public void AddParam(string name, DateTimeOffset? value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParam(string name, float? value)
+        public void AddParam(string name, float? value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParam(string name, DateTime? value)
+        public void AddParam(string name, DateTime? value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParam(string name, short? value)
+        public void AddParam(string name, short? value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParam(string name, long? value)
+        public void AddParam(string name, long? value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParam(string name, decimal? value)
+        public void AddParam(string name, decimal? value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParam(string name, bool? value)
+        public void AddParam(string name, bool? value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParam(string name, int? value)
+        public void AddParam(string name, int? value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParam(string name, double? value)
+        public void AddParam(string name, double? value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParam(string name, byte? value)
+        public void AddParam(string name, byte? value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParam(string name, byte[] value, int size)
+        public void AddParam(string name, byte[] value, int size)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParam(string name, Guid? value)
+        public void AddParam(string name, Guid? value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParam(string name, string value, int size)
+        public void AddParam(string name, string value, int size)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParamNotNull(string name, bool value)
+        public void AddParamNotNull(string name, bool value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParamNotNull(string name, float value)
+        public void AddParamNotNull(string name, float value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParamNotNull(string name, Guid value)
+        public void AddParamNotNull(string name, Guid value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParamNotNull(string name, DateTime value)
+        public void AddParamNotNull(string name, DateTime value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParamNotNull(string name, long value)
+        public void AddParamNotNull(string name, long value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParamNotNull(string name, decimal value)
+        public void AddParamNotNull(string name, decimal value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParamNotNull(string name, int value)
+        public void AddParamNotNull(string name, int value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParamNotNull(string name, DateTimeOffset value)
+        public void AddParamNotNull(string name, DateTimeOffset value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParamNotNull(string name, short value)
+        public void AddParamNotNull(string name, short value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParamNotNull(string name, double value)
+        public void AddParamNotNull(string name, double value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParamNotNull(string name, byte value)
+        public void AddParamNotNull(string name, byte value)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParamNotNull(string name, byte[] value, int size)
+        public void AddParamNotNull(string name, byte[] value, int size)
         {
             _Values[GetParamIndex(name)] = value;
         }
 
-        public override void AddParamNotNull(string name, string value, int size)
+        public void AddParamNotNull(string name, string value, int size)
         {
             _Values[GetParamIndex(name)] = value;
         }

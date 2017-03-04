@@ -21,17 +21,12 @@ namespace ModernRoute.WildData.Npgsql.Core
 
         public byte GetByte(int columnIndex)
         {
-            return _Reader.GetByte(columnIndex);
+            throw new NotSupportedException();
         }
 
         public byte? GetByteNullable(int columnIndex)
         {
-            if (_Reader.IsDBNull(columnIndex))
-            {
-                return null;
-            }
-
-            return _Reader.GetByte(columnIndex);
+            throw new NotSupportedException();
         }
 
         public DateTimeOffset GetDateTimeOffset(int columnIndex)

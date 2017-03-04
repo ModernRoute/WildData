@@ -95,7 +95,7 @@ namespace ModernRoute.WildData.Helpers
 
         internal MethodCallExpression GetMethodCall(ParameterExpression parametersParameter, ParameterExpression entityParameter)
         {
-            string methodName = NotNull || TypeKind.IsNotNullType() ? nameof(IDbParameterCollectionWrapper.AddParamNotNullBase) : nameof(IDbParameterCollectionWrapper.AddParamBase);
+            string methodName = NotNull || TypeKind.IsNotNullType() ? nameof(IDbParameterCollectionWrapper.AddParamNotNull) : nameof(IDbParameterCollectionWrapper.AddParam);
 
             if (TypeKind.IsSizeableType())
             {

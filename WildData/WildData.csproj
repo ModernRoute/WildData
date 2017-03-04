@@ -59,7 +59,6 @@
     <Compile Include="Configuration\ProviderDataImplCollection.cs" />
     <Compile Include="Configuration\ProviderDataImplElement.cs" />
     <Compile Include="Configuration\ProviderDataImplMapConfigSection.cs" />
-    <Compile Include="Core\BaseDbParameterCollectionWrapper.cs" />
     <Compile Include="Core\ITypeKindInfo.cs" />
     <Compile Include="Core\TypeKindNotSupported.cs" />
     <Compile Include="Core\VolatileKind.cs" />

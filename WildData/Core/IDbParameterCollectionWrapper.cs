@@ -30,31 +30,5 @@ namespace ModernRoute.WildData.Core
         void AddParam(string name, bool? value);
         void AddParamNotNull(string name, decimal value);
         void AddParam(string name, decimal? value);
-        void AddParamNotNullBase(string nameBase, byte value);
-        void AddParamBase(string nameBase, byte? value);
-        void AddParamNotNullBase(string nameBase, DateTimeOffset value);
-        void AddParamBase(string nameBase, DateTimeOffset? value);
-        void AddParamNotNullBase(string nameBase, DateTime value);
-        void AddParamBase(string nameBase, DateTime? value);
-        void AddParamNotNullBase(string nameBase, float value);
-        void AddParamBase(string nameBase, float? value);
-        void AddParamNotNullBase(string nameBase, double value);
-        void AddParamBase(string nameBase, double? value);
-        void AddParamNotNullBase(string nameBase, short value);
-        void AddParamBase(string nameBase, short? value);
-        void AddParamNotNullBase(string nameBase, int value);
-        void AddParamBase(string nameBase, int? value);
-        void AddParamNotNullBase(string nameBase, long value);
-        void AddParamBase(string nameBase, long? value);
-        void AddParamNotNullBase(string nameBase, string value, int size);
-        void AddParamBase(string nameBase, string value, int size);
-        void AddParamNotNullBase(string nameBase, Guid value);
-        void AddParamBase(string nameBase, Guid? value);
-        void AddParamNotNullBase(string nameBase, byte[] value, int size);
-        void AddParamBase(string nameBase, byte[] value, int size);
-        void AddParamNotNullBase(string nameBase, bool value);
-        void AddParamBase(string nameBase, bool? value);
-        void AddParamNotNullBase(string nameBase, decimal value);
-        void AddParamBase(string nameBase, decimal? value);
     }
 }
