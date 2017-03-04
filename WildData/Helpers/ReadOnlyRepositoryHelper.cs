@@ -96,7 +96,7 @@ namespace ModernRoute.WildData.Helpers
             {
                 if (!typeKindInfo.IsSupported(columnMemberInfo.Value.TypeKind))
                 {
-                    throw new TypeKindNotSupported(columnMemberInfo.Value.TypeKind);
+                    throw new TypeKindNotSupportedException(columnMemberInfo.Value.TypeKind);
                 }
 
                 memberAssignments.Add(columnMemberInfo.Value.GetMemberAssignment(readerWrapperParameter));
