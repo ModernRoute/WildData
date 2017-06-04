@@ -50,15 +50,13 @@ namespace ModernRoute.WildData.Npgsql.Core
 
         protected IQueryable<T> GetQuery(string query, NpgsqlParameterCollection parameters = null)
         {
-            return new Query<T>(
-                new QueryProvider(
-                    new NpgsqlQueryExecutor(
-                        Session,
-                        query,
-                        ReadOnlyRepositoryHelper.MemberColumnMap,
-                        ReadOnlyRepositoryHelper.ReadSingleObject,
-                        parameters
-                    )
+            return new Queryable<T>(
+                new NpgsqlQueryExecutor(
+                    Session,
+                    query,
+                    ReadOnlyRepositoryHelper.MemberColumnMap,
+                    ReadOnlyRepositoryHelper.ReadSingleObject,
+                    parameters
                 )
             );
         }
@@ -75,13 +73,13 @@ namespace ModernRoute.WildData.Npgsql.Core
         protected void AppendSelectFrom(StringBuilder query)
         {
             query.Append(SyntaxHelper.SelectToken);
-            query.Append(SyntaxHelper.Space);
+            query.Append(SyntaxHelper.SpaceToken);
 
             AppendColumnList(query);
 
-            query.Append(SyntaxHelper.Space);
+            query.Append(SyntaxHelper.SpaceToken);
             query.Append(SyntaxHelper.FromToken);
-            query.Append(SyntaxHelper.Space);
+            query.Append(SyntaxHelper.SpaceToken);
 
             AppendStorageName(query);
         }
@@ -90,22 +88,22 @@ namespace ModernRoute.WildData.Npgsql.Core
         {
             if (ReadOnlyRepositoryHelper.StorageSchema != null)
             {
-                query.Append(SyntaxHelper.Quote);
+                query.Append(SyntaxHelper.ColumnNameDelimiter);
                 query.Append(EscapeHelper.EscapeString(ReadOnlyRepositoryHelper.StorageSchema));
-                query.Append(SyntaxHelper.Quote);
-                query.Append(SyntaxHelper.Dot);
+                query.Append(SyntaxHelper.ColumnNameDelimiter);
+                query.Append(SyntaxHelper.EntitySeparatorToken);
             }
 
-            query.Append(SyntaxHelper.Quote);
+            query.Append(SyntaxHelper.ColumnNameDelimiter);
             query.Append(EscapeHelper.EscapeString(ReadOnlyRepositoryHelper.StorageName));
-            query.Append(SyntaxHelper.Quote);
+            query.Append(SyntaxHelper.ColumnNameDelimiter);
         }
 
         protected void AppendColumn(StringBuilder query, ColumnInfo columnInfo)
         {
-            query.Append(SyntaxHelper.Quote);
+            query.Append(SyntaxHelper.ColumnNameDelimiter);
             query.Append(EscapeHelper.EscapeString(columnInfo.ColumnName));
-            query.Append(SyntaxHelper.Quote);
+            query.Append(SyntaxHelper.ColumnNameDelimiter);
         }
 
         protected void AppendColumn(StringBuilder query, string memberName)
@@ -125,8 +123,7 @@ namespace ModernRoute.WildData.Npgsql.Core
                 }
                 else
                 {
-                    query.Append(SyntaxHelper.Comma);
-                    query.Append(SyntaxHelper.Space);
+                    query.Append(SyntaxHelper.CommaToken);
                 }
 
                 AppendColumn(query, columnInfo.Value);
@@ -172,14 +169,12 @@ namespace ModernRoute.WildData.Npgsql.Core
 
                 AppendSelectFrom(query);
 
-                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.SpaceToken);
                 query.Append(SyntaxHelper.WhereToken);
-                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.SpaceToken);
 
                 AppendIdColumn(query);
-                query.Append(SyntaxHelper.Space);
-                query.Append(SyntaxHelper.EqualSign);
-                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.BinaryEqualToken);
 
                 string idParamName = ReadOnlyRepositoryHelperWithKey.GetIdParamName();
 

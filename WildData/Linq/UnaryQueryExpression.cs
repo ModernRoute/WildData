@@ -3,7 +3,7 @@ using System;
 
 namespace ModernRoute.WildData.Linq
 {
-    public class UnaryQueryExpression : QueryExpression
+    public sealed class UnaryQueryExpression : QueryExpression
     {
         public QueryExpression Expression
         {
@@ -17,7 +17,7 @@ namespace ModernRoute.WildData.Linq
             private set;
         }
 
-        public UnaryQueryExpression(QueryExpression expression, TypeKind typeKind, UnaryOperationType unaryOperationType) 
+        internal UnaryQueryExpression(QueryExpression expression, TypeKind typeKind, UnaryOperationType unaryOperationType) 
             : base(typeKind)
         {
             if (expression == null)

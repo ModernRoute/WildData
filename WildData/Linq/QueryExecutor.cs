@@ -1,19 +1,19 @@
 ﻿using ModernRoute.WildData.Extensions;
 using ModernRoute.WildData.Helpers;
+using Remotion.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace ModernRoute.WildData.Linq
 {
-    public abstract class QueryExecutor
+    public abstract class QueryExecutor : IQueryExecutor
     {
         private QueryConverter _QueryConverter;
-
+        
         private static SourceQuery CreateSourceQuery(IReadOnlyDictionary<string, ColumnInfo> memberColumnMap, Delegate projector)
         {
-            IReadOnlyDictionary<string, ColumnReference> newMemberColumnMap = 
+            IReadOnlyDictionary<string, ColumnReference> newMemberColumnMap =
                 memberColumnMap.ToDictionary(item => item.Key, item => item.Value.ColumnReference).AsReadOnly();
 
             IEnumerable<Column> columns = newMemberColumnMap.Select(i => new Column(i.Value.ColumnName, i.Value));
@@ -36,23 +36,30 @@ namespace ModernRoute.WildData.Linq
             _QueryConverter = new QueryConverter(CreateSourceQuery(memberColumnMap, reader));
         }
 
-        protected SourceBase ConvertExpression(Expression expression)
+        public IEnumerable<T> ExecuteCollection<T>(QueryModel queryModel)
         {
-            return _QueryConverter.Convert(expression);
+            return ExecuteCollection<T>(_QueryConverter.Convert(queryModel));
         }
 
-        public virtual object Execute(Expression expression)
+        protected abstract IEnumerable<T> ExecuteCollection<T>(SourceBase sourceBase);
+
+        public T ExecuteScalar<T>(QueryModel queryModel)
         {
-            if (expression == null)
+            return ExecuteCollection<T>(queryModel).Single();
+        }
+
+        public T ExecuteSingle<T>(QueryModel queryModel, bool returnDefaultWhenEmpty)
+        {
+            IEnumerable<T> sequence = ExecuteCollection<T>(queryModel);
+
+            if (returnDefaultWhenEmpty)
             {
-                throw new ArgumentNullException(nameof(expression));
+                return sequence.SingleOrDefault();
             }
-
-            SourceBase source = ConvertExpression(expression);
-
-            return Execute(source);
+            else
+            {
+                return sequence.Single();
+            }
         }
-
-        public abstract object Execute(SourceBase sourceBase);
     }
 }

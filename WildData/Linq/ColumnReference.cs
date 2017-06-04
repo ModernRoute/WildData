@@ -3,7 +3,7 @@ using System;
 
 namespace ModernRoute.WildData.Linq
 {
-    public class ColumnReference : QueryExpression
+    public sealed class ColumnReference : QueryExpression
     {
         public string ColumnName
         {
@@ -11,7 +11,7 @@ namespace ModernRoute.WildData.Linq
             private set;
         }
 
-        public ColumnReference(string columnName, TypeKind typeKind)
+        internal ColumnReference(string columnName, TypeKind typeKind)
             : base(typeKind)
         {
             if (columnName == null)

@@ -2,9 +2,9 @@
 
 namespace ModernRoute.WildData.Linq
 {
-    public class SourceReference : QueryExpression
+    public sealed class SourceReference : QueryExpression
     {
-        public SourceReference() : base(TypeKind.Null)
+        internal SourceReference() : base(TypeKind.AnyNullable)
         {
 
         }

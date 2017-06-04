@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace ModernRoute.WildData.Linq
 {
-    public class QueryConstant : QueryExpression
+    public sealed class QueryConstant : QueryExpression
     {
         private const string _LongFormatForDateTime = "X16";
         private const string _GuidFormat = "N";
@@ -46,7 +46,7 @@ namespace ModernRoute.WildData.Linq
 
         public byte? GetByteNullable()
         {
-            CheckType(TypeKind.Byte, TypeKind.ByteNullable, TypeKind.Null);
+            CheckType(TypeKind.Byte, TypeKind.ByteNullable, TypeKind.AnyNullable);
 
             if (InvariantRepresentation == null)
             {
@@ -84,7 +84,7 @@ namespace ModernRoute.WildData.Linq
 
         public DateTime? GetDateTimeNullable()
         {
-            CheckType(TypeKind.DateTime, TypeKind.DateTimeNullable, TypeKind.DateTimeOffset, TypeKind.DateTimeOffsetNullable, TypeKind.Null);
+            CheckType(TypeKind.DateTime, TypeKind.DateTimeNullable, TypeKind.DateTimeOffset, TypeKind.DateTimeOffsetNullable, TypeKind.AnyNullable);
 
             if (InvariantRepresentation == null)
             {
@@ -136,7 +136,7 @@ namespace ModernRoute.WildData.Linq
 
         public DateTimeOffset? GetDateTimeOffsetNullable()
         {
-            CheckType(TypeKind.DateTime, TypeKind.DateTimeNullable, TypeKind.DateTimeOffset, TypeKind.DateTimeOffsetNullable, TypeKind.Null);
+            CheckType(TypeKind.DateTime, TypeKind.DateTimeNullable, TypeKind.DateTimeOffset, TypeKind.DateTimeOffsetNullable, TypeKind.AnyNullable);
 
             if (InvariantRepresentation == null)
             {
@@ -174,7 +174,7 @@ namespace ModernRoute.WildData.Linq
 
         public float? GetFloatNullable()
         {
-            CheckType(TypeKind.Float, TypeKind.FloatNullable, TypeKind.Null);
+            CheckType(TypeKind.Float, TypeKind.FloatNullable, TypeKind.AnyNullable);
 
             if (InvariantRepresentation == null)
             {
@@ -212,7 +212,7 @@ namespace ModernRoute.WildData.Linq
 
         public double? GetDoubleNullable()
         {
-            CheckType(TypeKind.Double, TypeKind.DoubleNullable, TypeKind.Float, TypeKind.FloatNullable, TypeKind.Null);
+            CheckType(TypeKind.Double, TypeKind.DoubleNullable, TypeKind.Float, TypeKind.FloatNullable, TypeKind.AnyNullable);
 
             if (InvariantRepresentation == null)
             {
@@ -250,7 +250,7 @@ namespace ModernRoute.WildData.Linq
 
         public short? GetShortNullable()
         {
-            CheckType(TypeKind.Int16, TypeKind.Int16Nullable, TypeKind.Byte, TypeKind.ByteNullable, TypeKind.Null);
+            CheckType(TypeKind.Int16, TypeKind.Int16Nullable, TypeKind.Byte, TypeKind.ByteNullable, TypeKind.AnyNullable);
 
             if (InvariantRepresentation == null)
             {
@@ -284,7 +284,7 @@ namespace ModernRoute.WildData.Linq
         public int? GetIntNullable()
         {
             CheckType(TypeKind.Int16, TypeKind.Int16Nullable, TypeKind.Byte, 
-                TypeKind.ByteNullable, TypeKind.Int32, TypeKind.Int32Nullable, TypeKind.Null);
+                TypeKind.ByteNullable, TypeKind.Int32, TypeKind.Int32Nullable, TypeKind.AnyNullable);
 
             if (InvariantRepresentation == null)
             {
@@ -319,7 +319,7 @@ namespace ModernRoute.WildData.Linq
         public long? GetLongNullable()
         {
             CheckType(TypeKind.Int16, TypeKind.Int16Nullable, TypeKind.Byte, TypeKind.ByteNullable,
-                TypeKind.Int32, TypeKind.Int32Nullable, TypeKind.Int64, TypeKind.Int64Nullable, TypeKind.Null);
+                TypeKind.Int32, TypeKind.Int32Nullable, TypeKind.Int64, TypeKind.Int64Nullable, TypeKind.AnyNullable);
 
             if (InvariantRepresentation == null)
             {
@@ -331,7 +331,7 @@ namespace ModernRoute.WildData.Linq
 
         public string GetString()
         {
-            CheckType(TypeKind.String, TypeKind.Null);
+            CheckType(TypeKind.String, TypeKind.AnyNullable);
 
             return InvariantRepresentation;
         }
@@ -359,7 +359,7 @@ namespace ModernRoute.WildData.Linq
 
         public Guid? GetGuidNullable()
         {
-            CheckType(TypeKind.Guid, TypeKind.GuidNullable, TypeKind.Null);
+            CheckType(TypeKind.Guid, TypeKind.GuidNullable, TypeKind.AnyNullable);
 
             if (InvariantRepresentation == null)
             {
@@ -371,7 +371,7 @@ namespace ModernRoute.WildData.Linq
 
         public byte[] GetBytes()
         {
-            CheckType(TypeKind.Binary, TypeKind.Null);
+            CheckType(TypeKind.Binary, TypeKind.AnyNullable);
 
             if (InvariantRepresentation == null)
             {
@@ -415,7 +415,7 @@ namespace ModernRoute.WildData.Linq
 
         public bool? GetBooleanNullable()
         {
-            CheckType(TypeKind.Boolean, TypeKind.BooleanNullable, TypeKind.Null);
+            CheckType(TypeKind.Boolean, TypeKind.BooleanNullable, TypeKind.AnyNullable);
 
             if (InvariantRepresentation == null)
             {
@@ -448,7 +448,7 @@ namespace ModernRoute.WildData.Linq
 
         public decimal? GetDecimalNullable()
         {
-            CheckType(TypeKind.Decimal, TypeKind.DecimalNullable, TypeKind.Null);
+            CheckType(TypeKind.Decimal, TypeKind.DecimalNullable, TypeKind.AnyNullable);
 
             if (InvariantRepresentation == null)
             {
@@ -477,7 +477,7 @@ namespace ModernRoute.WildData.Linq
             }
         }
 
-        public static QueryConstant Create(object value)
+        internal static QueryConstant Create(object value)
         {
             if (value == null)
             {
@@ -537,9 +537,9 @@ namespace ModernRoute.WildData.Linq
             }
         }
 
-        public static QueryConstant CreateNull()
+        internal static QueryConstant CreateNull()
         {
-            return new QueryConstant(null,TypeKind.Null);
+            return new QueryConstant(null,TypeKind.AnyNullable);
         }
 
         private static QueryConstant CreateFloat(float value, TypeKind interpretationType)
@@ -548,12 +548,12 @@ namespace ModernRoute.WildData.Linq
             return new QueryConstant(stringValue, interpretationType);
         }
 
-        public static QueryConstant CreateFloat(float value)
+        internal static QueryConstant CreateFloat(float value)
         {
             return CreateFloat(value, TypeKind.Float);
         }
 
-        public static QueryConstant CreateFloatNullable(float? value)
+        internal static QueryConstant CreateFloatNullable(float? value)
         {
             if (value == null)
             {
@@ -569,12 +569,12 @@ namespace ModernRoute.WildData.Linq
             return new QueryConstant(stringValue, interpretationType);
         }
 
-        public static QueryConstant CreateDouble(double value)
+        internal static QueryConstant CreateDouble(double value)
         {
             return CreateDouble(value, TypeKind.Double);
         }
 
-        public static QueryConstant CreateDoubleNullable(double? value)
+        internal static QueryConstant CreateDoubleNullable(double? value)
         {
             if (value == null)
             {
@@ -589,12 +589,12 @@ namespace ModernRoute.WildData.Linq
             return new QueryConstant(value.ToString(CultureInfo.InvariantCulture), interpretationType);
         }
 
-        public static QueryConstant CreateInt(int value)
+        internal static QueryConstant CreateInt(int value)
         {
             return CreateInt(value, TypeKind.Int32);
         }
 
-        public static QueryConstant CreateIntNullable(int? value)
+        internal static QueryConstant CreateIntNullable(int? value)
         {
             if (value == null)
             {
@@ -609,12 +609,12 @@ namespace ModernRoute.WildData.Linq
             return new QueryConstant(value.ToString(CultureInfo.InvariantCulture), interpretationType);
         }
 
-        public static QueryConstant CreateLong(long value)
+        internal static QueryConstant CreateLong(long value)
         {
             return CreateLong(value, TypeKind.Int64);
         }
 
-        public static QueryConstant CreateLongNullable(long? value)
+        internal static QueryConstant CreateLongNullable(long? value)
         {
             if (value == null)
             {
@@ -629,12 +629,12 @@ namespace ModernRoute.WildData.Linq
             return new QueryConstant(value.ToString(CultureInfo.InvariantCulture), interpretationType);
         }
 
-        public static QueryConstant CreateShort(short value)
+        internal static QueryConstant CreateShort(short value)
         {
             return CreateShort(value, TypeKind.Int16);
         }
 
-        public static QueryConstant CreateShortNullable(short? value)
+        internal static QueryConstant CreateShortNullable(short? value)
         {
             if (value == null)
             {
@@ -649,12 +649,12 @@ namespace ModernRoute.WildData.Linq
             return new QueryConstant(value.ToString(CultureInfo.InvariantCulture), interpretationType);
         }
 
-        public static QueryConstant CreateByte(byte value)
+        internal static QueryConstant CreateByte(byte value)
         {
             return CreateByte(value, TypeKind.Byte);
         }
 
-        public static QueryConstant CreateByteNullable(byte? value)
+        internal static QueryConstant CreateByteNullable(byte? value)
         {
             if (value == null)
             {
@@ -669,12 +669,12 @@ namespace ModernRoute.WildData.Linq
             return new QueryConstant(value.ToString(CultureInfo.InvariantCulture), interpretationType);
         }
 
-        public static QueryConstant CreateBoolean(bool value)
+        internal static QueryConstant CreateBoolean(bool value)
         {
             return CreateBoolean(value, TypeKind.Boolean);
         }
 
-        public static QueryConstant CreateBooleanNullable(bool? value)
+        internal static QueryConstant CreateBooleanNullable(bool? value)
         {
             if (value == null)
             {
@@ -689,12 +689,12 @@ namespace ModernRoute.WildData.Linq
             return new QueryConstant(value.Ticks.ToString(CultureInfo.InvariantCulture), interpretationType);
         }
 
-        public static QueryConstant CreateDateTime(DateTime value)
+        internal static QueryConstant CreateDateTime(DateTime value)
         {
             return CreateDateTime(value, TypeKind.DateTime);
         }
 
-        public static QueryConstant CreateDateTimeNullable(DateTime? value)
+        internal static QueryConstant CreateDateTimeNullable(DateTime? value)
         {
             if (value == null)
             {
@@ -712,12 +712,12 @@ namespace ModernRoute.WildData.Linq
             return new QueryConstant(string.Concat(ticks, span), interpretationType);
         }
 
-        public static QueryConstant CreateDateTimeOffset(DateTimeOffset value)
+        internal static QueryConstant CreateDateTimeOffset(DateTimeOffset value)
         {
             return CreateDateTimeOffset(value, TypeKind.DateTimeOffset);
         }
 
-        public static QueryConstant CreateDateTimeOffsetNullable(DateTimeOffset? value)
+        internal static QueryConstant CreateDateTimeOffsetNullable(DateTimeOffset? value)
         {
             if (value == null)
             {
@@ -732,12 +732,12 @@ namespace ModernRoute.WildData.Linq
             return new QueryConstant(value.ToString(_GuidFormat, CultureInfo.InvariantCulture), interpretationType);  
         }
 
-        public static QueryConstant CreateGuid(Guid value)
+        internal static QueryConstant CreateGuid(Guid value)
         {
             return CreateGuid(value, TypeKind.Guid);
         }
 
-        public static QueryConstant CreateGuidNullable(Guid? value)
+        internal static QueryConstant CreateGuidNullable(Guid? value)
         {
             if (value == null)
             {
@@ -752,12 +752,12 @@ namespace ModernRoute.WildData.Linq
             return new QueryConstant(value.ToString(CultureInfo.InvariantCulture), interpretationType);
         }
 
-        public static QueryConstant CreateDecimal(decimal value)
+        internal static QueryConstant CreateDecimal(decimal value)
         {
             return CreateDecimal(value, TypeKind.Decimal);
         }
 
-        public static QueryConstant CreateDecimalNullable(decimal? value)
+        internal static QueryConstant CreateDecimalNullable(decimal? value)
         {
             if (value == null)
             {
@@ -767,12 +767,12 @@ namespace ModernRoute.WildData.Linq
             return CreateDecimal(value.Value, TypeKind.DecimalNullable);
         }
 
-        public static QueryConstant CreateString(string value)
+        internal static QueryConstant CreateString(string value)
         {
             return new QueryConstant(value, TypeKind.String);
         }
 
-        public static QueryConstant CreateBinary(byte[] value)
+        internal static QueryConstant CreateBinary(byte[] value)
         {
             if (value == null)
             {

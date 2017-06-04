@@ -68,9 +68,9 @@ namespace ModernRoute.WildData.Linq
             return Recreate(Source, Predicate, Distinct, Offset, limit);
         }
 
-        protected abstract SelectBase Recreate(SourceBase source, QueryExpression predicate, bool distinct, int offset, int? limit);
+        protected internal abstract SelectBase Recreate(SourceBase source, QueryExpression predicate, bool distinct, int offset, int? limit);
 
-        public SelectBase(
+        internal SelectBase(
             IReadOnlyDictionary<string,ColumnReference> memberColumnMap,
             Delegate projector,
             string sourceAlias,  

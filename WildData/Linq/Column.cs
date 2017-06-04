@@ -2,9 +2,9 @@
 
 namespace ModernRoute.WildData.Linq
 {
-    public class Column : FieldBase
+    public sealed class Column : FieldBase
     {
-        public Column(string alias, QueryExpression definition) : base(alias, definition)
+        internal Column(string alias, QueryExpression definition) : base(alias, definition)
         {
 
         }

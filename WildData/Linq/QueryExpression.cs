@@ -15,7 +15,7 @@ namespace ModernRoute.WildData.Linq
             private set;
         }
 
-        public QueryExpression(TypeKind type)
+        internal QueryExpression(TypeKind type)
         {
             Type = type;
         }

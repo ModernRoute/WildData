@@ -55,7 +55,7 @@ namespace ModernRoute.WildData.Linq
             private set;
         }
 
-        public SourceBase(IReadOnlyDictionary<string,ColumnReference> memberColumnMap, Delegate projector)
+        internal SourceBase(IReadOnlyDictionary<string, ColumnReference> memberColumnMap, Delegate projector)
         {
             if (memberColumnMap == null)
             {
@@ -68,7 +68,7 @@ namespace ModernRoute.WildData.Linq
             }
 
             MemberColumnMap = memberColumnMap;
-            Projector = projector; 
+            Projector = projector;
         }
     }
 }

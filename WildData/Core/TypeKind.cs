@@ -26,6 +26,6 @@
         DecimalNullable,
         Boolean,
         BooleanNullable,
-        Null
+        AnyNullable
     }
 }

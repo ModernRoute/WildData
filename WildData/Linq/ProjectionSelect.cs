@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace ModernRoute.WildData.Linq
 {
-    public class ProjectionSelect : SelectBase
+    public sealed class ProjectionSelect : SelectBase
     {
         private IReadOnlyList<FieldBase> _Fields;
 
@@ -24,13 +24,13 @@ namespace ModernRoute.WildData.Linq
             private set;
         }
 
-        public ProjectionSelect(IReadOnlyDictionary<string, ColumnReference> memberColumnMap, Delegate projector, string sourceAlias, IEnumerable<Projection> projections, SourceBase source)
+        internal ProjectionSelect(IReadOnlyDictionary<string, ColumnReference> memberColumnMap, Delegate projector, string sourceAlias, IEnumerable<Projection> projections, SourceBase source)
             : this(memberColumnMap, projector, sourceAlias, projections, source, null, false, 0, null)
         {
 
         }
 
-        public ProjectionSelect(IReadOnlyDictionary<string, ColumnReference> memberColumnMap, Delegate projector, string sourceAlias, IEnumerable<Projection> projections, SourceBase source, 
+        internal ProjectionSelect(IReadOnlyDictionary<string, ColumnReference> memberColumnMap, Delegate projector, string sourceAlias, IEnumerable<Projection> projections, SourceBase source, 
             QueryExpression predicate, bool distinct, int offset, int? limit)
             : base(memberColumnMap, projector, sourceAlias, source, predicate, distinct, offset, limit)
         {
@@ -54,7 +54,7 @@ namespace ModernRoute.WildData.Linq
             }
         }
 
-        protected override SelectBase Recreate(SourceBase source, QueryExpression predicate, bool distinct, int offset, int? limit)
+        protected internal override SelectBase Recreate(SourceBase source, QueryExpression predicate, bool distinct, int offset, int? limit)
         {
             return new ProjectionSelect(MemberColumnMap, Projector, SourceAlias, Projections, source, predicate, distinct, offset, limit);
         }

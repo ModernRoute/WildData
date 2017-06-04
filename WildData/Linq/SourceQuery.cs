@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace ModernRoute.WildData.Linq
 {
-    public class SourceQuery : SourceBase
+    public sealed class SourceQuery : SourceBase
     {
         private IReadOnlyList<FieldBase> _Fields;
 
@@ -24,7 +24,7 @@ namespace ModernRoute.WildData.Linq
             private set;
         }
 
-        public SourceQuery(IReadOnlyDictionary<string,ColumnReference> memberColumnMap, IEnumerable<Column> columns, Delegate projector)
+        internal SourceQuery(IReadOnlyDictionary<string,ColumnReference> memberColumnMap, IEnumerable<Column> columns, Delegate projector)
             : base(memberColumnMap, projector)
         {
             if (columns == null)

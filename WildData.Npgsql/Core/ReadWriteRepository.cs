@@ -51,35 +51,33 @@ namespace ModernRoute.WildData.Npgsql.Core
                 StringBuilder query = new StringBuilder();
 
                 query.Append(SyntaxHelper.UpdateToken);
-                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.SpaceToken);
 
                 AppendStorageName(query);
 
-                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.SpaceToken);
                 query.Append(SyntaxHelper.SetToken);
-                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.SpaceToken);
 
                 AppendColumnValuesUpdate(query);
 
-                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.SpaceToken);
                 query.Append(SyntaxHelper.WhereToken);
-                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.SpaceToken);
 
                 string idParamName = ReadOnlyRepositoryHelperWithKey.GetIdParamName();
 
                 AppendIdColumn(query);
-                query.Append(SyntaxHelper.Space);
-                query.Append(SyntaxHelper.EqualSign);
-                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.BinaryEqualToken);
                 query.Append(idParamName);
 
                 ReadOnlyRepositoryHelperWithKey.AddIdParameter(collectionWrapper, entity.Id);
 
                 if (ReadWriteRepositoryHelper.VolatileOnUpdateMemberColumnMap.Count > 0)
                 {
-                    query.Append(SyntaxHelper.Space);
+                    query.Append(SyntaxHelper.SpaceToken);
                     query.Append(SyntaxHelper.ReturningToken);
-                    query.Append(SyntaxHelper.Space);
+                    query.Append(SyntaxHelper.SpaceToken);
 
                     AppendColumnList(query, ReadWriteRepositoryHelper.VolatileOnUpdateMemberColumnMap);
 
@@ -148,32 +146,32 @@ namespace ModernRoute.WildData.Npgsql.Core
                 StringBuilder query = new StringBuilder();
 
                 query.Append(SyntaxHelper.InsertToken);
-                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.SpaceToken);
 
                 AppendStorageName(query);
 
-                query.Append(SyntaxHelper.Space);
-                query.Append(SyntaxHelper.LeftParenthesis);
+                query.Append(SyntaxHelper.SpaceToken);
+                query.Append(SyntaxHelper.LeftParenthesisToken);
 
                 AppendColumnList(query);
 
-                query.Append(SyntaxHelper.RightParenthesis);
-                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.RightParenthesisToken);
+                query.Append(SyntaxHelper.SpaceToken);
                 query.Append(SyntaxHelper.ValuesToken);
 
-                query.Append(SyntaxHelper.LeftParenthesis);
+                query.Append(SyntaxHelper.LeftParenthesisToken);
 
                 AppendColumnValuesStore(query);
 
-                query.Append(SyntaxHelper.RightParenthesis);
+                query.Append(SyntaxHelper.RightParenthesisToken);
 
                 int rowsAffected;
 
                 if (ReadWriteRepositoryHelper.VolatileOnStoreMemberColumnMap.Count > 0)
                 {
-                    query.Append(SyntaxHelper.Space);
+                    query.Append(SyntaxHelper.SpaceToken);
                     query.Append(SyntaxHelper.ReturningToken);
-                    query.Append(SyntaxHelper.Space);
+                    query.Append(SyntaxHelper.SpaceToken);
 
                     AppendColumnList(query, ReadWriteRepositoryHelper.VolatileOnStoreMemberColumnMap);
 
@@ -223,23 +221,18 @@ namespace ModernRoute.WildData.Npgsql.Core
                 }
                 else
                 {
-                    query.Append(SyntaxHelper.Comma);
-                    query.Append(SyntaxHelper.Space);
+                    query.Append(SyntaxHelper.CommaToken);
                 }
 
                 AppendColumn(query, columnInfo.Value);
-                query.Append(SyntaxHelper.Space);
-                query.Append(SyntaxHelper.EqualSign);
-                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.BinaryEqualToken);
                 query.Append(columnInfo.Value.ParamNameBase);
             }
 
             if (first)
             {
                 AppendIdColumn(query);
-                query.Append(SyntaxHelper.Space);
-                query.Append(SyntaxHelper.EqualSign);
-                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.BinaryEqualToken);
                 AppendIdColumn(query);
             }
         }
@@ -256,8 +249,7 @@ namespace ModernRoute.WildData.Npgsql.Core
                 }
                 else
                 {
-                    query.Append(SyntaxHelper.Comma);
-                    query.Append(SyntaxHelper.Space);
+                    query.Append(SyntaxHelper.CommaToken);
                 }
 
                 if (columnInfo.Value.VolatileKindOnStore == VolatileKind.Regular)
@@ -288,22 +280,20 @@ namespace ModernRoute.WildData.Npgsql.Core
                 StringBuilder query = new StringBuilder();
 
                 query.Append(SyntaxHelper.DeleteToken);
-                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.SpaceToken);
                 query.Append(SyntaxHelper.FromToken);
-                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.SpaceToken);
 
                 AppendStorageName(query);
 
-                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.SpaceToken);
                 query.Append(SyntaxHelper.WhereToken);
-                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.SpaceToken);
 
                 string idParamName = ReadOnlyRepositoryHelperWithKey.GetIdParamName();
 
                 AppendIdColumn(query);
-                query.Append(SyntaxHelper.Space);
-                query.Append(SyntaxHelper.EqualSign);
-                query.Append(SyntaxHelper.Space);
+                query.Append(SyntaxHelper.BinaryEqualToken);
                 query.Append(idParamName);
 
                 ReadOnlyRepositoryHelperWithKey.AddIdParameter(new DbParameterCollectionWrapper(command.Parameters), id);

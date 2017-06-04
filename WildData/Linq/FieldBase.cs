@@ -22,7 +22,7 @@ namespace ModernRoute.WildData.Linq
             get;
         }
 
-        public FieldBase(string alias, QueryExpression definition)
+        internal FieldBase(string alias, QueryExpression definition)
         {
             if (alias == null)
             {

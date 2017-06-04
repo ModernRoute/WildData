@@ -9,10 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ModernRoute.WildData</RootNamespace>
     <AssemblyName>ModernRoute.WildData</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,7 +39,12 @@
     <AssemblyOriginatorKeyFile>key.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Remotion.Linq, Version=2.1.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Remotion.Linq.2.1.1\lib\net45\Remotion.Linq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -80,39 +86,36 @@
     <Compile Include="Helpers\EnumerateHelper.cs" />
     <Compile Include="Core\IAliasGenerator.cs" />
     <Compile Include="Core\IReaderWrapper.cs" />
-    <Compile Include="Linq\Nominator.cs" />
-    <Compile Include="Linq\Query.cs" />
-    <Compile Include="Linq\QueryConverter.cs" />
-    <Compile Include="Linq\QueryExecutor.cs" />
-    <Compile Include="Linq\QueryProvider.cs" />
-    <Compile Include="Core\SimpleAliasGenerator.cs" />
-    <Compile Include="Linq\SubtreeEvaluator.cs" />
-    <Compile Include="Linq\Column.cs" />
     <Compile Include="Linq\BinaryOperationType.cs" />
     <Compile Include="Linq\BinaryQueryExpression.cs" />
+    <Compile Include="Linq\Column.cs" />
     <Compile Include="Linq\ColumnReference.cs" />
+    <Compile Include="Linq\FieldBase.cs" />
     <Compile Include="Linq\FunctionCall.cs" />
     <Compile Include="Linq\FunctionType.cs" />
-    <Compile Include="Linq\QueryConstant.cs" />
-    <Compile Include="Linq\QueryExpression.cs" />
-    <Compile Include="Linq\QueryExpressionType.cs" />
-    <Compile Include="Core\TypeKind.cs" />
-    <Compile Include="Linq\SourceReference.cs" />
-    <Compile Include="Linq\UnaryOperationType.cs" />
-    <Compile Include="Linq\UnaryQueryExpression.cs" />
-    <Compile Include="Linq\FieldBase.cs" />
     <Compile Include="Linq\Order.cs" />
     <Compile Include="Linq\OrderType.cs" />
     <Compile Include="Linq\Projection.cs" />
     <Compile Include="Linq\ProjectionSelect.cs" />
     <Compile Include="Linq\ProjectionType.cs" />
+    <Compile Include="Linq\Queryable.cs" />
+    <Compile Include="Linq\QueryConstant.cs" />
+    <Compile Include="Linq\QueryConverter.cs" />
+    <Compile Include="Linq\QueryExecutor.cs" />
+    <Compile Include="Core\SimpleAliasGenerator.cs" />
+    <Compile Include="Core\TypeKind.cs" />
+    <Compile Include="Linq\QueryExpression.cs" />
+    <Compile Include="Linq\QueryExpressionType.cs" />
     <Compile Include="Linq\RegularSelect.cs" />
     <Compile Include="Linq\SelectBase.cs" />
     <Compile Include="Linq\SelectType.cs" />
     <Compile Include="Linq\SourceBase.cs" />
     <Compile Include="Linq\SourceQuery.cs" />
-    <Compile Include="Linq\TreeElementBase.cs" />
-    <Compile Include="Linq\TreeElementType.cs" />
+    <Compile Include="Linq\SourceReference.cs" />
+    <Compile Include="Linq\QueryElementBase.cs" />
+    <Compile Include="Linq\QueryElementType.cs" />
+    <Compile Include="Linq\UnaryOperationType.cs" />
+    <Compile Include="Linq\UnaryQueryExpression.cs" />
     <Compile Include="Models\IReadOnlyModel.cs" />
     <Compile Include="Models\IReadWriteModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -131,15 +134,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="key.pfx" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\GitVersionTask.3.6.4\build\dotnet\GitVersionTask.targets" Condition="Exists('..\packages\GitVersionTask.3.6.4\build\dotnet\GitVersionTask.targets')" />
+  <Import Project="..\packages\GitVersionTask.3.6.5\build\dotnet\GitVersionTask.targets" Condition="Exists('..\packages\GitVersionTask.3.6.5\build\dotnet\GitVersionTask.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\GitVersionTask.3.6.4\build\dotnet\GitVersionTask.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GitVersionTask.3.6.4\build\dotnet\GitVersionTask.targets'))" />
+    <Error Condition="!Exists('..\packages\GitVersionTask.3.6.5\build\dotnet\GitVersionTask.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GitVersionTask.3.6.5\build\dotnet\GitVersionTask.targets'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -30,7 +30,7 @@ namespace ModernRoute.WildData.Npgsql.Core
                 case TypeKind.Int32Nullable:
                 case TypeKind.Int64:
                 case TypeKind.Int64Nullable:
-                case TypeKind.Null:
+                case TypeKind.AnyNullable:
                 case TypeKind.String:
                     return true;
                 case TypeKind.Byte:

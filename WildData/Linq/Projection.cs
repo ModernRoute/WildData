@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace ModernRoute.WildData.Linq
 {
-    public class Projection : FieldBase
+    public sealed class Projection : FieldBase
     {
         public bool Distinct
         {
@@ -19,7 +19,7 @@ namespace ModernRoute.WildData.Linq
             private set;
         }
 
-        public Projection(string alias, ProjectionType projectionType, QueryExpression definition, bool distinct = false)
+        internal Projection(string alias, ProjectionType projectionType, QueryExpression definition, bool distinct = false)
             : base(alias, definition)
         {
             ProjectionType = projectionType;

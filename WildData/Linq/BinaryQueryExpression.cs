@@ -3,7 +3,7 @@ using System;
 
 namespace ModernRoute.WildData.Linq
 {
-    public class BinaryQueryExpression : QueryExpression
+    public sealed class BinaryQueryExpression : QueryExpression
     {
         public QueryExpression Left
         {
@@ -23,7 +23,7 @@ namespace ModernRoute.WildData.Linq
             private set;
         }
 
-        public BinaryQueryExpression(QueryExpression left, QueryExpression right, TypeKind typeKind, BinaryOperationType binaryOperationType) 
+        internal BinaryQueryExpression(QueryExpression left, QueryExpression right, TypeKind typeKind, BinaryOperationType binaryOperationType) 
             : base(typeKind)
         {
             if (left == null)

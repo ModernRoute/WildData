@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace ModernRoute.WildData.Linq
 {
-    public class FunctionCall : QueryExpression
+    public sealed class FunctionCall : QueryExpression
     {
         public FunctionType FunctionType
         {
@@ -19,13 +19,13 @@ namespace ModernRoute.WildData.Linq
             private set;
         }
 
-        public FunctionCall(FunctionType functionType, TypeKind typeKind, params QueryExpression[] args)
+        internal FunctionCall(FunctionType functionType, TypeKind typeKind, params QueryExpression[] args)
             : this(functionType, typeKind, (IEnumerable<QueryExpression>)args) 
         {
 
         }
 
-        public FunctionCall(FunctionType functionType, TypeKind typeKind, IEnumerable<QueryExpression> arguments = null)
+        internal FunctionCall(FunctionType functionType, TypeKind typeKind, IEnumerable<QueryExpression> arguments = null)
             : base(typeKind)
         {
             FunctionType = functionType;

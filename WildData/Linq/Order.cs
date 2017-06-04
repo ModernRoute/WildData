@@ -2,7 +2,7 @@
 
 namespace ModernRoute.WildData.Linq
 {
-    public class Order : QueryElementBase
+    public sealed class Order : QueryElementBase
     {
         public OrderType Type
         {
@@ -16,7 +16,7 @@ namespace ModernRoute.WildData.Linq
             private set;
         }
 
-        public Order(OrderType type, QueryExpression expression)
+        internal Order(OrderType type, QueryExpression expression)
         {
             if (expression == null)
             {
