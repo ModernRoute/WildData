@@ -2,6 +2,7 @@
 using ModernRoute.WildData.Extensions;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace ModernRoute.WildData.Linq
 {
@@ -48,6 +49,11 @@ namespace ModernRoute.WildData.Linq
             {
                 return QueryExpressionType.FunctionCall;
             }
+        }
+
+        public override void Accept(QueryVisitor visitor)
+        {
+            visitor.VisitFunctionCall(this);
         }
     }
 }

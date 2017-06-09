@@ -1,9 +1,8 @@
 ﻿namespace ModernRoute.WildData.Linq
 {
-    public enum SelectType
+    public enum FromType
     {
         Regular,
-        Projection,
         Source
     }
 }

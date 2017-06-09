@@ -6,7 +6,6 @@
         UnaryOperation,
         FunctionCall,
         ColumnReference,
-        SourceReference,
         Constant
     }
 }

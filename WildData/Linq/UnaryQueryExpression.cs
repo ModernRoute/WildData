@@ -36,5 +36,10 @@ namespace ModernRoute.WildData.Linq
                 return QueryExpressionType.UnaryOperation;
             }
         }
+
+        public override void Accept(QueryVisitor visitor)
+        {
+            visitor.VisitUnaryExpression(this);
+        }
     }
 }

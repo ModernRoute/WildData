@@ -5,5 +5,7 @@
         internal QueryElementBase() { }
 
         public abstract QueryElementType ElementType { get; }
+
+        public abstract void Accept(QueryVisitor visitor);
     }
 }

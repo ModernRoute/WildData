@@ -13,7 +13,7 @@ using System.Text;
 
 namespace ModernRoute.WildData.Npgsql.Linq
 {
-    class NpgsqlQueryBuilder
+    class NpgsqlQueryBuilder : QueryVisitor
     {
         private const char _ParameterNamePart = 'p';
         private const char _ParameterNamePartSeparator = '_';
@@ -23,7 +23,7 @@ namespace ModernRoute.WildData.Npgsql.Linq
         private IList<NpgsqlParameter> _Parameters;
         private IAliasGenerator _AliasGenerator;
 
-        public void Build(NpgsqlCommand npgsqlCommand, SourceBase sourceBase, string sourceQuery, int paramPrefixLength)
+        public void Build(NpgsqlCommand npgsqlCommand, FromBase sourceBase, string sourceQuery, int paramPrefixLength)
         {
             if (npgsqlCommand == null)
             {
@@ -83,242 +83,78 @@ namespace ModernRoute.WildData.Npgsql.Linq
             return prefix.ToString();
         }
 
-        private void Build(SourceBase sourceBase)
+        private void Build(FromBase sourceBase)
         {
-            VisitSourceBase(sourceBase);
+            Visit(sourceBase);
         }
 
-        private void VisitSourceBase(SourceBase sourceBase)
-        {
-            switch (sourceBase.SelectType)
-            {
-                case SelectType.Projection:
-                    VisitProjectionSelect((ProjectionSelect)sourceBase);
-                    break;
-                case SelectType.Regular:
-                    VisitRegularSelect((RegularSelect)sourceBase);
-                    break;
-                case SelectType.Source:
-                    VisitSourceQuery((SourceQuery)sourceBase);
-                    break;
-                default:
-                    throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Resources.Strings.SelectTypeIsNotSupported, sourceBase.SelectType));
-            }
-        }
-
-        private void VisitSourceQuery(SourceQuery sourceQuery)
+        protected override void VisitFromSource(FromSource fromSource)
         {
             _QueryString.Append(_SourceQuery);
         }
 
-        private void VisitRegularSelect(RegularSelect regularSelect)
+        protected override void VisitFromSubquery(FromSubquery fromSubquery)
         {
-            BuildSelectPart1(regularSelect);
+            _QueryString.Append(SyntaxHelper.SelectToken);
+            _QueryString.Append(SyntaxHelper.SpaceToken);
 
-            VisitColumnList(regularSelect.Columns);
-
-            BuildSelectPart2(regularSelect);
-
-            if (VisitOrderCollection(regularSelect.OrderCollection))
+            if (fromSubquery.Distinct)
             {
+                _QueryString.Append(SyntaxHelper.DistinctToken);
                 _QueryString.Append(SyntaxHelper.SpaceToken);
             }
 
-            BuildSelectPart3(regularSelect);
+            base.VisitFromSubquery(fromSubquery);
         }
 
-        private void BuildSelectPart3(SelectBase selectBase)
+        protected override void VisitPredicate(QueryExpression predicate)
         {
-            if (VisitLimitOffset(selectBase.Limit, selectBase.Offset))
-            {
-                _QueryString.Append(SyntaxHelper.SpaceToken);
-            }
-
-            _QueryString.Remove(_QueryString.Length - 1, 1);
+            _QueryString.Append(SyntaxHelper.SpaceToken);
+            _QueryString.Append(SyntaxHelper.WhereToken);
+            _QueryString.Append(SyntaxHelper.SpaceToken);
+            base.VisitPredicate(predicate);
         }
 
-        private void BuildSelectPart2(SelectBase selectBase)
+        protected override void VisitSource(FromBase source)
         {
             _QueryString.Append(SyntaxHelper.SpaceToken);
             _QueryString.Append(SyntaxHelper.FromToken);
             _QueryString.Append(SyntaxHelper.SpaceToken);
             _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
-            VisitSourceBase(selectBase.Source);
+            base.VisitSource(source);
             _QueryString.Append(SyntaxHelper.RightParenthesisToken);
-            _QueryString.Append(SyntaxHelper.SpaceToken);
-            _QueryString.Append(SyntaxHelper.AsToken);
-            _QueryString.Append(SyntaxHelper.SpaceToken);
-            _QueryString.Append(SyntaxHelper.ColumnNameDelimiter);
-            _QueryString.Append(selectBase.SourceAlias);
-            _QueryString.Append(SyntaxHelper.ColumnNameDelimiter);
-            _QueryString.Append(SyntaxHelper.SpaceToken);
-
-            if (VisitPredicate(selectBase.Predicate))
-            {
-                _QueryString.Append(SyntaxHelper.SpaceToken);
-            }
         }
 
-        private void BuildSelectPart1(SelectBase selectBase)
+        protected override void VisitColumn(Column column, int index)
         {
-            _QueryString.Append(SyntaxHelper.SelectToken);
-            _QueryString.Append(SyntaxHelper.SpaceToken);
-
-            if (selectBase.Distinct)
+            if (index != 0)
             {
-                _QueryString.Append(SyntaxHelper.DistinctToken);
-                _QueryString.Append(SyntaxHelper.SpaceToken);
+                _QueryString.Append(SyntaxHelper.CommaToken);
             }
+
+            base.VisitColumn(column, index);
         }
 
-        private bool VisitLimitOffset(int? limit, int offset)
+        protected override void VisitProjection(ProjectionType projectionType, bool projectionDistinct, QueryExpression definition)
         {
-            if (limit == null)
+            if (projectionType != ProjectionType.None)
             {
-                if (offset <= 0)
+                _QueryString.Append(GetProjectionFuncName(projectionType));
+                _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
+
+                if (projectionDistinct)
                 {
-                    return false;
+                    _QueryString.Append(SyntaxHelper.DistinctToken);
+                    _QueryString.Append(SyntaxHelper.SpaceToken);
                 }
 
-                _QueryString.Append(SyntaxHelper.LimitToken);
-                _QueryString.Append(SyntaxHelper.SpaceToken);
-                _QueryString.Append(SyntaxHelper.NoLimitValue);
+                base.VisitProjection(projectionType, projectionDistinct, definition);
+                _QueryString.Append(SyntaxHelper.RightParenthesisToken);
             }
             else
             {
-                _QueryString.Append(SyntaxHelper.LimitToken);
-                _QueryString.Append(SyntaxHelper.SpaceToken);
-                _QueryString.Append(limit.Value);
+                base.VisitProjection(projectionType, projectionDistinct, definition);
             }
-
-            if (offset > 0)
-            {
-                _QueryString.Append(SyntaxHelper.SpaceToken);
-                _QueryString.Append(SyntaxHelper.OffsetToken);
-                _QueryString.Append(SyntaxHelper.SpaceToken);
-                _QueryString.Append(offset);
-            }
-
-            return true;
-        }
-
-        private bool VisitOrderCollection(IReadOnlyList<Order> orders)
-        {
-            if (orders.Count > 0)
-            {
-                _QueryString.Append(SyntaxHelper.OrderByToken);
-                _QueryString.Append(SyntaxHelper.SpaceToken);
-                VisitList(orders, VisitOrder);
-
-                return true;
-            }
-
-            return false;
-        }
-
-        private void VisitOrder(Order order)
-        {
-            VisitQueryExpression(order.Expression);
-            _QueryString.Append(SyntaxHelper.SpaceToken);
-
-            switch (order.Type)
-            {
-                case OrderType.Ascending:
-                    _QueryString.Append(SyntaxHelper.AscendingToken);
-                    break;
-                case OrderType.Descending:
-                    _QueryString.Append(SyntaxHelper.DescendingToken);
-                    break;
-                default:
-                    throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture,Resources.Strings.OrderTypeIsNotSupported,order.Type));
-            }
-        }
-
-        private void VisitList<T>(IEnumerable<T> list, Action<T> elementVisitor, string separator = SyntaxHelper.CommaToken)
-        {
-            bool first = true;
-
-            foreach (T item in list)
-            {
-                if (first)
-                {
-                    first = false;
-                }
-                else
-                {
-                    _QueryString.Append(separator);
-                }
-
-                elementVisitor(item);       
-            }
-        }
-
-        private bool VisitPredicate(QueryExpression predicate)
-        {
-            if (predicate != null)
-            {
-                _QueryString.Append(SyntaxHelper.WhereToken);
-                _QueryString.Append(SyntaxHelper.SpaceToken);
-                VisitQueryExpression(predicate);
-
-                return true;
-            }
-
-            return false;
-        }
-
-        private void VisitColumnList(IReadOnlyList<Column> columns)
-        {
-            VisitList(columns, VisitColumn);
-        }
-
-        private void VisitColumn(Column column)
-        {
-            VisitQueryExpression(column.Definition);
-            _QueryString.Append(SyntaxHelper.SpaceToken);
-            _QueryString.Append(SyntaxHelper.AsToken);
-            _QueryString.Append(SyntaxHelper.SpaceToken);
-            _QueryString.Append(SyntaxHelper.ColumnNameDelimiter);
-            _QueryString.Append(EscapeHelper.EscapeString(column.Alias));
-            _QueryString.Append(SyntaxHelper.ColumnNameDelimiter);
-        }
-
-        private void VisitProjectionSelect(ProjectionSelect projectionSelect)
-        {
-            BuildSelectPart1(projectionSelect);
-
-            VisitProjectionList(projectionSelect.Projections);
-
-            BuildSelectPart2(projectionSelect);
-
-            BuildSelectPart3(projectionSelect);
-        }
-
-        private void VisitProjectionList(IReadOnlyList<Projection> projections)
-        {
-            VisitList(projections, VisitProjection);
-        }
-
-        private void VisitProjection(Projection projection)
-        {
-            _QueryString.Append(GetProjectionFuncName(projection.ProjectionType));
-            _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
-
-            if (projection.Distinct)
-            {
-                _QueryString.Append(SyntaxHelper.DistinctToken);
-                _QueryString.Append(SyntaxHelper.SpaceToken);
-            }
-
-            VisitQueryExpression(projection.Definition);
-            _QueryString.Append(SyntaxHelper.RightParenthesisToken);
-
-            _QueryString.Append(SyntaxHelper.SpaceToken);
-            _QueryString.Append(SyntaxHelper.AsToken);
-            _QueryString.Append(SyntaxHelper.SpaceToken);
-            _QueryString.Append(SyntaxHelper.ColumnNameDelimiter);
-            _QueryString.Append(EscapeHelper.EscapeString(projection.Alias));
-            _QueryString.Append(SyntaxHelper.ColumnNameDelimiter);
         }
 
         private string GetProjectionFuncName(ProjectionType projectionType)
@@ -337,32 +173,77 @@ namespace ModernRoute.WildData.Npgsql.Linq
                 case ProjectionType.LongCount:
                     return SyntaxHelper.CountToken;
                 default:
-                    throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Resources.Strings.ProjectionTypeIsNotSupported, projectionType));                
+                    throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Resources.Strings.ProjectionTypeIsNotSupported, projectionType));
             }
         }
 
-        private void VisitQueryExpression(QueryExpression queryExpression)
+        protected override void VisitAlias(string alias)
         {
-            switch (queryExpression.ExpressionType)
+            _QueryString.Append(SyntaxHelper.SpaceToken);
+            _QueryString.Append(SyntaxHelper.AsToken);
+            _QueryString.Append(SyntaxHelper.SpaceToken);
+            _QueryString.Append(SyntaxHelper.ColumnNameDelimiter);
+            _QueryString.Append(EscapeHelper.EscapeString(alias));
+            _QueryString.Append(SyntaxHelper.ColumnNameDelimiter);
+        }
+
+        protected override void VisitOrders(IReadOnlyList<Order> orders)
+        {
+            _QueryString.Append(SyntaxHelper.OrderByToken);
+            _QueryString.Append(SyntaxHelper.SpaceToken);
+            base.VisitOrders(orders);
+        }
+
+        protected override void VisitOrder(Order order, int index)
+        {
+            if (index != 0)
             {
-                case QueryExpressionType.BinaryOperation:
-                    VisitBinaryOperation((BinaryQueryExpression)queryExpression);
+                _QueryString.Append(SyntaxHelper.CommaToken);
+            }
+
+            base.VisitOrder(order, index);
+            _QueryString.Append(SyntaxHelper.SpaceToken);
+
+            switch (order.Type)
+            {
+                case OrderType.Ascending:
+                    _QueryString.Append(SyntaxHelper.AscendingToken);
                     break;
-                case QueryExpressionType.ColumnReference:
-                    VisitColumnReference((ColumnReference)queryExpression);
+                case OrderType.Descending:
+                    _QueryString.Append(SyntaxHelper.DescendingToken);
                     break;
-                case QueryExpressionType.Constant:
-                    VisitConstant((QueryConstant)queryExpression);
-                    break;
-                case QueryExpressionType.FunctionCall:
-                    VisitFunctionCall((FunctionCall)queryExpression);
-                    break;
-                case QueryExpressionType.UnaryOperation:
-                    VisitUnaryOperation((UnaryQueryExpression)queryExpression);
-                    break;
-                case QueryExpressionType.SourceReference:
                 default:
-                    throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Resources.Strings.QueryExpressionTypeIsNotSupported, queryExpression.ExpressionType));     
+                    throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Resources.Strings.OrderTypeIsNotSupported, order.Type));
+            }
+        }
+        protected override void VisitOffsetLimit(int offset, int? limit)
+        {
+            if (limit == null)
+            {
+                if (offset <= 0)
+                {
+                    return;
+                }
+
+                _QueryString.Append(SyntaxHelper.SpaceToken);
+                _QueryString.Append(SyntaxHelper.LimitToken);
+                _QueryString.Append(SyntaxHelper.SpaceToken);
+                _QueryString.Append(SyntaxHelper.NoLimitValue);
+            }
+            else
+            {
+                _QueryString.Append(SyntaxHelper.SpaceToken);
+                _QueryString.Append(SyntaxHelper.LimitToken);
+                _QueryString.Append(SyntaxHelper.SpaceToken);
+                _QueryString.Append(limit.Value);
+            }
+
+            if (offset > 0)
+            {
+                _QueryString.Append(SyntaxHelper.SpaceToken);
+                _QueryString.Append(SyntaxHelper.OffsetToken);
+                _QueryString.Append(SyntaxHelper.SpaceToken);
+                _QueryString.Append(offset);
             }
         }
 
@@ -381,14 +262,16 @@ namespace ModernRoute.WildData.Npgsql.Linq
             }
         }
 
-        private void VisitUnaryOperation(UnaryQueryExpression unaryQueryExpression)
+        protected override void VisitUnaryExpression(UnaryQueryExpression unaryQueryExpression)
         {
-            string unaryOperator = GetUnaryOperator(unaryQueryExpression.Operation);
-
             _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
-            _QueryString.Append(unaryOperator);
-            VisitQueryExpression(unaryQueryExpression.Expression);
-            _QueryString.Append(SyntaxHelper.RightParenthesisToken);            
+            base.VisitUnaryExpression(unaryQueryExpression);
+            _QueryString.Append(SyntaxHelper.RightParenthesisToken);
+        }
+
+        protected override void VisitUnaryOperationType(UnaryOperationType operation)
+        {
+            _QueryString.Append(GetUnaryOperator(operation));
         }
 
         private string GetBinaryOperator(BinaryOperationType binaryOperationType, TypeKind typeKind)
@@ -436,120 +319,101 @@ namespace ModernRoute.WildData.Npgsql.Linq
             }
         }
 
-        private void VisitBinaryOperation(BinaryQueryExpression binaryQueryExpression)
+        protected override void VisitColumnReference(ColumnReference columnReference)
         {
-            string binaryOperator = GetBinaryOperator(binaryQueryExpression.Operation, binaryQueryExpression.Type);
+            _QueryString.Append(SyntaxHelper.ColumnNameDelimiter);
+            _QueryString.Append(EscapeHelper.EscapeString(columnReference.ColumnName));
+            _QueryString.Append(SyntaxHelper.ColumnNameDelimiter);
+        }
 
+        protected override void VisitBinaryQueryExpression(BinaryQueryExpression binaryQueryExpression)
+        {
             if (binaryQueryExpression.Operation == BinaryOperationType.Coalesce)
             {
-                _QueryString.Append(binaryOperator);
+                VisitBinaryOperationType(binaryQueryExpression.Operation, binaryQueryExpression.Type);
                 _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
-                VisitQueryExpression(binaryQueryExpression.Left);
+                Visit(binaryQueryExpression.Left);
                 _QueryString.Append(SyntaxHelper.CommaToken);
-                VisitQueryExpression(binaryQueryExpression.Right);
+                Visit(binaryQueryExpression.Right);
                 _QueryString.Append(SyntaxHelper.RightParenthesisToken);
             }
             else
             {
-                if (binaryQueryExpression.Left.Type.IsNullable() && binaryQueryExpression.Right.Type.IsNullable())
-                {
-                    if (binaryQueryExpression.Operation == BinaryOperationType.Equal || binaryQueryExpression.Operation == BinaryOperationType.NotEqual)
-                    {
-                        string optionOperator;
-                        string nullComparisonOperator;
-                        string optionConditionLogicOperator;
+                _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
 
-                        if (binaryQueryExpression.Operation == BinaryOperationType.Equal)
+                string optionOperator = null;
+                string nullComparisonOperator = null;
+                string optionConditionLogicOperator = null;
+
+                switch (binaryQueryExpression.Operation)
+                {
+                    case BinaryOperationType.Equal:
+                        optionOperator = SyntaxHelper.BinaryOrToken;
+                        nullComparisonOperator = SyntaxHelper.IsNullToken;
+                        optionConditionLogicOperator = SyntaxHelper.BinaryAndToken;
+                        goto default;
+                    case BinaryOperationType.NotEqual:
+                        optionOperator = SyntaxHelper.BinaryAndToken;
+                        nullComparisonOperator = SyntaxHelper.IsNotNullToken;
+                        optionConditionLogicOperator = SyntaxHelper.BinaryOrToken;
+                        goto default;
+                    default:
+                        if (optionOperator != null &&
+                            binaryQueryExpression.Left.Type.IsNullable() && 
+                            binaryQueryExpression.Right.Type.IsNullable())
                         {
-                            optionOperator = SyntaxHelper.BinaryOrToken;
-                            nullComparisonOperator = SyntaxHelper.IsNullToken;
-                            optionConditionLogicOperator = SyntaxHelper.BinaryAndToken;
+                            _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
+                            int leftStartIndex = _QueryString.Length;
+                            Visit(binaryQueryExpression.Left);
+                            int leftStopExclusive = _QueryString.Length;
+
+                            _QueryString.Append(GetBinaryOperator(binaryQueryExpression.Operation, binaryQueryExpression.Type));
+
+                            int rightStartIndex = _QueryString.Length;
+                            Visit(binaryQueryExpression.Right);
+                            int rightStopExclusive = _QueryString.Length;
+                            _QueryString.Append(SyntaxHelper.RightParenthesisToken);
+
+                            _QueryString.Append(optionOperator);
+
+                            _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
+
+                            for (int i = leftStartIndex; i < leftStopExclusive; i++)
+                            {
+                                _QueryString.Append(_QueryString[i]);
+                            }
+
+                            _QueryString.Append(SyntaxHelper.SpaceToken);
+                            _QueryString.Append(nullComparisonOperator);
+
+                            _QueryString.Append(optionConditionLogicOperator);
+
+                            for (int i = rightStartIndex; i < rightStopExclusive; i++)
+                            {
+                                _QueryString.Append(_QueryString[i]);
+                            }
+
+                            _QueryString.Append(SyntaxHelper.SpaceToken);
+                            _QueryString.Append(nullComparisonOperator);
+                            _QueryString.Append(SyntaxHelper.RightParenthesisToken);
                         }
                         else
                         {
-                            optionOperator = SyntaxHelper.BinaryAndToken;
-                            nullComparisonOperator = SyntaxHelper.IsNotNullToken;
-                            optionConditionLogicOperator = SyntaxHelper.BinaryOrToken;
+                            base.VisitBinaryQueryExpression(binaryQueryExpression);
                         }
-
-                        _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
-
-                        _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
-                        int leftStartIndex = _QueryString.Length;
-                        VisitQueryExpression(binaryQueryExpression.Left);
-                        int leftStopExclusive = _QueryString.Length;
-
-                        _QueryString.Append(binaryOperator);
-
-                        int rightStartIndex = _QueryString.Length;
-                        VisitQueryExpression(binaryQueryExpression.Right);
-                        int rightStopExclusive = _QueryString.Length;
-                        _QueryString.Append(SyntaxHelper.RightParenthesisToken);
-
-                        _QueryString.Append(optionOperator);
-                    
-                        _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
-
-                        for (int i = leftStartIndex; i < leftStopExclusive; i++)
-                        {
-                            _QueryString.Append(_QueryString[i]);
-                        }
-
-                        _QueryString.Append(SyntaxHelper.SpaceToken);
-                        _QueryString.Append(nullComparisonOperator);
-
-                        _QueryString.Append(optionConditionLogicOperator);
-                        
-                        for (int i = rightStartIndex; i < rightStopExclusive; i++)
-                        {
-                            _QueryString.Append(_QueryString[i]);
-                        }
-
-                        _QueryString.Append(SyntaxHelper.SpaceToken);
-                        _QueryString.Append(nullComparisonOperator);
-                        _QueryString.Append(SyntaxHelper.RightParenthesisToken);
-
-                        _QueryString.Append(SyntaxHelper.RightParenthesisToken);
-
-                        return;
-                    }
+                        break;
                 }
 
-                _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
-                VisitQueryExpression(binaryQueryExpression.Left);
-                _QueryString.Append(binaryOperator);
-                VisitQueryExpression(binaryQueryExpression.Right);
-                _QueryString.Append(SyntaxHelper.RightParenthesisToken);                
+                _QueryString.Append(SyntaxHelper.RightParenthesisToken);
             }
         }
 
-        private void VisitColumnReference(ColumnReference columnReference)
+        protected override void VisitBinaryOperationType(BinaryOperationType operation, TypeKind typeKind)
         {
-            _QueryString.Append(SyntaxHelper.ColumnNameDelimiter);
-            _QueryString.Append(EscapeHelper.EscapeString(columnReference.ColumnName));
-            _QueryString.Append(SyntaxHelper.ColumnNameDelimiter);            
+            _QueryString.Append(GetBinaryOperator(operation, typeKind));
         }
 
-        private void VisitDatePartFunction(string datePartToken, IEnumerable<QueryExpression> args)
-        {
-            _QueryString.Append(SyntaxHelper.CastOperatorToken);
-            _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
-            _QueryString.Append(SyntaxHelper.ExtractDatePartToken);
-            _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
-            _QueryString.Append(datePartToken);
-            _QueryString.Append(SyntaxHelper.SpaceToken);
-            _QueryString.Append(SyntaxHelper.FromToken);
-            _QueryString.Append(SyntaxHelper.SpaceToken);
-            VisitList(args, VisitQueryExpression, SyntaxHelper.CommaToken);
-            _QueryString.Append(SyntaxHelper.RightParenthesisToken);
-            _QueryString.Append(SyntaxHelper.SpaceToken);
-            _QueryString.Append(SyntaxHelper.AsToken);
-            _QueryString.Append(SyntaxHelper.SpaceToken);
-            _QueryString.Append(SyntaxHelper.IntegerTypeToken);
-            _QueryString.Append(SyntaxHelper.RightParenthesisToken);
-        }
-
-        private void VisitFunctionCall(FunctionCall functionCall)
+        protected override void VisitFunctionCall(FunctionCall functionCall)
         {
             switch (functionCall.FunctionType)
             {
@@ -611,16 +475,45 @@ namespace ModernRoute.WildData.Npgsql.Linq
             }
         }
 
+        protected override void VisitFunctionArg(QueryExpression arg, int index)
+        {
+            if (index != 0)
+            {
+                _QueryString.Append(SyntaxHelper.CommaToken);
+            }
+
+            base.VisitFunctionArg(arg, index);
+        }
+
+        private void VisitDatePartFunction(string datePartToken, IEnumerable<QueryExpression> args)
+        {
+            _QueryString.Append(SyntaxHelper.CastOperatorToken);
+            _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
+            _QueryString.Append(SyntaxHelper.ExtractDatePartToken);
+            _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
+            _QueryString.Append(datePartToken);
+            _QueryString.Append(SyntaxHelper.SpaceToken);
+            _QueryString.Append(SyntaxHelper.FromToken);
+            _QueryString.Append(SyntaxHelper.SpaceToken);
+            VisitFunctionArgs(args);
+            _QueryString.Append(SyntaxHelper.RightParenthesisToken);
+            _QueryString.Append(SyntaxHelper.SpaceToken);
+            _QueryString.Append(SyntaxHelper.AsToken);
+            _QueryString.Append(SyntaxHelper.SpaceToken);
+            _QueryString.Append(SyntaxHelper.IntegerTypeToken);
+            _QueryString.Append(SyntaxHelper.RightParenthesisToken);
+        }
+
         private void VisitIndexOfFunction(IReadOnlyList<QueryExpression> arguments)
         {
             _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
             _QueryString.Append(SyntaxHelper.PositionFunctionNameToken);
             _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
-            VisitQueryExpression(arguments[1]);
+            Visit(arguments[1]);
             _QueryString.Append(SyntaxHelper.SpaceToken);
             _QueryString.Append(SyntaxHelper.InToken);
             _QueryString.Append(SyntaxHelper.SpaceToken);
-            VisitQueryExpression(arguments[0]);
+            Visit(arguments[0]);
             _QueryString.Append(SyntaxHelper.RightParenthesisToken);
             _QueryString.Append(SyntaxHelper.BinarySubtractToken);
             _QueryString.Append(1);
@@ -631,7 +524,7 @@ namespace ModernRoute.WildData.Npgsql.Linq
         {
             _QueryString.Append(functionName);
             _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
-            VisitList(args, VisitQueryExpression, SyntaxHelper.CommaToken);
+            VisitFunctionArgs(args);
             _QueryString.Append(SyntaxHelper.RightParenthesisToken);
         }
 
@@ -688,13 +581,13 @@ namespace ModernRoute.WildData.Npgsql.Linq
         {
             if (IsRelatedTypes(typeKind, queryExpression.Type))
             {
-                VisitQueryExpression(queryExpression);
+                Visit(queryExpression);
                 return;
             }
 
             _QueryString.Append(SyntaxHelper.CastOperatorToken);
             _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
-            VisitQueryExpression(queryExpression);
+            Visit(queryExpression);
             _QueryString.Append(SyntaxHelper.SpaceToken);
             _QueryString.Append(SyntaxHelper.AsToken);
             _QueryString.Append(SyntaxHelper.SpaceToken);
@@ -747,7 +640,7 @@ namespace ModernRoute.WildData.Npgsql.Linq
         {
             _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
             int startIndex = _QueryString.Length;
-            VisitQueryExpression(queryExpression);
+            Visit(queryExpression);
             int endIndex = _QueryString.Length;
             _QueryString.Append(SyntaxHelper.BinaryEqualToken);
             _QueryString.Append(SyntaxHelper.StringDelimiter);
@@ -765,7 +658,7 @@ namespace ModernRoute.WildData.Npgsql.Linq
         private void VisitLikeawareFunction(FunctionType functionType, QueryExpression stringToSearchExpression, QueryExpression patternExpression)
         {
             _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
-            VisitQueryExpression(stringToSearchExpression);
+            Visit(stringToSearchExpression);
             _QueryString.Append(SyntaxHelper.SpaceToken);
             _QueryString.Append(SyntaxHelper.LikeToken);
             _QueryString.Append(SyntaxHelper.SpaceToken);
@@ -802,7 +695,7 @@ namespace ModernRoute.WildData.Npgsql.Linq
             _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
             _QueryString.Append(SyntaxHelper.ReplaceFunctionNameToken);
             _QueryString.Append(SyntaxHelper.LeftParenthesisToken);
-            VisitQueryExpression(queryExpression);
+            Visit(queryExpression);
             _QueryString.Append(SyntaxHelper.CommaToken);
             _QueryString.Append(SyntaxHelper.StringDelimiter);
             _QueryString.Append(SyntaxHelper.LikeEscapeCharacter);
@@ -854,8 +747,8 @@ namespace ModernRoute.WildData.Npgsql.Linq
 
             return value;
         }
-
-        private void VisitConstant(QueryConstant queryConstant)
+        
+        protected override void VisitQueryConstant(QueryConstant queryConstant)
         {
             if (queryConstant.Type == TypeKind.AnyNullable)
             {

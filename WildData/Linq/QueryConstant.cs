@@ -782,6 +782,11 @@ namespace ModernRoute.WildData.Linq
             return new QueryConstant(Convert.ToBase64String(value), TypeKind.Binary);
         }
 
+        public override void Accept(QueryVisitor visitor)
+        {
+            visitor.VisitQueryConstant(this);
+        }
+
         private QueryConstant(string invariantRepresentation, TypeKind typeKind) 
             : base(typeKind)
         {

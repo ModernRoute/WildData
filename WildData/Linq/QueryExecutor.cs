@@ -11,14 +11,14 @@ namespace ModernRoute.WildData.Linq
     {
         private QueryConverter _QueryConverter;
         
-        private static SourceQuery CreateSourceQuery(IReadOnlyDictionary<string, ColumnInfo> memberColumnMap, Delegate projector)
+        private static FromSource CreateSourceQuery(IReadOnlyDictionary<string, ColumnInfo> memberColumnMap, Delegate projector)
         {
             IReadOnlyDictionary<string, ColumnReference> newMemberColumnMap =
                 memberColumnMap.ToDictionary(item => item.Key, item => item.Value.ColumnReference).AsReadOnly();
 
-            IEnumerable<Column> columns = newMemberColumnMap.Select(i => new Column(i.Value.ColumnName, i.Value));
+            IReadOnlyList<Column> columns = newMemberColumnMap.Select(i => new Column(i.Value.ColumnName, i.Value)).ToList().AsReadOnly();
 
-            return new SourceQuery(newMemberColumnMap, columns, projector);
+            return new FromSource(newMemberColumnMap, columns, projector);
         }
 
         public QueryExecutor(IReadOnlyDictionary<string, ColumnInfo> memberColumnMap, Delegate reader)
@@ -41,7 +41,7 @@ namespace ModernRoute.WildData.Linq
             return ExecuteCollection<T>(_QueryConverter.Convert(queryModel));
         }
 
-        protected abstract IEnumerable<T> ExecuteCollection<T>(SourceBase sourceBase);
+        protected abstract IEnumerable<T> ExecuteCollection<T>(FromBase sourceBase);
 
         public T ExecuteScalar<T>(QueryModel queryModel)
         {

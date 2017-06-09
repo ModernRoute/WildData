@@ -48,5 +48,10 @@ namespace ModernRoute.WildData.Linq
                 return QueryExpressionType.BinaryOperation; 
             }
         }
+
+        public override void Accept(QueryVisitor visitor)
+        {
+            visitor.VisitBinaryQueryExpression(this);
+        }
     }
 }

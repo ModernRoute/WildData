@@ -47,7 +47,7 @@ namespace ModernRoute.WildData.Npgsql.Linq
             }
         }
 
-        protected override IEnumerable<T> ExecuteCollection<T>(SourceBase sourceBase)
+        protected override IEnumerable<T> ExecuteCollection<T>(FromBase sourceBase)
         {
             NpgsqlQueryBuilder builder = new NpgsqlQueryBuilder();
 

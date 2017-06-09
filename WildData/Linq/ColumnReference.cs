@@ -29,5 +29,10 @@ namespace ModernRoute.WildData.Linq
                 return QueryExpressionType.ColumnReference;
             }
         }
+
+        public override void Accept(QueryVisitor visitor)
+        {
+            visitor.VisitColumnReference(this);
+        }
     }
 }

@@ -430,6 +430,15 @@ namespace ModernRoute.WildData.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Projection type {0} is not supported..
+        /// </summary>
+        internal static string ProjectionTypeIsNotSupported {
+            get {
+                return ResourceManager.GetString("ProjectionTypeIsNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to RuntimeVariables are not supported..
         /// </summary>
         internal static string RuntimeVariablesAreNotSupported {

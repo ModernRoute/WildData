@@ -282,4 +282,7 @@
   <data name="TheModelIgnoresProperty" xml:space="preserve">
     <value>The model ignores '{0}' property.</value>
   </data>
+  <data name="ProjectionTypeIsNotSupported" xml:space="preserve">
+    <value>Projection type {0} is not supported.</value>
+  </data>
 </root>

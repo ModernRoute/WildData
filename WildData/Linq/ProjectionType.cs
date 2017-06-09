@@ -2,6 +2,7 @@
 {
     public enum ProjectionType
     {
+        None,
         Average,
         Count,
         LongCount,
