@@ -127,12 +127,16 @@ namespace ModernRoute.WildData.Npgsql.Linq
 
         protected override void VisitColumn(Column column, int index)
         {
+            AppendCommaIfNotFirst(index);
+            base.VisitColumn(column, index);
+        }
+
+        private void AppendCommaIfNotFirst(int index)
+        {
             if (index != 0)
             {
                 _QueryString.Append(SyntaxHelper.CommaToken);
             }
-
-            base.VisitColumn(column, index);
         }
 
         protected override void VisitProjection(ProjectionType projectionType, bool projectionDistinct, QueryExpression definition)
@@ -196,10 +200,7 @@ namespace ModernRoute.WildData.Npgsql.Linq
 
         protected override void VisitOrder(Order order, int index)
         {
-            if (index != 0)
-            {
-                _QueryString.Append(SyntaxHelper.CommaToken);
-            }
+            AppendCommaIfNotFirst(index);
 
             base.VisitOrder(order, index);
             _QueryString.Append(SyntaxHelper.SpaceToken);
@@ -477,11 +478,7 @@ namespace ModernRoute.WildData.Npgsql.Linq
 
         protected override void VisitFunctionArg(QueryExpression arg, int index)
         {
-            if (index != 0)
-            {
-                _QueryString.Append(SyntaxHelper.CommaToken);
-            }
-
+            AppendCommaIfNotFirst(index);
             base.VisitFunctionArg(arg, index);
         }
 
