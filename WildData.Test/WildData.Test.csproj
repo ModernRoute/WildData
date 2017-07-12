@@ -60,6 +60,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\ReadWriteRepositoryHelperTest.cs" />
+    <Compile Include="Core\Repository.cs" />
+    <Compile Include="Core\RowStorage.cs" />
+    <Compile Include="Core\SupportEverythingTypeKindInfo.cs" />
+    <Compile Include="Helpers\EscapeHelper.cs" />
+    <Compile Include="Helpers\SyntaxHelper.cs" />
+    <Compile Include="Linq\CanonicalQueryBuilder.cs" />
+    <Compile Include="Linq\QueryableTest.cs" />
+    <Compile Include="Linq\SimpleQueryExecutor.cs" />
+    <Compile Include="Models\AllTypesModel.cs" />
+    <Compile Include="Models\Model.cs" />
+    <Compile Include="Models\PreModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -72,9 +83,7 @@
     <None Include="key.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Linq\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\GitVersionTask.3.6.5\build\dotnet\GitVersionTask.targets" Condition="Exists('..\packages\GitVersionTask.3.6.5\build\dotnet\GitVersionTask.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

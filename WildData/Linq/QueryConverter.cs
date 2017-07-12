@@ -31,6 +31,8 @@ namespace ModernRoute.WildData.Linq
                 throw new ArgumentNullException(nameof(queryModel));
             }
 
+            VisitQueryModel(queryModel);
+
             throw new NotImplementedException();
         }
 

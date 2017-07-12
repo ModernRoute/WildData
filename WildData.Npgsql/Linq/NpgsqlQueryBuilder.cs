@@ -273,6 +273,7 @@ namespace ModernRoute.WildData.Npgsql.Linq
         protected override void VisitUnaryOperationType(UnaryOperationType operation)
         {
             _QueryString.Append(GetUnaryOperator(operation));
+            _QueryString.Append(SyntaxHelper.SpaceToken);
         }
 
         private string GetBinaryOperator(BinaryOperationType binaryOperationType, TypeKind typeKind)
